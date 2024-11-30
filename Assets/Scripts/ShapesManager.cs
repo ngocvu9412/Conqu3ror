@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class ShapesManager : MonoBehaviour
 {
-    public Text DebugText, ScoreText, CollectibleCountText;
+    public Text DebugText, ScoreText;
     public bool ShowDebugInfo = false;
                                        
 
@@ -168,6 +168,21 @@ public class ShapesManager : MonoBehaviour
         }
     }
 
+    private bool isMyTurn = true;  // Biến để theo dõi lượt chơi của người chơi, true = người chơi, false = AI
+    private int turnCount = 1;     // Biến đếm số lượt của cả hai bên
+    private void ChangeTurn()
+    {
+        if (isMyTurn)
+            Debug.Log("Change to AI turn");
+        else Debug.Log("Change to my turn");
+        isMyTurn = !isMyTurn;
+        turnCount = 1;
+    }
+    private void AddTurn()
+    {
+        turnCount++;
+    }
+
     private bool isBoardLocked = false; // Biến kiểm tra trạng thái bàn cờ
 
     void Update()
@@ -182,6 +197,14 @@ public class ShapesManager : MonoBehaviour
         if (ShowDebugInfo)
             DebugText.text = DebugUtilities.GetArrayContents(shapes);
 
+
+        //
+        if (turnCount <= 0)
+        {
+            ChangeTurn();
+        }
+
+        //
         if (state == GameState.None)
         {
             // Người dùng đã nhấp chuột hoặc chạm màn hình
@@ -234,16 +257,16 @@ public class ShapesManager : MonoBehaviour
 
                         // Bắt đầu coroutine tìm kiếm và xử lý các trận đấu
                         StartCoroutine(FindMatchesAndCollapse(hit));
+
                     }
                     else
                     {
-                        // Nếu thao tác không hợp lệ, quay lại trạng thái ban đầu mà không reset bảng
-                        Debug.Log("Invalid move, no reset.");
                         state = GameState.None;  // Đặt lại trạng thái trò chơi
                     }
                 }
             }
         }
+        
     }
 
     // Kiểm tra và reset bàn cờ nếu không còn nước đi hợp lệ
@@ -307,79 +330,6 @@ public class ShapesManager : MonoBehaviour
         }
     }
 
-    //private IEnumerator FindMatchesAndCollapse(RaycastHit2D hit2)
-    //{
-    //    //get the second item that was part of the swipe
-    //    var hitGo2 = hit2.collider.gameObject;
-    //    shapes.Swap(hitGo, hitGo2);
-
-    //    //move the swapped ones
-    //    hitGo.transform.DOMove(hitGo2.transform.position, Constants.AnimationDuration);
-    //    hitGo2.transform.DOMove(hitGo.transform.position, Constants.AnimationDuration);
-    //    yield return new WaitForSeconds(Constants.AnimationDuration);
-
-    //    //get the matches via the helper methods
-    //    var hitGomatchesInfo = shapes.GetMatches(hitGo);
-    //    var hitGo2matchesInfo = shapes.GetMatches(hitGo2);
-
-    //    var totalMatches = hitGomatchesInfo.MatchedCandy
-    //        .Union(hitGo2matchesInfo.MatchedCandy).Distinct();
-
-    //    //if user's swap didn't create at least a 3-match, undo their swap
-    //    if (totalMatches.Count() < Constants.MinimumMatches)
-    //    {
-    //        hitGo.transform.DOMove(hitGo2.transform.position, Constants.AnimationDuration);
-    //        hitGo2.transform.DOMove(hitGo.transform.position, Constants.AnimationDuration);
-    //        yield return new WaitForSeconds(Constants.AnimationDuration);
-
-    //        shapes.UndoSwap();
-    //    }
-
-    //    int timesRun = 1;
-    //    while (totalMatches.Count() >= Constants.MinimumMatches)
-    //    {
-    //        //increase score
-    //        IncreaseScore((totalMatches.Count() - 2) * Constants.Match3Score);
-
-    //        if (timesRun >= 2)
-    //            IncreaseScore(Constants.SubsequentMatchScore);
-
-    //        soundManager.PlayCrincle();
-
-    //        foreach (var item in totalMatches)
-    //        {
-    //            shapes.Remove(item);
-    //            RemoveFromScene(item);
-    //        }
-
-    //        //get the columns that we had a collapse
-    //        var columns = totalMatches.Select(go => go.GetComponent<Shape>().Column).Distinct();
-
-    //        //the order the 2 methods below get called is important!!!
-    //        //collapse the ones gone
-    //        var collapsedCandyInfo = shapes.Collapse(columns);
-    //        //create new ones
-    //        var newCandyInfo = CreateNewCandyInSpecificColumns(columns);
-
-    //        int maxDistance = Mathf.Max(collapsedCandyInfo.MaxDistance, newCandyInfo.MaxDistance);
-
-    //        MoveAndAnimate(newCandyInfo.AlteredCandy, maxDistance);
-    //        MoveAndAnimate(collapsedCandyInfo.AlteredCandy, maxDistance);
-
-    //        //will wait for both of the above animations
-    //        yield return new WaitForSeconds(Constants.MoveAnimationMinDuration * maxDistance);
-
-    //        //search if there are matches with the new/collapsed items
-    //        totalMatches = shapes.GetMatches(collapsedCandyInfo.AlteredCandy).
-    //            Union(shapes.GetMatches(newCandyInfo.AlteredCandy)).Distinct();
-
-    //        timesRun++;
-    //    }
-
-    //    state = GameState.None;
-    //    StartCheckForPotentialMatches();
-    //}
-
     private IEnumerator FindMatchesAndCollapse(RaycastHit2D hit2)
     {
         // Lấy đối tượng thứ hai trong việc hoán đổi
@@ -442,11 +392,13 @@ public class ShapesManager : MonoBehaviour
                 {
                     // Nếu có từ 5 biểu tượng trở lên, nhân với 2
                     collectiblesInChain[key] *= 2f;
+                    AddTurn();
                 }
                 else if (collectiblesInChain[key] == 4)
                 {
                     // Nếu có 4 biểu tượng, nhân với 1.5
                     collectiblesInChain[key] *= 1.5f;
+                    AddTurn();
                 }
 
                 // Nhân với timesRun (hệ số chuỗi)
@@ -460,13 +412,13 @@ public class ShapesManager : MonoBehaviour
 
             // In ra số lượng biểu tượng thu thập được sau mỗi chuỗi (chain)
             Debug.Log("Chain: " + timesRun);
-            Debug.Log("Sword Count: " + collectiblesInChain["Sword"]);
-            Debug.Log("Heart Count: " + collectiblesInChain["Heart"]);
-            Debug.Log("Gold Count: " + collectiblesInChain["Gold"]);
-            Debug.Log("Energy Count: " + collectiblesInChain["Energy"]);
-            Debug.Log("Scroll Count: " + collectiblesInChain["Scroll"]);
-            Debug.Log("Time Count: " + collectiblesInChain["Time"]);
-            Debug.Log("");
+            //Debug.Log("Sword Count: " + collectiblesInChain["Sword"]);
+            //Debug.Log("Heart Count: " + collectiblesInChain["Heart"]);
+            //Debug.Log("Gold Count: " + collectiblesInChain["Gold"]);
+            //Debug.Log("Energy Count: " + collectiblesInChain["Energy"]);
+            //Debug.Log("Scroll Count: " + collectiblesInChain["Scroll"]);
+            //Debug.Log("Time Count: " + collectiblesInChain["Time"]);
+            //Debug.Log("");
 
 
             soundManager.PlayCrincle();
@@ -492,12 +444,19 @@ public class ShapesManager : MonoBehaviour
             totalMatches = shapes.GetMatches(collapsedCandyInfo.AlteredCandy)
                 .Union(shapes.GetMatches(newCandyInfo.AlteredCandy)).Distinct();
 
+            //Làm tính toán để tấn công/ tăng chỉ số 
+            ///Code ở đây 
+
+            //////
             // Nếu không có match mới, thoát vòng lặp
             if (totalMatches.Count() < Constants.MinimumMatches)
                 break;
 
             timesRun++;
+            
         }
+        turnCount--;/////////
+        Debug.Log(turnCount + " turn remain");
 
         state = GameState.None;
         StartCheckForPotentialMatches();
