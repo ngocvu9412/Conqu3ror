@@ -38,6 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &4
 LightmapSettings:
@@ -392,7 +393,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -11.730011, y: -4.699997}
+  m_AnchoredPosition: {x: -11.72998, y: -4.700012}
   m_SizeDelta: {x: 50, y: 20}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &948551027
@@ -705,27 +706,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DebugText: {fileID: 1816048249}
   ScoreText: {fileID: 1807116963}
-  CollectibleCountText: {fileID: 1861496878}
   ShowDebugInfo: 0
   CandyPrefabs:
-  - {fileID: 189422, guid: 110002167b804ad47947089afdb9dc96, type: 3}
-  - {fileID: 103784, guid: 55a0b063029169245b7743f43014b9d5, type: 3}
-  - {fileID: 161608, guid: 1cfccd74339afd54c8eea25deb0e8aae, type: 3}
-  - {fileID: 187046, guid: a4cb29e7d50f91041b867892963b1cf9, type: 3}
-  - {fileID: 180178, guid: afa6b0eba9a9e794080048baed797d27, type: 3}
-  - {fileID: 3545087317094598299, guid: d6c15ab1eee93d841bb3da93b51ad705, type: 3}
+  - {fileID: 92260243084181745, guid: 4d27d93bdbcc48c42b8dbf38103e0abd, type: 3}
+  - {fileID: 6127602938770882643, guid: e313a64ddda57c140856437ab8d83491, type: 3}
+  - {fileID: 3389601667847050035, guid: f97613b3e802433469f395b0046f6974, type: 3}
+  - {fileID: 2867411080660483617, guid: 68f29c56585a4ac458878014563138d2, type: 3}
+  - {fileID: 646095176395608050, guid: f60eedb9a73561d4390de0e78748049b, type: 3}
+  - {fileID: 3895226229309160226, guid: 43398a5617d11414eb1540a2ac443cdc, type: 3}
   ExplosionPrefabs:
   - {fileID: 126096, guid: 76ac26693b05fa94381733a6e6be640a, type: 3}
   - {fileID: 195492, guid: 4ee919a3cb1ff3448ae1b4c056dd8c35, type: 3}
   - {fileID: 125858, guid: 5268d9197b90bc44492e32f316fa679e, type: 3}
   - {fileID: 123910, guid: 1d881f16d2f366c46afb3f9e9b96654f, type: 3}
   BonusPrefabs:
-  - {fileID: 114848, guid: 0cffe7839950f2d4c8ec4e7f3e18e4c6, type: 3}
-  - {fileID: 164388, guid: ddfddbe43693aa54c94149217791f7bd, type: 3}
-  - {fileID: 105690, guid: c9cde8189605ee449bcc97b998147d85, type: 3}
-  - {fileID: 187842, guid: 11cb4356a18183c48b07164222227d2b, type: 3}
-  - {fileID: 157836, guid: 19c708ee61002454eb4c54c029ce0eaf, type: 3}
-  - {fileID: 586070014887574770, guid: f61b6a12b785c91428654d32af3f7543, type: 3}
+  - {fileID: 913913324449849953, guid: 119884f1893d0fb46af207a58f0f9691, type: 3}
   soundManager: {fileID: 1624638383}
 --- !u!4 &1363272350
 Transform:
