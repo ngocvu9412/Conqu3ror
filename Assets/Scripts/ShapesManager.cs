@@ -423,19 +423,33 @@ public class ShapesManager : MonoBehaviour
 
             soundManager.PlayCrincle();
 
+
+            List<int> affectedColumns = new List<int>();
+
             foreach (var item in totalMatches)
             {
-                shapes.Remove(item);
-                RemoveFromScene(item);
+                var shape = item.GetComponent<Shape>();
+                if (shape.Bonus == BonusType.SpecialSword)
+                {
+                    // Xử lý nổ 3x3 và lấy danh sách các cột bị ảnh hưởng
+                    affectedColumns.AddRange(HandleSpecialSword(item));
+                }
+                else
+                {
+                    shapes.Remove(item);
+                    RemoveFromScene(item); // Xóa biểu tượng thường
+                    affectedColumns.Add(item.GetComponent<Shape>().Column);
+                }
             }
+            // Loại bỏ cột trùng lặp
+            affectedColumns = affectedColumns.Distinct().ToList();
 
-            var columns = totalMatches.Select(go => go.GetComponent<Shape>().Column).Distinct();
+            // Xử lý các cột bị ảnh hưởng
+            var collapsedCandyInfo = shapes.Collapse(affectedColumns);
+            var newCandyInfo = CreateNewCandyInSpecificColumns(affectedColumns);
 
-            var collapsedCandyInfo = shapes.Collapse(columns);
-            var newCandyInfo = CreateNewCandyInSpecificColumns(columns);
-
+            // Di chuyển và hoạt ảnh
             int maxDistance = Mathf.Max(collapsedCandyInfo.MaxDistance, newCandyInfo.MaxDistance);
-
             MoveAndAnimate(newCandyInfo.AlteredCandy, maxDistance);
             MoveAndAnimate(collapsedCandyInfo.AlteredCandy, maxDistance);
 
@@ -488,6 +502,67 @@ public class ShapesManager : MonoBehaviour
     //    BonusShape.Bonus |= BonusType.DestroyWholeRowColumn;
     //}
 
+    private List<int> HandleSpecialSword(GameObject specialCandy)
+    {
+        var shape = specialCandy.GetComponent<Shape>();
+        int row = shape.Row;
+        int column = shape.Column;
+
+        // Danh sách các cột có thay đổi để sau đó tạo biểu tượng mới
+        List<int> affectedColumns = new List<int>();
+
+        // Danh sách các SpecialSword mới được kích hoạt để xử lý hiệu ứng nổ lan truyền
+        List<GameObject> triggeredSpecialSwords = new List<GameObject>();
+
+        // Phá hủy các biểu tượng trong phạm vi 3x3
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                int targetRow = row + i;
+                int targetColumn = column + j;
+
+                if (targetRow >= 0 && targetRow < Constants.Rows &&
+                    targetColumn >= 0 && targetColumn < Constants.Columns)
+                {
+                    var candy = shapes[targetRow, targetColumn];
+                    if (candy != null)
+                    {
+                        var candyShape = candy.GetComponent<Shape>();
+
+                        // Kiểm tra nếu là SpecialSword, thêm vào danh sách để nổ sau
+                        if (candyShape.Bonus == BonusType.SpecialSword && candy != specialCandy)
+                        {
+                            triggeredSpecialSwords.Add(candy);
+                        }
+
+                        shapes.Remove(candy);
+                        RemoveFromScene(candy);
+
+                        // Đánh dấu cột bị ảnh hưởng
+                        if (!affectedColumns.Contains(targetColumn))
+                            affectedColumns.Add(targetColumn);
+                    }
+                }
+            }
+        }
+
+        // Hiệu ứng phá hủy (nếu có)
+        GameObject explosion = GetRandomExplosion();
+        var explosionEffect = Instantiate(explosion, specialCandy.transform.position, Quaternion.identity);
+        Destroy(explosionEffect, Constants.ExplosionDuration);
+
+        // Kích hoạt nổ cho các SpecialSword bị ảnh hưởng
+        foreach (var triggeredSword in triggeredSpecialSwords)
+        {
+            affectedColumns.AddRange(HandleSpecialSword(triggeredSword));
+        }
+
+        return affectedColumns.Distinct().ToList(); // Loại bỏ cột trùng lặp
+    }
+
+
+
     private AlteredCandyInfo CreateNewCandyInSpecificColumns(IEnumerable<int> columnsWithMissingCandy)
     {
         AlteredCandyInfo newCandyInfo = new AlteredCandyInfo();
@@ -499,8 +574,21 @@ public class ShapesManager : MonoBehaviour
             foreach (var item in emptyItems)
             {
                 var go = GetRandomCandy();
-                GameObject newCandy = Instantiate(go, SpawnPositions[column], Quaternion.identity)
-                    as GameObject;
+                GameObject newCandy;
+
+                if (UnityEngine.Random.value < Constants.SpecialSwordRate)
+                {
+                    go = GetSpecialSwordCandy();
+                    newCandy = Instantiate(go, SpawnPositions[column], Quaternion.identity) as GameObject;
+                    newCandy.GetComponent<Shape>().Bonus = BonusType.SpecialSword; // Gán BonusType
+                }
+                else
+                {
+                    go = GetRandomCandy();
+                    newCandy = Instantiate(go, SpawnPositions[column], Quaternion.identity) as GameObject;
+                }
+
+                
 
                 newCandy.GetComponent<Shape>().Assign(go.GetComponent<Shape>().Type, item.Row, item.Column);
 
@@ -538,6 +626,11 @@ public class ShapesManager : MonoBehaviour
     private GameObject GetRandomCandy()
     {
         return CandyPrefabs[Random.Range(0, CandyPrefabs.Length)];
+    }
+
+    private GameObject GetSpecialSwordCandy()
+    {
+        return BonusPrefabs[0];
     }
 
     private void InitializeVariables()

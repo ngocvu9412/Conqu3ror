@@ -26,7 +26,6 @@ public class Shape : MonoBehaviour
     {
         if (otherShape == null || !(otherShape is Shape))
             throw new ArgumentException("otherShape");
-
         return string.Compare(this.Type, (otherShape as Shape).Type) == 0;
     }
 
