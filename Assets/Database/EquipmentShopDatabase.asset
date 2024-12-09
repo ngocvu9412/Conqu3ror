@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 394f611a59a7f8749821ea9879d90f5f, type: 3}
+  m_Name: EquipmentShopDatabase
+  m_EditorClassIdentifier: 
+  equipments:
+  - image: {fileID: 21300000, guid: bf85e34946349084bb8c91dbbbddaa18, type: 3}
+    name: "Tr\xE1i tim ho\xE0ng gia"
+    description: "T\u0103ng 50 m\xE1u c\u01A1 b\u1EA3n"
+    price: 400
+    isPurchased: 0
+  - image: {fileID: 21300000, guid: 1bda57093e55b994da87db9b1b051ec5, type: 3}
+    name: "G\u01B0\u01A1m \xE1nh s\xE1ng"
+    description: "T\u0103ng 4 s\xE1t th\u01B0\u01A1ng c\u01A1 b\u1EA3n"
+    price: 800
+    isPurchased: 0
+  - image: {fileID: 21300000, guid: 5abed9f0735b31644a470820100eb84c, type: 3}
+    name: "Qu\u1EA3 c\u1EA7u ph\xF9 th\u1EE7y"
+    description: "Nh\u1EADn 70 n\u0103ng l\u01B0\u1EE3ng khi b\u1EAFt \u0111\u1EA7u
+      tr\u1EADn \u0111\u1EA5u"
+    price: 600
+    isPurchased: 0
+  - image: {fileID: 21300000, guid: 4951b49801b1ba044a79d601ad230c82, type: 3}
+    name: "Nh\u1EABn ph\xF9 th\u1EE7y"
+    description: "S\xE1t th\u01B0\u01A1ng t\u1EEB chi\xEAu th\u1EE9c t\u0103ng th\xEAm
+      20%"
+    price: 800
+    isPurchased: 0
+  - image: {fileID: 21300000, guid: b54eea42087805d408e4362054d69c62, type: 3}
+    name: "\u0110\u1ED3ng h\u1ED3 sinh m\u1EC7nh"
+    description: "T\u0103ng 30s sinh m\u1EC7nh t\u1ED1i \u0111a khi b\u1EAFt \u0111\u1EA7u
+      tr\u1EADn"
+    price: 400
+    isPurchased: 0
+  - image: {fileID: 21300000, guid: a5c2db3368e938242b6a69851fa62cfa, type: 3}
+    name: "Tr\u01B0\u1EE3ng ma ph\xE1p"
+    description: "N\u0103ng l\u01B0\u1EE3ng h\u1EA5p th\u1EE5 t\u0103ng 20%"
+    price: 400
+    isPurchased: 0
