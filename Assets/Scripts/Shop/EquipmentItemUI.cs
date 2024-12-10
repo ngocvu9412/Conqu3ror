@@ -1,0 +1,50 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using UnityEngine.Events;
+
+public class EquipmentItemUI : MonoBehaviour
+{
+    [SerializeField] Image EquipmentImage;
+    [SerializeField] TMP_Text EquipmentName;
+    [SerializeField] TMP_Text EquipmentDes;
+    [SerializeField] TMP_Text EquipmentPrice;
+    [SerializeField] Button EquipmentPurchaseButton;
+    public void SetItemPos (Vector2 pos)
+    {
+        GetComponent<RectTransform>().anchoredPosition += pos;
+    }
+    
+    public void SetEquipmentImage (Sprite sprite)
+    {
+        EquipmentImage.sprite = sprite;
+    }
+
+    public void SetEquipmentName (string name)
+    {
+        EquipmentName.text = name;
+    }
+
+    public void SetEquipmentDes (string des)
+    {
+        EquipmentDes.text = des;
+    }
+
+    public void SetEquipmentPrice (int price)
+    {
+        EquipmentPrice.text = price.ToString();
+    }
+
+    public void SetEquipmentAsPurchased ()
+    {
+        EquipmentPurchaseButton.gameObject.SetActive (false);
+    }
+
+    public void OnItemPurchase (int itemIndex, UnityAction<int> action)
+    {
+        EquipmentPurchaseButton.onClick.RemoveAllListeners ();
+        EquipmentPurchaseButton.onClick.AddListener (() => action.Invoke (itemIndex));
+    }
+}
