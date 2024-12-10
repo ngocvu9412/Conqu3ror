@@ -96,8 +96,6 @@ public class ShapesManager : MonoBehaviour
 
     public void InitializeCandyAndSpawnPositions()
     {
-        Debug.Log("Restart The Map.");
-
         InitializeVariables();
 
         if (shapes != null)
