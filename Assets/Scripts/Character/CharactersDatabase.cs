@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CharactersDatabase", menuName = "Characters/Characters database")]
-public class CharacterDatabase : ScriptableObject
+public class CharactersDatabase : ScriptableObject
 {
     public Character[] Characters;
 

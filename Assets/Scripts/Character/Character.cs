@@ -5,12 +5,17 @@ using UnityEngine;
 [System.Serializable]
 public struct Character
 {
-    public Sprite image;
+    public Sprite Image;
     public string name;
-    public int health;
-    public int attack;
+    public float health;
+    public float health_per_lv;
+    public float attack;
+    public float attack_per_lv;
 
     public int Exp;
+    public static int LvlExp = 100;
+    public static int LvlExpPerLv = 20;
     public int Level;
     public bool isUsing;
+    public bool Unlocked;
 }
