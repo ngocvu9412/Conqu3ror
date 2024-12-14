@@ -160,7 +160,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Sylva_0: 8262271927763056467
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
