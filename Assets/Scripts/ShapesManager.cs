@@ -8,13 +8,7 @@ using UnityEngine.UI;
 
 public class ShapesManager : MonoBehaviour
 {
-    public Text DebugText, ScoreText;
-    public bool ShowDebugInfo = false;
-                                       
-
     public ShapesArray shapes;
-
-    private int score;
 
     public readonly Vector2 BottomRight = new Vector2(-3.5f, -3.5f);
     public readonly Vector2 CandySize = new Vector2(1f, 1f);
@@ -34,7 +28,7 @@ public class ShapesManager : MonoBehaviour
     public SoundManager soundManager;
     void Awake()
     {
-        DebugText.enabled = ShowDebugInfo;
+        
     }
 
     // Use this for initialization
@@ -64,41 +58,9 @@ public class ShapesManager : MonoBehaviour
         }
     }
 
-    public void InitializeCandyAndSpawnPositionsFromPremadeLevel()
-    {
-        InitializeVariables();
-
-        var premadeLevel = DebugUtilities.FillShapesArrayFromResourcesData();
-
-        if (shapes != null)
-            DestroyAllCandy();
-
-        shapes = new ShapesArray();
-        SpawnPositions = new Vector2[Constants.Columns];
-
-        for (int row = 0; row < Constants.Rows; row++)
-        {
-            for (int column = 0; column < Constants.Columns; column++)
-            {
-
-                GameObject newCandy = null;
-
-                newCandy = GetSpecificCandyOrBonusForPremadeLevel(premadeLevel[row, column]);
-
-                InstantiateAndPlaceNewCandy(row, column, newCandy);
-
-            }
-        }
-
-        SetupSpawnPositions();
-    }
-
-
     public void InitializeCandyAndSpawnPositions()
     {
         Debug.Log("Restart The Map.");
-
-        InitializeVariables();
 
         if (shapes != null)
             DestroyAllCandy();
@@ -195,9 +157,6 @@ public class ShapesManager : MonoBehaviour
             CheckAndResetBoardIfNeeded();
         }
 
-        // Hiển thị thông tin debug nếu cần
-        if (ShowDebugInfo)
-            DebugText.text = DebugUtilities.GetArrayContents(shapes);
 
 
         //
@@ -317,10 +276,6 @@ public class ShapesManager : MonoBehaviour
         
     }
 
-
-
-
-
     private void FixSortingLayer(GameObject hitGo, GameObject hitGo2)
     {
         SpriteRenderer sp1 = hitGo.GetComponent<SpriteRenderer>();
@@ -365,7 +320,6 @@ public class ShapesManager : MonoBehaviour
         while (totalMatches.Count() >= Constants.MinimumMatches)
         {
             // Tính điểm cho trận đấu và biểu tượng thu thập
-            int totalChainPoints = 0;
             Dictionary<string, float> collectiblesInChain = new Dictionary<string, float>
         {
             { "Sword", 0 },
@@ -407,10 +361,6 @@ public class ShapesManager : MonoBehaviour
                 collectiblesInChain[key] *= (timesRun * 0.5f + 0.5f);  // chain 
 
             }
-
-            // Tính điểm cho chuỗi (chain) và cộng dồn
-            totalChainPoints = CalculateMatchPoints(timesRun);
-            IncreaseScore(totalChainPoints);
 
             // In ra số lượng biểu tượng thu thập được sau mỗi chuỗi (chain)
             Debug.Log("Chain: " + timesRun);
@@ -478,31 +428,6 @@ public class ShapesManager : MonoBehaviour
         StartCheckForPotentialMatches();
     }
 
-    // Tính điểm cho trận đấu dựa trên số lượng match
-    private int CalculateMatchPoints(int timesRun)
-    {
-        int basePoints = Constants.Match3Score; // Điểm gốc cho một trận đấu cơ bản (3 match)
-
-        // Tính điểm theo chuỗi (chain) dựa trên timesRun
-        float multiplier = 1f + (0.5f * (timesRun - 1)); // Mỗi lần chain mới tăng 50% điểm (chain 2 = 1.5x, chain 3 = 2x,...)
-        float totalPoints = basePoints * multiplier;
-
-        return Mathf.FloorToInt(totalPoints); // Làm tròn số điểm
-    }
-
-    //private void CreateBonus(Shape hitGoCache)
-    //{
-    //    GameObject Bonus = Instantiate(GetBonusFromType(hitGoCache.Type), BottomRight
-    //        + new Vector2(hitGoCache.Column * CandySize.x,
-    //            hitGoCache.Row * CandySize.y), Quaternion.identity)
-    //        as GameObject;
-    //    shapes[hitGoCache.Row, hitGoCache.Column] = Bonus;
-    //    var BonusShape = Bonus.GetComponent<Shape>();
-    //    //will have the same type as the "normal" candy
-    //    BonusShape.Assign(hitGoCache.Type, hitGoCache.Row, hitGoCache.Column);
-    //    //add the proper Bonus type
-    //    BonusShape.Bonus |= BonusType.DestroyWholeRowColumn;
-    //}
 
     private List<int> HandleSpecialSword(GameObject specialCandy)
     {
@@ -635,37 +560,9 @@ public class ShapesManager : MonoBehaviour
         return BonusPrefabs[0];
     }
 
-    private void InitializeVariables()
-    {
-        score = 0;
-        ShowScore();
-    }
-
-    private void IncreaseScore(int amount)
-    {
-        score += amount;
-        ShowScore();
-    }
-
-    private void ShowScore()
-    {
-        ScoreText.text = "Score: " + score.ToString();
-    }
-
     private GameObject GetRandomExplosion()
     {
         return ExplosionPrefabs[Random.Range(0, ExplosionPrefabs.Length)];
-    }
-
-    private GameObject GetBonusFromType(string type)
-    {
-        string color = type.Split('_')[1].Trim();
-        foreach (var item in BonusPrefabs)
-        {
-            if (item.GetComponent<Shape>().Type.Contains(color))
-                return item;
-        }
-        throw new System.Exception("Wrong type");
     }
 
     private void StartCheckForPotentialMatches()
@@ -712,34 +609,5 @@ public class ShapesManager : MonoBehaviour
             }
         }
     }
-
-    private GameObject GetSpecificCandyOrBonusForPremadeLevel(string info)
-    {
-        var tokens = info.Split('_');
-
-        if (tokens.Count() == 1)
-        {
-            foreach (var item in CandyPrefabs)
-            {
-                if (item.GetComponent<Shape>().Type.Contains(tokens[0].Trim()))
-                    return item;
-            }
-
-        }
-        else if (tokens.Count() == 2 && tokens[1].Trim() == "B")
-        {
-            foreach (var item in BonusPrefabs)
-            {
-                if (item.name.Contains(tokens[0].Trim()))
-                    return item;
-            }
-        }
-
-        throw new System.Exception("Wrong type, check your premade level");
-    }
-
-   
-
-
 
 }
