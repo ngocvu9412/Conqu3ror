@@ -330,7 +330,6 @@ public class ShapesManager : MonoBehaviour
             { "Time", 0 },
         };
 
-            // Tính số lượng biểu tượng thu thập trong mỗi trận đấu (chain)
             foreach (var match in totalMatches)
             {
                 string collectibleTag = match.tag; // Lấy Tag của đối tượng (sword, heart, gold, energy)
@@ -362,37 +361,84 @@ public class ShapesManager : MonoBehaviour
 
             }
 
-            // In ra số lượng biểu tượng thu thập được sau mỗi chuỗi (chain)
-            Debug.Log("Chain: " + timesRun);
-            //Debug.Log("Sword Count: " + collectiblesInChain["Sword"]);
-            //Debug.Log("Heart Count: " + collectiblesInChain["Heart"]);
-            //Debug.Log("Gold Count: " + collectiblesInChain["Gold"]);
-            //Debug.Log("Energy Count: " + collectiblesInChain["Energy"]);
-            //Debug.Log("Scroll Count: " + collectiblesInChain["Scroll"]);
-            //Debug.Log("Time Count: " + collectiblesInChain["Time"]);
-            //Debug.Log("");
-
-
+            
             soundManager.PlayCrincle();
 
-
             List<int> affectedColumns = new List<int>();
+
+            Dictionary<string, float> collectiblesInExplode = new Dictionary<string, float>
+        {
+            { "Sword", 0 },
+            { "Heart", 0 },
+            { "Gold", 0 },
+            { "Energy", 0 },
+            { "Scroll", 0 },
+            { "Time", 0 },
+        };
+
 
             foreach (var item in totalMatches)
             {
                 var shape = item.GetComponent<Shape>();
+
                 if (shape.Bonus == BonusType.SpecialSword)
                 {
-                    // Xử lý nổ 3x3 và lấy danh sách các cột bị ảnh hưởng
-                    affectedColumns.AddRange(HandleSpecialSword(item));
+                    // Xử lý nổ 3x3 và thu thập các biểu tượng bị ảnh hưởng
+                    var affectedShapes = HandleSpecialSword(item);
+
+                    foreach (var affected in affectedShapes)
+                    {
+                        string collectibleTag = affected.tag;
+
+                        if (collectiblesInExplode.ContainsKey(collectibleTag))
+                        {
+                            collectiblesInExplode[collectibleTag]++;
+                        }
+                        else
+                        {
+                            collectiblesInExplode[collectibleTag] = 1;
+                        }
+
+                        shapes.Remove(affected);
+                        RemoveFromScene(affected);
+
+                        int column = affected.GetComponent<Shape>().Column;
+                        if (!affectedColumns.Contains(column))
+                        {
+                            affectedColumns.Add(column);
+                        }
+                    }
                 }
                 else
                 {
+                    // Xử lý biểu tượng thường
                     shapes.Remove(item);
-                    RemoveFromScene(item); // Xóa biểu tượng thường
-                    affectedColumns.Add(item.GetComponent<Shape>().Column);
+                    RemoveFromScene(item);
+
+                    int column = item.GetComponent<Shape>().Column;
+                    if (!affectedColumns.Contains(column))
+                    {
+                        affectedColumns.Add(column);
+                    }
                 }
             }
+
+            foreach (var key in collectiblesInExplode.Keys.ToList())
+            {
+                // Nhân với timesRun (hệ số chuỗi)
+                collectiblesInExplode[key] *= (timesRun * 0.5f + 0.5f);  // chain 
+                collectiblesInChain[key] += collectiblesInExplode[key];
+
+            }
+
+
+
+            // In ra số lượng biểu tượng thu thập được sau mỗi chuỗi (chain)
+            Debug.Log("Chain: " + timesRun);
+            Debug.Log("Sword: " + collectiblesInChain["Sword"] + " Heart: " + collectiblesInChain["Heart"] + " Gold: " + collectiblesInChain["Gold"] + " Energy: " + collectiblesInChain["Energy"] + " Scroll: " + collectiblesInChain["Scroll"] + " Time: " + collectiblesInChain["Time"]);
+            Debug.Log("Explode "+"Sword: " + collectiblesInExplode["Sword"] + " Heart: " + collectiblesInExplode["Heart"] + " Gold: " + collectiblesInExplode["Gold"] + " Energy: " + collectiblesInExplode["Energy"] + " Scroll: " + collectiblesInExplode["Scroll"] + " Time: " + collectiblesInExplode["Time"]);
+            Debug.Log("");
+
             // Loại bỏ cột trùng lặp
             affectedColumns = affectedColumns.Distinct().ToList();
 
@@ -429,64 +475,57 @@ public class ShapesManager : MonoBehaviour
     }
 
 
-    private List<int> HandleSpecialSword(GameObject specialCandy)
+    List<GameObject> HandleSpecialSword(GameObject specialSword)
     {
-        var shape = specialCandy.GetComponent<Shape>();
+        // Danh sách chứa tất cả các biểu tượng bị ảnh hưởng bởi nổ lan
+        List<GameObject> affectedShapes = new List<GameObject>();
+
+        // Hàng và cột của SpecialSword hiện tại
+        var shape = specialSword.GetComponent<Shape>();
         int row = shape.Row;
         int column = shape.Column;
 
-        // Danh sách các cột có thay đổi để sau đó tạo biểu tượng mới
-        List<int> affectedColumns = new List<int>();
+        // Danh sách hàng đợi cho hiệu ứng nổ lan
+        Queue<GameObject> explosionQueue = new Queue<GameObject>();
+        explosionQueue.Enqueue(specialSword);
 
-        // Danh sách các SpecialSword mới được kích hoạt để xử lý hiệu ứng nổ lan truyền
-        List<GameObject> triggeredSpecialSwords = new List<GameObject>();
-
-        // Phá hủy các biểu tượng trong phạm vi 3x3
-        for (int i = -1; i <= 1; i++)
+        while (explosionQueue.Count > 0)
         {
-            for (int j = -1; j <= 1; j++)
+            // Lấy một biểu tượng từ hàng đợi để xử lý nổ
+            var currentSpecialSword = explosionQueue.Dequeue();
+            var currentShape = currentSpecialSword.GetComponent<Shape>();
+            int currentRow = currentShape.Row;
+            int currentColumn = currentShape.Column;
+
+            // Gây nổ khu vực 3x3 xung quanh biểu tượng hiện tại
+            for (int r = currentRow - 1; r <= currentRow + 1; r++)
             {
-                int targetRow = row + i;
-                int targetColumn = column + j;
-
-                if (targetRow >= 0 && targetRow < Constants.Rows &&
-                    targetColumn >= 0 && targetColumn < Constants.Columns)
+                for (int c = currentColumn - 1; c <= currentColumn + 1; c++)
                 {
-                    var candy = shapes[targetRow, targetColumn];
-                    if (candy != null)
+                    // Kiểm tra giới hạn mảng
+                    if (r >= 0 && r < Constants.Rows && c >= 0 && c < Constants.Columns)
                     {
-                        var candyShape = candy.GetComponent<Shape>();
-
-                        // Kiểm tra nếu là SpecialSword, thêm vào danh sách để nổ sau
-                        if (candyShape.Bonus == BonusType.SpecialSword && candy != specialCandy)
+                        var affected = shapes[r, c];
+                        if (affected != null && !affectedShapes.Contains(affected))
                         {
-                            triggeredSpecialSwords.Add(candy);
+                            // Thêm biểu tượng bị ảnh hưởng vào danh sách
+                            affectedShapes.Add(affected);
+
+                            // Nếu biểu tượng bị ảnh hưởng cũng là SpecialSword, thêm vào hàng đợi
+                            var affectedShape = affected.GetComponent<Shape>();
+                            if (affectedShape.Bonus == BonusType.SpecialSword)
+                            {
+                                explosionQueue.Enqueue(affected);
+                            }
                         }
-
-                        shapes.Remove(candy);
-                        RemoveFromScene(candy);
-
-                        // Đánh dấu cột bị ảnh hưởng
-                        if (!affectedColumns.Contains(targetColumn))
-                            affectedColumns.Add(targetColumn);
                     }
                 }
             }
         }
 
-        // Hiệu ứng phá hủy (nếu có)
-        GameObject explosion = GetRandomExplosion();
-        var explosionEffect = Instantiate(explosion, specialCandy.transform.position, Quaternion.identity);
-        Destroy(explosionEffect, Constants.ExplosionDuration);
-
-        // Kích hoạt nổ cho các SpecialSword bị ảnh hưởng
-        foreach (var triggeredSword in triggeredSpecialSwords)
-        {
-            affectedColumns.AddRange(HandleSpecialSword(triggeredSword));
-        }
-
-        return affectedColumns.Distinct().ToList(); // Loại bỏ cột trùng lặp
+        return affectedShapes; // Trả về tất cả biểu tượng bị phá hủy bởi nổ lan
     }
+
 
 
 
