@@ -18,4 +18,14 @@ public struct Character
     public int Level;
     public bool isUsing;
     public bool Unlocked;
+
+    public float GetMaxHealth()
+    {
+        return (health+(health_per_lv*Level));
+    }
+    
+    public float GetMaxAttack()
+    {
+        return (attack+(attack_per_lv*Level));
+    }
 }

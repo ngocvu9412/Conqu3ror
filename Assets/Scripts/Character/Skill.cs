@@ -10,5 +10,6 @@ public struct Skill
     public string Description;
     public int Damage;
     public int DamagePerLv;
-    public string CharacterName;
+    public int CharacterIndex;
+    
 }
