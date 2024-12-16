@@ -10,6 +10,8 @@ public class EquipmentShopUI : MonoBehaviour
     [SerializeField] float itemSpace = 10;
 
     float itemHeight;
+    public PlayerData playerdata;
+
 
     [Header ("UI Elements")]
     [SerializeField] GameObject ShopUI;
@@ -18,6 +20,7 @@ public class EquipmentShopUI : MonoBehaviour
     [SerializeField] GameObject ItemPrefab;
     [Space(20)]
     [SerializeField] EquipmentShopDatabase EquipmentDatabase;
+    
     void Start ()
     {
         GenerateShopItemUI();
@@ -49,19 +52,19 @@ public class EquipmentShopUI : MonoBehaviour
             uiItem.SetEquipmentPrice (equipment.price);
 
 
-            if (equipment.isPurchased){
-                uiItem.SetEquipmentAsPurchased();
-            }
-            else {
-                uiItem.SetEquipmentPrice (equipment.price);
-                uiItem.OnItemPurchase (i, OnItemPurchased);
-            }
+            //Xử lý mua hàng
+            uiItem.OnItemPurchase (equipment, OnItemPurchased);
 
             //Chỉnh kích cỡ item container
             EquipmentItemContainer.GetComponent<RectTransform> ().sizeDelta = Vector2.up*(itemHeight+itemSpace)*EquipmentDatabase.EquipmentsCount;
         }
     }
-    void OnItemPurchased (int index)
+    void OnItemPurchased (Equipment equipment)
 	{
+        if (GameDataManager.CanSpendCoins( equipment.price))
+        {
+            GameDataManager.AddEquipment( equipment);
+        }
+        else Debug.Log("No enough coins!!");
 	}
 }
