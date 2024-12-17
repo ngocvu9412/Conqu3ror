@@ -25,6 +25,12 @@ public class ShapesManager : MonoBehaviour
 
     IEnumerable<GameObject> potentialMatches;
 
+    private bool isMyTurn = true;  // Biến để theo dõi lượt chơi của người chơi, true = người chơi, false = AI
+    private int turnCount = 1;     // Biến đếm số lượt của cả hai bên
+
+    public CharacterInCombat playerCharacter; // Nhân vật người chơi
+    public CharacterInCombat enemyCharacter;  // Nhân vật đối thủ
+
     public SoundManager soundManager;
     void Awake()
     {
@@ -39,6 +45,32 @@ public class ShapesManager : MonoBehaviour
         InitializeCandyAndSpawnPositions();
 
         StartCheckForPotentialMatches();
+
+        playerCharacter = new CharacterInCombat
+        {
+            MaxHealth = 1000,
+            CurrentHealth = 1000,
+            CurrentAttack = 20,
+            MaxEnergy = 300,
+            currentEnergy = 0,
+            CurrentTime = 90,
+            MaxTime = 90,
+            Gold = 0,
+            Experience = 0
+        };
+
+        enemyCharacter = new CharacterInCombat
+        {
+            MaxHealth = 1200,
+            CurrentHealth = 1200,
+            CurrentAttack = 20,
+            MaxEnergy = 300,
+            currentEnergy = 0,
+            CurrentTime = 90,
+            MaxTime = 90,
+            Gold = 0,
+            Experience = 0
+        };
     }
 
     private void InitializeTypesOnPrefabShapesAndBonuses()
@@ -132,8 +164,7 @@ public class ShapesManager : MonoBehaviour
         }
     }
 
-    private bool isMyTurn = true;  // Biến để theo dõi lượt chơi của người chơi, true = người chơi, false = AI
-    private int turnCount = 1;     // Biến đếm số lượt của cả hai bên
+
     private void ChangeTurn()
     {
         if (isMyTurn)
@@ -431,13 +462,12 @@ public class ShapesManager : MonoBehaviour
 
             }
 
-
-
+            UpdateCharacterStats(collectiblesInChain);
             // In ra số lượng biểu tượng thu thập được sau mỗi chuỗi (chain)
             Debug.Log("Chain: " + timesRun);
-            Debug.Log("Sword: " + collectiblesInChain["Sword"] + " Heart: " + collectiblesInChain["Heart"] + " Gold: " + collectiblesInChain["Gold"] + " Energy: " + collectiblesInChain["Energy"] + " Scroll: " + collectiblesInChain["Scroll"] + " Time: " + collectiblesInChain["Time"]);
-            Debug.Log("Explode "+"Sword: " + collectiblesInExplode["Sword"] + " Heart: " + collectiblesInExplode["Heart"] + " Gold: " + collectiblesInExplode["Gold"] + " Energy: " + collectiblesInExplode["Energy"] + " Scroll: " + collectiblesInExplode["Scroll"] + " Time: " + collectiblesInExplode["Time"]);
-            Debug.Log("");
+            //Debug.Log("Sword: " + collectiblesInChain["Sword"] + " Heart: " + collectiblesInChain["Heart"] + " Gold: " + collectiblesInChain["Gold"] + " Energy: " + collectiblesInChain["Energy"] + " Scroll: " + collectiblesInChain["Scroll"] + " Time: " + collectiblesInChain["Time"]);
+            //Debug.Log("Explode "+"Sword: " + collectiblesInExplode["Sword"] + " Heart: " + collectiblesInExplode["Heart"] + " Gold: " + collectiblesInExplode["Gold"] + " Energy: " + collectiblesInExplode["Energy"] + " Scroll: " + collectiblesInExplode["Scroll"] + " Time: " + collectiblesInExplode["Time"]);
+            //Debug.Log("");
 
             // Loại bỏ cột trùng lặp
             affectedColumns = affectedColumns.Distinct().ToList();
@@ -473,7 +503,68 @@ public class ShapesManager : MonoBehaviour
         state = GameState.None;
         StartCheckForPotentialMatches();
     }
+    private void UpdateCharacterStats(Dictionary<string, float> collectibles)
+    {
+        // Xác định nhân vật hiện tại và đối thủ
+        CharacterInCombat currentCharacter = isMyTurn ? playerCharacter : enemyCharacter;
+        CharacterInCombat opponentCharacter = isMyTurn ? enemyCharacter : playerCharacter;
 
+        foreach (var key in collectibles.Keys)
+        {
+            float value = collectibles[key]; // Giữ nguyên float để tính toán
+
+            switch (key)
+            {
+                case "Sword":
+                    // Tính sát thương dựa trên CurrentAttack và làm tròn kết quả
+                    float rawDamage = currentCharacter.CurrentAttack * value;
+                    int damage = Mathf.RoundToInt(rawDamage);
+                    opponentCharacter.CurrentHealth -= damage;
+                    opponentCharacter.CurrentHealth = Mathf.Max(0, opponentCharacter.CurrentHealth); // Giới hạn không dưới 0
+                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Attacked for {damage} damage. Enemy Health: {opponentCharacter.CurrentHealth}");
+                    break;
+
+                case "Heart":
+                    // Hồi máu dựa trên 3% MaxHealth và làm tròn kết quả
+                    float rawHeal = 0.03f * value * currentCharacter.MaxHealth;
+                    int healAmount = Mathf.RoundToInt(rawHeal);
+                    currentCharacter.CurrentHealth = Mathf.Min(currentCharacter.MaxHealth, currentCharacter.CurrentHealth + healAmount);
+                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Healed {healAmount} HP. Current Health: {currentCharacter.CurrentHealth}");
+                    break;
+
+                case "Gold":
+                    // Tăng vàng và làm tròn kết quả
+                    float rawGold = value * 10f;
+                    int goldGained = Mathf.RoundToInt(rawGold);
+                    currentCharacter.Gold += goldGained;
+                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Collected {goldGained} Gold. Total Gold: {currentCharacter.Gold}");
+                    break;
+
+                case "Energy":
+                    // Tăng năng lượng và làm tròn kết quả
+                    float rawEnergy = value * 10f;
+                    int energyGained = Mathf.RoundToInt(rawEnergy);
+                    currentCharacter.currentEnergy = Mathf.Min(currentCharacter.MaxEnergy, currentCharacter.currentEnergy + energyGained);
+                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Energy increased by {energyGained}. Current Energy: {currentCharacter.currentEnergy}");
+                    break;
+
+                case "Time":
+                    // Tăng thời gian (lưu ý giá trị thời gian vẫn là float)
+                    float rawTime = value * 2f;
+                    currentCharacter.CurrentTime = Mathf.Min(currentCharacter.MaxTime, currentCharacter.CurrentTime + rawTime);
+                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Time increased by {rawTime} seconds. Current Time: {currentCharacter.CurrentTime}");
+                    break;
+
+                case "Scroll":
+                    // Tăng kinh nghiệm và làm tròn kết quả
+                    float rawExp = value * 10f;
+                    int expGained = Mathf.RoundToInt(rawExp);
+                    currentCharacter.Experience += expGained;
+                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Gained {expGained} EXP. Total EXP: {currentCharacter.Experience}");
+                    break;
+            }
+        }
+    }
 
     List<GameObject> HandleSpecialSword(GameObject specialSword)
     {

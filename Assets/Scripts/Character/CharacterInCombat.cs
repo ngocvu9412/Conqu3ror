@@ -5,14 +5,15 @@ using UnityEngine;
 [System.Serializable]
 public class CharacterInCombat
 {
-    public float MaxHealth;
-    public float currentHealth;
-    public float MaxAttack;
-    public float CurrentAttack;
-    public int Energy;
+    public int MaxHealth;
+    public int CurrentHealth;
+    public int MaxAttack;
+    public int CurrentAttack;
+    public int MaxEnergy = 300;
+    public int currentEnergy;
+    public float MaxTime = 90;
+    public float CurrentTime;
     public int CharacterIndex = 0;
-    public static int time = 90;
-    public int CurrentTime;
-
-
+    public int Gold = 0;
+    public int Experience = 0;
 }
