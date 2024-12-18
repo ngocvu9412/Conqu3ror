@@ -32,6 +32,11 @@ public class ShapesManager : MonoBehaviour
     public CharacterInCombat enemyCharacter;  // Nhân vật đối thủ
 
     public SoundManager soundManager;
+
+    private Coroutine playerCountdownCoroutine;
+    private Coroutine enemyCountdownCoroutine;
+
+
     void Awake()
     {
         
@@ -52,12 +57,18 @@ public class ShapesManager : MonoBehaviour
             CurrentHealth = 1000,
             CurrentAttack = 20,
             MaxEnergy = 300,
-            currentEnergy = 0,
-            CurrentTime = 90,
+            CurrentEnergy = 100,
+            CurrentTime = 45,
             MaxTime = 90,
             Gold = 0,
             Experience = 0
         };
+        if (GameplayUIController.Ins)
+        {
+            GameplayUIController.Ins.UpdateHealth(isMyTurn, playerCharacter.CurrentHealth, playerCharacter.MaxHealth);
+            GameplayUIController.Ins.UpdateEnergy(isMyTurn, playerCharacter.CurrentEnergy, playerCharacter.MaxEnergy);
+            GameplayUIController.Ins.UpdateTime(isMyTurn, playerCharacter.CurrentTime, playerCharacter.MaxTime);
+        }
 
         enemyCharacter = new CharacterInCombat
         {
@@ -65,13 +76,80 @@ public class ShapesManager : MonoBehaviour
             CurrentHealth = 1200,
             CurrentAttack = 20,
             MaxEnergy = 300,
-            currentEnergy = 0,
-            CurrentTime = 90,
+            CurrentEnergy = 100,
+            CurrentTime = 45,
             MaxTime = 90,
             Gold = 0,
             Experience = 0
         };
+        if (GameplayUIController.Ins)
+        {
+            GameplayUIController.Ins.UpdateHealth(!isMyTurn, enemyCharacter.CurrentHealth, enemyCharacter.MaxHealth);
+            GameplayUIController.Ins.UpdateEnergy(!isMyTurn, enemyCharacter.CurrentEnergy, enemyCharacter.MaxEnergy);
+            GameplayUIController.Ins.UpdateTime(!isMyTurn, enemyCharacter.CurrentTime, enemyCharacter.MaxTime);
+        }
+
+        StartCountdown(isMyTurn);
     }
+    private void StartCountdown(bool isPlayerTurn)
+    {
+        // Dừng countdown hiện tại
+        if (playerCountdownCoroutine != null)
+        {
+            StopCoroutine(playerCountdownCoroutine);
+        }
+        if (enemyCountdownCoroutine != null)
+        {
+            StopCoroutine(enemyCountdownCoroutine);
+        }
+
+        // Bắt đầu countdown tương ứng
+        if (isPlayerTurn)
+        {
+            playerCountdownCoroutine = StartCoroutine(PlayerCountdown());
+        }
+        else
+        {
+            enemyCountdownCoroutine = StartCoroutine(EnemyCountdown());
+        }
+    }
+
+
+    private IEnumerator PlayerCountdown()
+    {
+        while (playerCharacter.CurrentTime > 0)
+        {
+            yield return new WaitForSeconds(1f);
+            playerCharacter.CurrentTime--;
+
+            // Cập nhật giao diện
+            if (GameplayUIController.Ins)
+            {
+                GameplayUIController.Ins.UpdateTime(true, playerCharacter.CurrentTime, playerCharacter.MaxTime);
+            }
+        }
+
+        Debug.Log("Player's time is up!");
+    }
+
+    private IEnumerator EnemyCountdown()
+    {
+        while (enemyCharacter.CurrentTime > 0)
+        {
+            yield return new WaitForSeconds(1f);
+            enemyCharacter.CurrentTime--;
+
+            // Cập nhật giao diện
+            if (GameplayUIController.Ins)
+            {
+                GameplayUIController.Ins.UpdateTime(false, enemyCharacter.CurrentTime, enemyCharacter.MaxTime);
+            }
+        }
+
+        Debug.Log("Enemy's time is up!");
+    }
+
+
 
     private void InitializeTypesOnPrefabShapesAndBonuses()
     {
@@ -167,11 +245,10 @@ public class ShapesManager : MonoBehaviour
 
     private void ChangeTurn()
     {
-        if (isMyTurn)
-            Debug.Log("Change to AI turn");
-        else Debug.Log("Change to my turn");
         isMyTurn = !isMyTurn;
         turnCount = 1;
+        StartCountdown(isMyTurn);
+        Debug.Log(isMyTurn ? "Player's turn started!" : "Enemy's turn started!");
     }
     private void AddTurn()
     {
@@ -521,7 +598,8 @@ public class ShapesManager : MonoBehaviour
                     int damage = Mathf.RoundToInt(rawDamage);
                     opponentCharacter.CurrentHealth -= damage;
                     opponentCharacter.CurrentHealth = Mathf.Max(0, opponentCharacter.CurrentHealth); // Giới hạn không dưới 0
-                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Attacked for {damage} damage. Enemy Health: {opponentCharacter.CurrentHealth}");
+                    if (GameplayUIController.Ins)
+                        GameplayUIController.Ins.UpdateHealth(!isMyTurn, opponentCharacter.CurrentHealth, opponentCharacter.MaxHealth);
                     break;
 
                 case "Heart":
@@ -529,7 +607,8 @@ public class ShapesManager : MonoBehaviour
                     float rawHeal = 0.03f * value * currentCharacter.MaxHealth;
                     int healAmount = Mathf.RoundToInt(rawHeal);
                     currentCharacter.CurrentHealth = Mathf.Min(currentCharacter.MaxHealth, currentCharacter.CurrentHealth + healAmount);
-                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Healed {healAmount} HP. Current Health: {currentCharacter.CurrentHealth}");
+                    if (GameplayUIController.Ins)
+                        GameplayUIController.Ins.UpdateHealth(isMyTurn, currentCharacter.CurrentHealth, currentCharacter.MaxHealth);
                     break;
 
                 case "Gold":
@@ -537,22 +616,23 @@ public class ShapesManager : MonoBehaviour
                     float rawGold = value * 10f;
                     int goldGained = Mathf.RoundToInt(rawGold);
                     currentCharacter.Gold += goldGained;
-                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Collected {goldGained} Gold. Total Gold: {currentCharacter.Gold}");
                     break;
 
                 case "Energy":
                     // Tăng năng lượng và làm tròn kết quả
                     float rawEnergy = value * 10f;
                     int energyGained = Mathf.RoundToInt(rawEnergy);
-                    currentCharacter.currentEnergy = Mathf.Min(currentCharacter.MaxEnergy, currentCharacter.currentEnergy + energyGained);
-                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Energy increased by {energyGained}. Current Energy: {currentCharacter.currentEnergy}");
+                    currentCharacter.CurrentEnergy = Mathf.Min(currentCharacter.MaxEnergy, currentCharacter.CurrentEnergy + energyGained);
+                    if (GameplayUIController.Ins)
+                        GameplayUIController.Ins.UpdateEnergy(isMyTurn, currentCharacter.CurrentEnergy, currentCharacter.MaxEnergy);
                     break;
 
                 case "Time":
                     // Tăng thời gian (lưu ý giá trị thời gian vẫn là float)
                     float rawTime = value * 2f;
                     currentCharacter.CurrentTime = Mathf.Min(currentCharacter.MaxTime, currentCharacter.CurrentTime + rawTime);
-                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Time increased by {rawTime} seconds. Current Time: {currentCharacter.CurrentTime}");
+                    if (GameplayUIController.Ins)
+                        GameplayUIController.Ins.UpdateTime(isMyTurn, currentCharacter.CurrentTime, currentCharacter.MaxTime);
                     break;
 
                 case "Scroll":
@@ -560,7 +640,6 @@ public class ShapesManager : MonoBehaviour
                     float rawExp = value * 10f;
                     int expGained = Mathf.RoundToInt(rawExp);
                     currentCharacter.Experience += expGained;
-                    Debug.Log($"[{(isMyTurn ? "Player" : "Enemy")}] Gained {expGained} EXP. Total EXP: {currentCharacter.Experience}");
                     break;
             }
         }

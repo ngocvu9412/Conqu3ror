@@ -10,7 +10,7 @@ public class CharacterInCombat
     public int MaxAttack;
     public int CurrentAttack;
     public int MaxEnergy = 300;
-    public int currentEnergy;
+    public int CurrentEnergy;
     public float MaxTime = 90;
     public float CurrentTime;
     public int CharacterIndex = 0;
