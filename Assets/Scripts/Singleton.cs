@@ -15,7 +15,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
             // if no instance is found, find the first GameObject of type T
             if (m_ins == null)
             {
-                m_ins = GameObject.FindObjectOfType<T>();
+                m_ins = GameObject.FindFirstObjectByType<T>();
 
                 // if no instance exists in the Scene, create a new GameObject and add the Component T 
                 if (m_ins == null)

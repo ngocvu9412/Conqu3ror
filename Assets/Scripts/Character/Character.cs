@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,6 +19,7 @@ public struct Character
     public bool isUsing;
     public bool Unlocked;
 
+    public List<Skill> Skills; // Danh sách kỹ năng của nhân vật
     public float GetMaxHealth()
     {
         return (health+(health_per_lv*Level));

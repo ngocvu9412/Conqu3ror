@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +7,7 @@ public class CharacterInCombat
 {
     public int MaxHealth;
     public int CurrentHealth;
-    public int MaxAttack;
+    public int BaseAttack;
     public int CurrentAttack;
     public int MaxEnergy = 300;
     public int CurrentEnergy;
@@ -16,4 +16,6 @@ public class CharacterInCombat
     public int CharacterIndex = 0;
     public int Gold = 0;
     public int Experience = 0;
+
+    public List<Skill> Skills; // Danh sách kỹ năng của nhân vật
 }
