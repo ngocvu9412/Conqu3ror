@@ -23,6 +23,8 @@ public static class Constants
 
     public static readonly int Match3Score = 1;
     public static readonly int SubsequentMatchScore = 100;
+
+    public static readonly float SkillAnimationDuration = 0.5f;
 }
 
    

@@ -25,7 +25,18 @@ public class ShapesManager : MonoBehaviour
 
     IEnumerable<GameObject> potentialMatches;
 
+    public bool isMyTurn = true;  // Biến để theo dõi lượt chơi của người chơi, true = người chơi, false = AI
+    public int turnCount = 1;     // Biến đếm số lượt của cả hai bên
+
+    public CharacterInCombat playerCharacter; // Nhân vật người chơi
+    public CharacterInCombat enemyCharacter;  // Nhân vật đối thủ
+
     public SoundManager soundManager;
+
+    private Coroutine playerCountdownCoroutine;
+    private Coroutine enemyCountdownCoroutine;
+
+
     void Awake()
     {
         
@@ -39,7 +50,307 @@ public class ShapesManager : MonoBehaviour
         InitializeCandyAndSpawnPositions();
 
         StartCheckForPotentialMatches();
+
+        playerCharacter = new CharacterInCombat
+        {
+            MaxHealth = 1000,
+            CurrentHealth = 1000,
+            BaseAttack = 20,
+            CurrentAttack = 20,
+            MaxEnergy = 300,
+            CurrentEnergy = 300,
+            CurrentTime = 45,
+            MaxTime = 90,
+            Gold = 0,
+            Experience = 0
+        };
+
+        playerCharacter.Skills = PhoenixSkills.GetSkills();
+
+        if (GameplayUIController.Ins)
+        {
+            GameplayUIController.Ins.UpdateHealth(isMyTurn, playerCharacter.CurrentHealth, playerCharacter.MaxHealth);
+            GameplayUIController.Ins.UpdateEnergy(isMyTurn, playerCharacter.CurrentEnergy, playerCharacter.MaxEnergy);
+            GameplayUIController.Ins.UpdateTime(isMyTurn, playerCharacter.CurrentTime, playerCharacter.MaxTime);
+        }
+
+        enemyCharacter = new CharacterInCombat
+        {
+            MaxHealth = 1200,
+            CurrentHealth = 1200,
+            BaseAttack = 20,
+            CurrentAttack = 20,
+            MaxEnergy = 300,
+            CurrentEnergy = 300,
+            CurrentTime = 45,
+            MaxTime = 90,
+            Gold = 0,
+            Experience = 0
+        };
+        if (GameplayUIController.Ins)
+        {
+            GameplayUIController.Ins.UpdateHealth(!isMyTurn, enemyCharacter.CurrentHealth, enemyCharacter.MaxHealth);
+            GameplayUIController.Ins.UpdateEnergy(!isMyTurn, enemyCharacter.CurrentEnergy, enemyCharacter.MaxEnergy);
+            GameplayUIController.Ins.UpdateTime(!isMyTurn, enemyCharacter.CurrentTime, enemyCharacter.MaxTime);
+        }
+
+        StartCountdown(isMyTurn);
     }
+
+    /// ////////////////////////////////////////////////////
+
+    public IEnumerator ExecuteSkillLogic(List<Vector2Int> destroyedPositions, Dictionary<string, float> destroyedSymbols)
+    {
+        List<int> affectedColumns = new List<int>();
+
+        foreach (var pos in destroyedPositions)
+        {
+            int row = pos.x;
+            int column = pos.y;
+
+            if (row >= 0 && row < Constants.Rows && column >= 0 && column < Constants.Columns)
+            {
+                var shape = shapes[row, column];
+                if (shape != null)
+                {
+                    // Cập nhật số lượng biểu tượng
+                    if (destroyedSymbols.ContainsKey(shape.tag))
+                    {
+                        destroyedSymbols[shape.tag]++;
+                    }
+
+                    // Xóa biểu tượng
+                    RemoveFromScene(shape);
+                    shapes.Remove(shape);
+                    soundManager.PlayCrincle();
+                    affectedColumns.Add(column);
+                }
+            }
+        }
+
+        affectedColumns = affectedColumns.Distinct().ToList();
+
+        // Xử lý rơi xuống và làm đầy
+        yield return StartCoroutine(HandleCollapseAndRefill(affectedColumns));
+
+        // Cập nhật chỉ số nhân vật
+        UpdateCharacterStats(destroyedSymbols);
+    }
+
+
+
+    public IEnumerator HandleCollapseAndRefill(IEnumerable<int> affectedColumns)
+    {
+        int chainCount = 1; // Bắt đầu với chuỗi đầu tiên
+
+        while (true)
+        {
+            // Dictionary để lưu số lượng biểu tượng thu thập được trong chain
+            Dictionary<string, float> collectiblesInChain = new Dictionary<string, float>
+    {
+        { "Sword", 0 },
+        { "Heart", 0 },
+        { "Gold", 0 },
+        { "Energy", 0 },
+        { "Scroll", 0 },
+        { "Time", 0 },
+    };
+            // Xử lý rơi xuống
+            var collapsedCandyInfo = shapes.Collapse(affectedColumns);
+
+            // Tạo các biểu tượng mới
+            var newCandyInfo = CreateNewCandyInSpecificColumns(affectedColumns);
+
+            // Tạo hoạt ảnh
+            int maxDistance = Mathf.Max(collapsedCandyInfo.MaxDistance, newCandyInfo.MaxDistance);
+            MoveAndAnimate(newCandyInfo.AlteredCandy, maxDistance);
+            MoveAndAnimate(collapsedCandyInfo.AlteredCandy, maxDistance);
+
+            yield return new WaitForSeconds(Constants.MoveAnimationMinDuration * maxDistance);
+
+            // Kiểm tra các trận đấu mới
+            var totalMatches = shapes.GetMatches(collapsedCandyInfo.AlteredCandy)
+                .Union(shapes.GetMatches(newCandyInfo.AlteredCandy)).Distinct();
+
+            if (totalMatches.Count() < Constants.MinimumMatches)
+            {
+                // Không có trận đấu mới, thoát khỏi vòng lặp
+                break;
+            }
+
+            // Tăng số chuỗi
+            chainCount++;
+            soundManager.PlayCrincle();
+            // Xử lý các trận đấu mới
+            foreach (var match in totalMatches)
+            {
+                var shape = match.GetComponent<Shape>();
+                if (shape != null)
+                {
+                    string tag = shape.tag;
+
+                    // Cập nhật số lượng biểu tượng trong collectiblesInChain
+                    if (collectiblesInChain.ContainsKey(tag))
+                    {
+                        collectiblesInChain[tag]++;
+                    }
+
+                    // Xóa biểu tượng khỏi scene và mảng shapes
+                    RemoveFromScene(match);
+                    shapes.Remove(match);
+                }
+            }
+            // Áp dụng hệ số chain và cộng lượt
+            foreach (var key in collectiblesInChain.Keys.ToList())
+            {
+                if (collectiblesInChain[key] >= 5)
+                {
+                    // Nếu có từ 5 biểu tượng trở lên, nhân với 2
+                    collectiblesInChain[key] *= 2f;
+                    AddTurn();
+                }
+                else if (collectiblesInChain[key] == 4)
+                {
+                    // Nếu có 4 biểu tượng, nhân với 1.5
+                    collectiblesInChain[key] *= 1.5f;
+                    AddTurn();
+                }
+
+                // Nhân với chainCount (hệ số chuỗi)
+                collectiblesInChain[key] *= (chainCount * 0.5f + 0.5f); // chain
+            }
+
+            // Cập nhật chỉ số nhân vật sau khi xử lý xong
+            UpdateCharacterStats(collectiblesInChain);
+            // Cập nhật cột bị ảnh hưởng
+            affectedColumns = totalMatches.Select(m => m.GetComponent<Shape>().Column).Distinct().ToList();
+        }
+        // Giảm lượt chơi
+        turnCount--;
+    }
+
+
+
+
+
+
+    void UseSkill(int skillIndex, CharacterInCombat character)
+    {
+        if (character.Skills != null && skillIndex < character.Skills.Count)
+        {
+            var skill = character.Skills[skillIndex];
+
+            if (character.CurrentEnergy >= skill.EnergyCost)
+            {
+                character.CurrentEnergy -= skill.EnergyCost;
+
+                // Cập nhật năng lượng trên UI (nếu có UI)
+                if (GameplayUIController.Ins)
+                {
+                    GameplayUIController.Ins.UpdateEnergy(isMyTurn, character.CurrentEnergy, character.MaxEnergy);
+                }
+
+                // Khóa bàn cờ khi sử dụng kỹ năng
+                isBoardLocked = true;
+
+                // Tạo Dictionary để tính toán biểu tượng bị phá hủy
+                Dictionary<string, float> destroyedSymbols = new Dictionary<string, float>
+            {
+                { "Sword", 0 },
+                { "Heart", 0 },
+                { "Gold", 0 },
+                { "Energy", 0 },
+                { "Scroll", 0 },
+                { "Time", 0 },
+            };
+
+                // Thực hiện kỹ năng
+                skill.Execute(character, this, destroyedSymbols);
+
+                // Cập nhật chỉ số nhân vật dựa trên biểu tượng bị phá hủy
+                UpdateCharacterStats(destroyedSymbols);
+
+                // Mở khóa bàn cờ sau khi xử lý xong
+                StartCoroutine(UnlockBoardAfterSkill());
+
+            }
+            else
+            {
+                Debug.Log("Not enough energy to use skill!");
+            }
+        }
+    }
+
+
+
+    IEnumerator UnlockBoardAfterSkill()
+    {
+        yield return new WaitForSeconds(Constants.SkillAnimationDuration);
+        isBoardLocked = false;
+    }
+
+
+    /////////////////////
+
+    private void StartCountdown(bool isPlayerTurn)
+    {
+        // Dừng countdown hiện tại
+        if (playerCountdownCoroutine != null)
+        {
+            StopCoroutine(playerCountdownCoroutine);
+        }
+        if (enemyCountdownCoroutine != null)
+        {
+            StopCoroutine(enemyCountdownCoroutine);
+        }
+
+        // Bắt đầu countdown tương ứng
+        if (isPlayerTurn)
+        {
+            playerCountdownCoroutine = StartCoroutine(PlayerCountdown());
+        }
+        else
+        {
+            enemyCountdownCoroutine = StartCoroutine(EnemyCountdown());
+        }
+    }
+
+
+    private IEnumerator PlayerCountdown()
+    {
+        while (playerCharacter.CurrentTime > 0)
+        {
+            yield return new WaitForSeconds(1f);
+            playerCharacter.CurrentTime--;
+
+            // Cập nhật giao diện
+            if (GameplayUIController.Ins)
+            {
+                GameplayUIController.Ins.UpdateTime(true, playerCharacter.CurrentTime, playerCharacter.MaxTime);
+            }
+        }
+
+        Debug.Log("Player's time is up!");
+    }
+
+    private IEnumerator EnemyCountdown()
+    {
+        while (enemyCharacter.CurrentTime > 0)
+        {
+            yield return new WaitForSeconds(1f);
+            enemyCharacter.CurrentTime--;
+
+            // Cập nhật giao diện
+            if (GameplayUIController.Ins)
+            {
+                GameplayUIController.Ins.UpdateTime(false, enemyCharacter.CurrentTime, enemyCharacter.MaxTime);
+            }
+        }
+
+        Debug.Log("Enemy's time is up!");
+    }
+
+
 
     private void InitializeTypesOnPrefabShapesAndBonuses()
     {
@@ -132,15 +443,13 @@ public class ShapesManager : MonoBehaviour
         }
     }
 
-    private bool isMyTurn = true;  // Biến để theo dõi lượt chơi của người chơi, true = người chơi, false = AI
-    private int turnCount = 1;     // Biến đếm số lượt của cả hai bên
+
     private void ChangeTurn()
     {
-        if (isMyTurn)
-            Debug.Log("Change to AI turn");
-        else Debug.Log("Change to my turn");
         isMyTurn = !isMyTurn;
         turnCount = 1;
+        StartCountdown(isMyTurn);
+        Debug.Log(isMyTurn ? "Player's turn started!" : "Enemy's turn started!");
     }
     private void AddTurn()
     {
@@ -157,17 +466,30 @@ public class ShapesManager : MonoBehaviour
             CheckAndResetBoardIfNeeded();
         }
 
-
-
-        //
         if (turnCount <= 0)
         {
             ChangeTurn();
         }
 
+
         //
         if (state == GameState.None)
         {
+            if (Input.GetKeyDown(KeyCode.Alpha1) && isMyTurn)
+            {
+                UseSkill(0, playerCharacter);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha2) && isMyTurn)
+            {
+                UseSkill(1, playerCharacter);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha3) && isMyTurn)
+            {
+                UseSkill(2, playerCharacter);
+            }
+
             // Người dùng đã nhấp chuột hoặc chạm màn hình
             if (Input.GetMouseButtonDown(0) && !isBoardLocked)
             {
@@ -431,17 +753,15 @@ public class ShapesManager : MonoBehaviour
 
             }
 
-
-
+            UpdateCharacterStats(collectiblesInChain);
             // In ra số lượng biểu tượng thu thập được sau mỗi chuỗi (chain)
             Debug.Log("Chain: " + timesRun);
-            Debug.Log("Sword: " + collectiblesInChain["Sword"] + " Heart: " + collectiblesInChain["Heart"] + " Gold: " + collectiblesInChain["Gold"] + " Energy: " + collectiblesInChain["Energy"] + " Scroll: " + collectiblesInChain["Scroll"] + " Time: " + collectiblesInChain["Time"]);
-            Debug.Log("Explode "+"Sword: " + collectiblesInExplode["Sword"] + " Heart: " + collectiblesInExplode["Heart"] + " Gold: " + collectiblesInExplode["Gold"] + " Energy: " + collectiblesInExplode["Energy"] + " Scroll: " + collectiblesInExplode["Scroll"] + " Time: " + collectiblesInExplode["Time"]);
-            Debug.Log("");
+            //Debug.Log("Sword: " + collectiblesInChain["Sword"] + " Heart: " + collectiblesInChain["Heart"] + " Gold: " + collectiblesInChain["Gold"] + " Energy: " + collectiblesInChain["Energy"] + " Scroll: " + collectiblesInChain["Scroll"] + " Time: " + collectiblesInChain["Time"]);
+            //Debug.Log("Explode "+"Sword: " + collectiblesInExplode["Sword"] + " Heart: " + collectiblesInExplode["Heart"] + " Gold: " + collectiblesInExplode["Gold"] + " Energy: " + collectiblesInExplode["Energy"] + " Scroll: " + collectiblesInExplode["Scroll"] + " Time: " + collectiblesInExplode["Time"]);
+            //Debug.Log("");
 
             // Loại bỏ cột trùng lặp
             affectedColumns = affectedColumns.Distinct().ToList();
-
             // Xử lý các cột bị ảnh hưởng
             var collapsedCandyInfo = shapes.Collapse(affectedColumns);
             var newCandyInfo = CreateNewCandyInSpecificColumns(affectedColumns);
@@ -456,9 +776,6 @@ public class ShapesManager : MonoBehaviour
             totalMatches = shapes.GetMatches(collapsedCandyInfo.AlteredCandy)
                 .Union(shapes.GetMatches(newCandyInfo.AlteredCandy)).Distinct();
 
-            //Làm tính toán để tấn công/ tăng chỉ số 
-            ///Code ở đây 
-
             //////
             // Nếu không có match mới, thoát vòng lặp
             if (totalMatches.Count() < Constants.MinimumMatches)
@@ -472,6 +789,145 @@ public class ShapesManager : MonoBehaviour
 
         state = GameState.None;
         StartCheckForPotentialMatches();
+    }
+    //private void UpdateCharacterStats(Dictionary<string, float> collectibles)
+    //{
+    //    // Xác định nhân vật hiện tại và đối thủ
+    //    CharacterInCombat currentCharacter = isMyTurn ? playerCharacter : enemyCharacter;
+    //    CharacterInCombat opponentCharacter = isMyTurn ? enemyCharacter : playerCharacter;
+
+    //    foreach (var key in collectibles.Keys)
+    //    {
+    //        float value = collectibles[key]; // Giữ nguyên float để tính toán
+
+    //        switch (key)
+    //        {
+    //            case "Sword":
+    //                // Tính sát thương dựa trên CurrentAttack và làm tròn kết quả
+    //                float rawDamage = currentCharacter.CurrentAttack * value;
+    //                int damage = Mathf.RoundToInt(rawDamage);
+    //                opponentCharacter.CurrentHealth -= damage;
+    //                opponentCharacter.CurrentHealth = Mathf.Max(0, opponentCharacter.CurrentHealth); // Giới hạn không dưới 0
+    //                if (GameplayUIController.Ins)
+    //                    GameplayUIController.Ins.UpdateHealth(!isMyTurn, opponentCharacter.CurrentHealth, opponentCharacter.MaxHealth);
+    //                break;
+
+    //            case "Heart":
+    //                // Hồi máu dựa trên 3% MaxHealth và làm tròn kết quả
+    //                float rawHeal = 0.03f * value * currentCharacter.MaxHealth;
+    //                int healAmount = Mathf.RoundToInt(rawHeal);
+    //                currentCharacter.CurrentHealth = Mathf.Min(currentCharacter.MaxHealth, currentCharacter.CurrentHealth + healAmount);
+    //                if (GameplayUIController.Ins)
+    //                    GameplayUIController.Ins.UpdateHealth(isMyTurn, currentCharacter.CurrentHealth, currentCharacter.MaxHealth);
+    //                break;
+
+    //            case "Gold":
+    //                // Tăng vàng và làm tròn kết quả
+    //                float rawGold = value * 10f;
+    //                int goldGained = Mathf.RoundToInt(rawGold);
+    //                currentCharacter.Gold += goldGained;
+    //                break;
+
+    //            case "Energy":
+    //                // Tăng năng lượng và làm tròn kết quả
+    //                float rawEnergy = value * 10f;
+    //                int energyGained = Mathf.RoundToInt(rawEnergy);
+    //                currentCharacter.CurrentEnergy = Mathf.Min(currentCharacter.MaxEnergy, currentCharacter.CurrentEnergy + energyGained);
+    //                if (GameplayUIController.Ins)
+    //                    GameplayUIController.Ins.UpdateEnergy(isMyTurn, currentCharacter.CurrentEnergy, currentCharacter.MaxEnergy);
+    //                break;
+
+    //            case "Time":
+    //                // Tăng thời gian (lưu ý giá trị thời gian vẫn là float)
+    //                float rawTime = value * 2f;
+    //                currentCharacter.CurrentTime = Mathf.Min(currentCharacter.MaxTime, currentCharacter.CurrentTime + rawTime);
+    //                if (GameplayUIController.Ins)
+    //                    GameplayUIController.Ins.UpdateTime(isMyTurn, currentCharacter.CurrentTime, currentCharacter.MaxTime);
+    //                break;
+
+    //            case "Scroll":
+    //                // Tăng kinh nghiệm và làm tròn kết quả
+    //                float rawExp = value * 10f;
+    //                int expGained = Mathf.RoundToInt(rawExp);
+    //                currentCharacter.Experience += expGained;
+    //                break;
+    //        }
+    //    }
+    //}
+
+    private void UpdateCharacterStats(Dictionary<string, float> collectibles)
+    {
+        // Xác định nhân vật hiện tại và đối thủ
+        CharacterInCombat currentCharacter = isMyTurn ? playerCharacter : enemyCharacter;
+        CharacterInCombat opponentCharacter = isMyTurn ? enemyCharacter : playerCharacter;
+
+        Debug.Log($"Updating stats for {(isMyTurn ? "Player" : "Enemy")}'s turn:");
+
+        foreach (var key in collectibles.Keys)
+        {
+            float value = collectibles[key]; // Giữ nguyên float để tính toán
+
+            switch (key)
+            {
+                case "Sword":
+                    // Tính sát thương dựa trên CurrentAttack và làm tròn kết quả
+                    float rawDamage = currentCharacter.CurrentAttack * value;
+                    int damage = Mathf.RoundToInt(rawDamage);
+                    opponentCharacter.CurrentHealth -= damage;
+                    opponentCharacter.CurrentHealth = Mathf.Max(0, opponentCharacter.CurrentHealth); // Giới hạn không dưới 0
+                    Debug.Log($" - {key}: {value} -> Dealt {damage} damage to {(isMyTurn ? "Enemy" : "Player")}");
+                    if (GameplayUIController.Ins)
+                        GameplayUIController.Ins.UpdateHealth(!isMyTurn, opponentCharacter.CurrentHealth, opponentCharacter.MaxHealth);
+                    break;
+
+                case "Heart":
+                    // Hồi máu dựa trên 3% MaxHealth và làm tròn kết quả
+                    float rawHeal = 0.03f * value * currentCharacter.MaxHealth;
+                    int healAmount = Mathf.RoundToInt(rawHeal);
+                    currentCharacter.CurrentHealth = Mathf.Min(currentCharacter.MaxHealth, currentCharacter.CurrentHealth + healAmount);
+                    Debug.Log($" - {key}: {value} -> Restored {healAmount} health to {(isMyTurn ? "Player" : "Enemy")}");
+                    if (GameplayUIController.Ins)
+                        GameplayUIController.Ins.UpdateHealth(isMyTurn, currentCharacter.CurrentHealth, currentCharacter.MaxHealth);
+                    break;
+
+                case "Gold":
+                    // Tăng vàng và làm tròn kết quả
+                    float rawGold = value * 10f;
+                    int goldGained = Mathf.RoundToInt(rawGold);
+                    currentCharacter.Gold += goldGained;
+                    Debug.Log($" - {key}: {value} -> Gained {goldGained} gold for {(isMyTurn ? "Player" : "Enemy")}");
+                    break;
+
+                case "Energy":
+                    // Tăng năng lượng và làm tròn kết quả
+                    float rawEnergy = value * 10f;
+                    int energyGained = Mathf.RoundToInt(rawEnergy);
+                    currentCharacter.CurrentEnergy = Mathf.Min(currentCharacter.MaxEnergy, currentCharacter.CurrentEnergy + energyGained);
+                    Debug.Log($" - {key}: {value} -> Restored {energyGained} energy for {(isMyTurn ? "Player" : "Enemy")}");
+                    if (GameplayUIController.Ins)
+                        GameplayUIController.Ins.UpdateEnergy(isMyTurn, currentCharacter.CurrentEnergy, currentCharacter.MaxEnergy);
+                    break;
+
+                case "Time":
+                    // Tăng thời gian (lưu ý giá trị thời gian vẫn là float)
+                    float rawTime = value * 2f;
+                    currentCharacter.CurrentTime = Mathf.Min(currentCharacter.MaxTime, currentCharacter.CurrentTime + rawTime);
+                    Debug.Log($" - {key}: {value} -> Added {rawTime} seconds to {(isMyTurn ? "Player" : "Enemy")}'s timer");
+                    if (GameplayUIController.Ins)
+                        GameplayUIController.Ins.UpdateTime(isMyTurn, currentCharacter.CurrentTime, currentCharacter.MaxTime);
+                    break;
+
+                case "Scroll":
+                    // Tăng kinh nghiệm và làm tròn kết quả
+                    float rawExp = value * 10f;
+                    int expGained = Mathf.RoundToInt(rawExp);
+                    currentCharacter.Experience += expGained;
+                    Debug.Log($" - {key}: {value} -> Gained {expGained} experience for {(isMyTurn ? "Player" : "Enemy")}");
+                    break;
+            }
+        }
+
+        Debug.Log($"Updated stats for {(isMyTurn ? "Player" : "Enemy")}: Health: {currentCharacter.CurrentHealth}/{currentCharacter.MaxHealth}, Energy: {currentCharacter.CurrentEnergy}/{currentCharacter.MaxEnergy}, Gold: {currentCharacter.Gold}, Experience: {currentCharacter.Experience}");
     }
 
 
@@ -580,7 +1036,7 @@ public class ShapesManager : MonoBehaviour
         }
     }
 
-    private void RemoveFromScene(GameObject item)
+    public void RemoveFromScene(GameObject item)
     {
         GameObject explosion = GetRandomExplosion();
         var newExplosion = Instantiate(explosion, item.transform.position, Quaternion.identity) as GameObject;
