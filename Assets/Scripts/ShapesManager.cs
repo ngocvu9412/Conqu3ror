@@ -54,7 +54,7 @@ public class ShapesManager : MonoBehaviour
         playerCharacter = new CharacterInCombat
         {
             MaxHealth = 1000,
-            CurrentHealth = 1000,
+            CurrentHealth = 200,
             BaseAttack = 20,
             CurrentAttack = 20,
             MaxEnergy = 300,
@@ -65,7 +65,7 @@ public class ShapesManager : MonoBehaviour
             Experience = 0
         };
 
-        playerCharacter.Skills = PhoenixSkills.GetSkills();
+        playerCharacter.Skills = MariusSkills.GetSkills();
 
         if (GameplayUIController.Ins)
         {
@@ -99,8 +99,17 @@ public class ShapesManager : MonoBehaviour
 
     /// ////////////////////////////////////////////////////
 
-    public IEnumerator ExecuteSkillLogic(List<Vector2Int> destroyedPositions, Dictionary<string, float> destroyedSymbols)
+    public IEnumerator ExecuteSkillLogic(List<Vector2Int> destroyedPositions)
     {
+        Dictionary<string, float> destroyedSymbols = new Dictionary<string, float>
+    {
+        { "Sword", 0 },
+        { "Heart", 0 },
+        { "Gold", 0 },
+        { "Energy", 0 },
+        { "Scroll", 0 },
+        { "Time", 0 },
+    };
         List<int> affectedColumns = new List<int>();
 
         foreach (var pos in destroyedPositions)
@@ -253,22 +262,8 @@ public class ShapesManager : MonoBehaviour
                 // Khóa bàn cờ khi sử dụng kỹ năng
                 isBoardLocked = true;
 
-                // Tạo Dictionary để tính toán biểu tượng bị phá hủy
-                Dictionary<string, float> destroyedSymbols = new Dictionary<string, float>
-            {
-                { "Sword", 0 },
-                { "Heart", 0 },
-                { "Gold", 0 },
-                { "Energy", 0 },
-                { "Scroll", 0 },
-                { "Time", 0 },
-            };
-
                 // Thực hiện kỹ năng
-                skill.Execute(character, this, destroyedSymbols);
-
-                // Cập nhật chỉ số nhân vật dựa trên biểu tượng bị phá hủy
-                UpdateCharacterStats(destroyedSymbols);
+                skill.Execute(character, this);
 
                 // Mở khóa bàn cờ sau khi xử lý xong
                 StartCoroutine(UnlockBoardAfterSkill());
@@ -881,8 +876,8 @@ public class ShapesManager : MonoBehaviour
                     break;
 
                 case "Heart":
-                    // Hồi máu dựa trên 3% MaxHealth và làm tròn kết quả
-                    float rawHeal = 0.03f * value * currentCharacter.MaxHealth;
+                    // Hồi máu dựa trên 2% MaxHealth và làm tròn kết quả
+                    float rawHeal = 0.02f * value * currentCharacter.MaxHealth;
                     int healAmount = Mathf.RoundToInt(rawHeal);
                     currentCharacter.CurrentHealth = Mathf.Min(currentCharacter.MaxHealth, currentCharacter.CurrentHealth + healAmount);
                     Debug.Log($" - {key}: {value} -> Restored {healAmount} health to {(isMyTurn ? "Player" : "Enemy")}");
