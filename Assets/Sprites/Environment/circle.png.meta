@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d326c95b8851be04fb7b2722b5fbe75b
+guid: 85ed963262196484ab5c19784c48ea6e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5682809686868360691
-    second: HealthIcon_0
+      213: -6231044458718751821
+    second: circle_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: HealthIcon_0
+      name: circle_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 3
-        width: 70
-        height: 64
+        y: 0
+        width: 512
+        height: 512
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d020018d2ba9221b0800000000000000
-      internalID: -5682809686868360691
+      spriteID: 3b3176a0412e689a0800000000000000
+      internalID: -6231044458718751821
       vertices: []
       indices: 
       edges: []
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      HealthIcon_0: -5682809686868360691
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
