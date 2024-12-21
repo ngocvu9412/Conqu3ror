@@ -36,8 +36,8 @@ public static class PhoenixSkills
 
                     // Xác định vùng phá hủy 3x3 ngẫu nhiên
                     List<Vector2Int> destroyedPositions = new List<Vector2Int>();
-                    int randomRow = UnityEngine.Random.Range(0, Constants.Rows);
-                    int randomColumn = UnityEngine.Random.Range(0, Constants.Columns);
+                    int randomRow = UnityEngine.Random.Range(1, Constants.Rows-1);
+                    int randomColumn = UnityEngine.Random.Range(1, Constants.Columns-1);
 
                     for (int row = randomRow - 1; row <= randomRow + 1; row++)
                     {
@@ -64,22 +64,41 @@ public static class PhoenixSkills
                 DamageScale = 15f,
                 Execute = (character, shapesManager, destroyedSymbols) =>
                 {
+                    // Gây sát thương lên đối thủ
                     var opponent = shapesManager.isMyTurn ? shapesManager.enemyCharacter : shapesManager.playerCharacter;
                     int damage = Mathf.RoundToInt(character.CurrentAttack * 15f);
                     opponent.CurrentHealth = Mathf.Max(0, opponent.CurrentHealth - damage);
 
+                    Debug.Log($"Skill 'Mưa thiên thạch' used by {(shapesManager.isMyTurn ? "Player" : "Enemy")} causing {damage} damage!");
+
+                    // Xác định các vùng phá hủy
                     HashSet<Vector2Int> destroyedCenters = new HashSet<Vector2Int>();
                     List<Vector2Int> destroyedPositions = new List<Vector2Int>();
                     int destroyedCount = 0;
 
-                    // Phá hủy 5 vùng 2x2 ngẫu nhiên
                     while (destroyedCount < 5)
                     {
-                        int randomRow = UnityEngine.Random.Range(0, Constants.Rows);
-                        int randomColumn = UnityEngine.Random.Range(0, Constants.Columns);
+                        int randomRow = UnityEngine.Random.Range(0, Constants.Rows - 1); // Giới hạn để tránh tràn vùng 2x2
+                        int randomColumn = UnityEngine.Random.Range(0, Constants.Columns - 1);
                         Vector2Int center = new Vector2Int(randomRow, randomColumn);
 
-                        if (!destroyedCenters.Contains(center))
+                        // Kiểm tra xem vùng đã được xử lý chưa
+                        bool overlap = false;
+                        for (int row = randomRow; row < randomRow + 2; row++)
+                        {
+                            for (int col = randomColumn; col < randomColumn + 2; col++)
+                            {
+                                if (destroyedPositions.Contains(new Vector2Int(row, col)))
+                                {
+                                    overlap = true;
+                                    break;
+                                }
+                            }
+                            if (overlap) break;
+                        }
+
+                        // Nếu vùng chưa bị xử lý, thêm vào danh sách
+                        if (!overlap)
                         {
                             destroyedCenters.Add(center);
                             for (int row = randomRow; row < randomRow + 2; row++)
@@ -95,7 +114,7 @@ public static class PhoenixSkills
                             destroyedCount++;
                         }
                     }
-
+                    // Bắt đầu xử lý logic phá hủy
                     shapesManager.StartCoroutine(shapesManager.ExecuteSkillLogic(destroyedPositions, destroyedSymbols));
                 }
             },
@@ -104,44 +123,50 @@ public static class PhoenixSkills
             new Skill
             {
                 Name = "Lốc xoáy lửa",
-                Description = "Gây sát thương 30 * CurrentAttack, đồng thời phá hủy 2 vùng 4x4 ngẫu nhiên trên bàn cờ.",
+                Description = "Gây sát thương 30 * CurrentAttack, đồng thời phá hủy 2 vùng 4x4 từ các vị trí cố định.",
                 Icon = Resources.Load<Sprite>("Icons/FireTornado"),
                 EnergyCost = 300,
                 DamageScale = 30f,
                 Execute = (character, shapesManager, destroyedSymbols) =>
                 {
+                    // Gây sát thương lên đối thủ
                     var opponent = shapesManager.isMyTurn ? shapesManager.enemyCharacter : shapesManager.playerCharacter;
                     int damage = Mathf.RoundToInt(character.CurrentAttack * 30f);
                     opponent.CurrentHealth = Mathf.Max(0, opponent.CurrentHealth - damage);
 
-                    HashSet<Vector2Int> destroyedCenters = new HashSet<Vector2Int>();
+                    Debug.Log($"Skill 'Lốc xoáy lửa' used by {(shapesManager.isMyTurn ? "Player" : "Enemy")} causing {damage} damage!");
+
+                    // Xác định các vùng phá hủy
                     List<Vector2Int> destroyedPositions = new List<Vector2Int>();
-                    int destroyedCount = 0;
 
-                    // Phá hủy 2 vùng 4x4 ngẫu nhiên
-                    while (destroyedCount < 2)
+                    // Vùng đầu tiên: Cột 0
+                    int startRow1 = UnityEngine.Random.Range(0, 4); // Random từ hàng 0 đến 3
+                    int startColumn1 = 0; // Cột cố định
+                    for (int row = startRow1; row < startRow1 + 4; row++)
                     {
-                        int randomRow = UnityEngine.Random.Range(0, Constants.Rows);
-                        int randomColumn = UnityEngine.Random.Range(0, Constants.Columns);
-                        Vector2Int center = new Vector2Int(randomRow, randomColumn);
-
-                        if (!destroyedCenters.Contains(center))
+                        for (int col = startColumn1; col < startColumn1 + 4; col++)
                         {
-                            destroyedCenters.Add(center);
-                            for (int row = randomRow; row < randomRow + 4; row++)
+                            if (row >= 0 && row < Constants.Rows && col >= 0 && col < Constants.Columns)
                             {
-                                for (int col = randomColumn; col < randomColumn + 4; col++)
-                                {
-                                    if (row >= 0 && row < Constants.Rows && col >= 0 && col < Constants.Columns)
-                                    {
-                                        destroyedPositions.Add(new Vector2Int(row, col));
-                                    }
-                                }
+                                destroyedPositions.Add(new Vector2Int(row, col));
                             }
-                            destroyedCount++;
                         }
                     }
 
+                    // Vùng thứ hai: Cột 4
+                    int startRow2 = UnityEngine.Random.Range(0, 4); // Random từ hàng 0 đến 3
+                    int startColumn2 = 4; // Cột cố định
+                    for (int row = startRow2; row < startRow2 + 4; row++)
+                    {
+                        for (int col = startColumn2; col < startColumn2 + 4; col++)
+                        {
+                            if (row >= 0 && row < Constants.Rows && col >= 0 && col < Constants.Columns)
+                            {
+                                destroyedPositions.Add(new Vector2Int(row, col));
+                            }
+                        }
+                    }
+                    // Bắt đầu xử lý logic phá hủy
                     shapesManager.StartCoroutine(shapesManager.ExecuteSkillLogic(destroyedPositions, destroyedSymbols));
                 }
             }
