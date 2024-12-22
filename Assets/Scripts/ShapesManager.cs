@@ -6,7 +6,7 @@ using DG.Tweening;
 using UnityEngine.UI;
 
 
-public class ShapesManager : MonoBehaviour
+public class ShapesManager : Singleton<ShapesManager>
 {
     public ShapesArray shapes;
 
@@ -36,14 +36,13 @@ public class ShapesManager : MonoBehaviour
     private Coroutine playerCountdownCoroutine;
     private Coroutine enemyCountdownCoroutine;
 
-
-    void Awake()
+    override public void Awake()
     {
         
     }
 
     // Use this for initialization
-    void Start()
+    override public void Start()
     {
         InitializeTypesOnPrefabShapesAndBonuses();
 
@@ -55,8 +54,8 @@ public class ShapesManager : MonoBehaviour
         {
             MaxHealth = 1000,
             CurrentHealth = 1000,
-            BaseAttack = 20,
-            CurrentAttack = 20,
+            BaseAttack = 10,
+            CurrentAttack = 10,
             MaxEnergy = 300,
             CurrentEnergy = 300,
             CurrentTime = 45,
@@ -78,8 +77,8 @@ public class ShapesManager : MonoBehaviour
         {
             MaxHealth = 1200,
             CurrentHealth = 1200,
-            BaseAttack = 20,
-            CurrentAttack = 20,
+            BaseAttack = 10,
+            CurrentAttack = 10,
             MaxEnergy = 300,
             CurrentEnergy = 300,
             CurrentTime = 45,
@@ -87,6 +86,8 @@ public class ShapesManager : MonoBehaviour
             Gold = 0,
             Experience = 0
         };
+
+        enemyCharacter.Skills = MinervaSkills.GetSkills();
         if (GameplayUIController.Ins)
         {
             GameplayUIController.Ins.UpdateHealth(!isMyTurn, enemyCharacter.CurrentHealth, enemyCharacter.MaxHealth);
@@ -98,9 +99,30 @@ public class ShapesManager : MonoBehaviour
     }
 
     /// ////////////////////////////////////////////////////
-
-    public IEnumerator ExecuteSkillLogic(List<Vector2Int> destroyedPositions, Dictionary<string, float> destroyedSymbols)
+    public void OnSkillButtonClicked(int skillIndex)
     {
+        Debug.Log("Click");
+        if (isMyTurn)
+        {
+            UseSkill(skillIndex, playerCharacter);
+        }
+        else
+        {
+            UseSkill(skillIndex, enemyCharacter);
+        }
+    }
+
+    public IEnumerator ExecuteSkillLogic(List<Vector2Int> destroyedPositions)
+    {
+        Dictionary<string, float> destroyedSymbols = new Dictionary<string, float>
+    {
+        { "Sword", 0 },
+        { "Heart", 0 },
+        { "Gold", 0 },
+        { "Energy", 0 },
+        { "Scroll", 0 },
+        { "Time", 0 },
+    };
         List<int> affectedColumns = new List<int>();
 
         foreach (var pos in destroyedPositions)
@@ -234,7 +256,7 @@ public class ShapesManager : MonoBehaviour
 
 
 
-    void UseSkill(int skillIndex, CharacterInCombat character)
+    public void UseSkill(int skillIndex, CharacterInCombat character)
     {
         if (character.Skills != null && skillIndex < character.Skills.Count)
         {
@@ -253,22 +275,8 @@ public class ShapesManager : MonoBehaviour
                 // Khóa bàn cờ khi sử dụng kỹ năng
                 isBoardLocked = true;
 
-                // Tạo Dictionary để tính toán biểu tượng bị phá hủy
-                Dictionary<string, float> destroyedSymbols = new Dictionary<string, float>
-            {
-                { "Sword", 0 },
-                { "Heart", 0 },
-                { "Gold", 0 },
-                { "Energy", 0 },
-                { "Scroll", 0 },
-                { "Time", 0 },
-            };
-
                 // Thực hiện kỹ năng
-                skill.Execute(character, this, destroyedSymbols);
-
-                // Cập nhật chỉ số nhân vật dựa trên biểu tượng bị phá hủy
-                UpdateCharacterStats(destroyedSymbols);
+                skill.Execute(character, this);
 
                 // Mở khóa bàn cờ sau khi xử lý xong
                 StartCoroutine(UnlockBoardAfterSkill());
@@ -881,8 +889,8 @@ public class ShapesManager : MonoBehaviour
                     break;
 
                 case "Heart":
-                    // Hồi máu dựa trên 3% MaxHealth và làm tròn kết quả
-                    float rawHeal = 0.03f * value * currentCharacter.MaxHealth;
+                    // Hồi máu dựa trên 2% MaxHealth và làm tròn kết quả
+                    float rawHeal = 0.02f * value * currentCharacter.MaxHealth;
                     int healAmount = Mathf.RoundToInt(rawHeal);
                     currentCharacter.CurrentHealth = Mathf.Min(currentCharacter.MaxHealth, currentCharacter.CurrentHealth + healAmount);
                     Debug.Log($" - {key}: {value} -> Restored {healAmount} health to {(isMyTurn ? "Player" : "Enemy")}");
