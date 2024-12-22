@@ -24,14 +24,14 @@ public static class PhoenixSkills
             new Skill
             {
                 Name = "Quả cầu lửa",
-                Description = "Gây sát thương 8 * CurrentAttack, đồng thời phá hủy 1 vùng 3x3 ngẫu nhiên trên bàn cờ.",
-                Icon = Resources.Load<Sprite>("Icons/Fireball"),
+                Description = "Sát thương gây ra bằng 7 lần sát thương hiện tại đồng thời phá hủy 1 vùng 3x3 ngẫu nhiên trên bàn cờ",
+                Icon = Resources.Load<Sprite>("Character/Phoenix/Phoenix_Skill_1"),
                 EnergyCost = 100,
-                DamageScale = 8f,
+                DamageScale = 7f,
                 Execute = (character, shapesManager) =>
                 {
                     var opponent = shapesManager.isMyTurn ? shapesManager.enemyCharacter : shapesManager.playerCharacter;
-                    int damage = Mathf.RoundToInt(character.CurrentAttack * 8f);
+                    int damage = Mathf.RoundToInt(character.CurrentAttack * 7f);
                     opponent.CurrentHealth = Mathf.Max(0, opponent.CurrentHealth - damage);
 
                     // Xác định vùng phá hủy 3x3 ngẫu nhiên
@@ -58,8 +58,8 @@ public static class PhoenixSkills
             new Skill
             {
                 Name = "Mưa thiên thạch",
-                Description = "Gây sát thương 15 * CurrentAttack, đồng thời phá hủy 5 vùng 2x2 ngẫu nhiên trên bàn cờ.",
-                Icon = Resources.Load<Sprite>("Icons/MeteorShower"),
+                Description = "Sát thương gây ra bằng 15 lần sát thương hiện tại đồng thời phá hủy 5 vùng 2x2 ngẫu nhiên trên bàn cờ",
+                Icon = Resources.Load<Sprite>("Character/Phoenix/Phoenix_Skill_2"),
                 EnergyCost = 200,
                 DamageScale = 15f,
                 Execute = (character, shapesManager) =>
@@ -123,8 +123,8 @@ public static class PhoenixSkills
             new Skill
             {
                 Name = "Lốc xoáy lửa",
-                Description = "Gây sát thương 30 * CurrentAttack, đồng thời phá hủy 2 vùng 4x4 từ các vị trí cố định.",
-                Icon = Resources.Load<Sprite>("Icons/FireTornado"),
+                Description = "Sát thương gây ra bằng 30 lần sát thương hiện tại đồng thời phá hủy 2 vùng 4x4 ngẫu nhiên trên bàn cờ ",
+                Icon = Resources.Load<Sprite>("Character/Phoenix/Phoenix_Skill_3"),
                 EnergyCost = 300,
                 DamageScale = 30f,
                 Execute = (character, shapesManager) =>
@@ -184,8 +184,8 @@ public static class MinervaSkills
             new Skill
             {
                 Name = "Bão tuyết",
-                Description = "Gây sát thương 4 * CurrentAttack, phá hủy ngẫu nhiên 4 ô trên bàn cờ, đồng thời triệt tiêu 100 năng lượng của kẻ thù.",
-                Icon = Resources.Load<Sprite>("Icons/Blizzard"),
+                Description = "Gây sát thương bằng 4, phá hủy ngẫu nhiên 4 ô trên bàn cờ, đồng thời triệt tiêu 100 năng lượng của kẻ thù.",
+                Icon = Resources.Load<Sprite>("Character/Minerva/Minerva_Skill_1"),
                 EnergyCost = 100,
                 DamageScale = 4f,
                 Execute = (character, shapesManager) =>
@@ -218,7 +218,7 @@ public static class MinervaSkills
             {
                 Name = "Tuyết liên",
                 Description = "Hồi lại 20% máu tối đa, đồng thời hấp thụ toàn bộ biểu tượng trái tim trên bàn cờ.",
-                Icon = Resources.Load<Sprite>("Icons/SnowLotus"),
+                Icon = Resources.Load<Sprite>("Character/Minerva/Minerva_Skill_2"),
                 EnergyCost = 200,
                 DamageScale = 0f, // Không gây sát thương
                 Execute = (character, shapesManager) =>
@@ -251,8 +251,8 @@ public static class MinervaSkills
             new Skill
             {
                 Name = "Hàn băng vĩnh cửu",
-                Description = "Gây sát thương 28 * CurrentAttack, phá hủy 6 biểu tượng ngẫu nhiên, đồng thời thêm 2 lượt cho bản thân.",
-                Icon = Resources.Load<Sprite>("Icons/EternalFreeze"),
+                Description = "Gây sát thương bằng 27 lần sát thương hiện tại, phá hủy 6 biểu tượng ngẫu nhiên, đồng thời thêm 2 lượt cho bản thân.",
+                Icon = Resources.Load<Sprite>("Character/Minerva/Minerva_Skill_3"),
                 EnergyCost = 300,
                 DamageScale = 28f,
                 Execute = (character, shapesManager) =>
@@ -295,8 +295,8 @@ public static class JasmineSkills
             new Skill
             {
                 Name = "Truy sát",
-                Description = "Gây sát thương 10 * CurrentAttack, phá hủy ngẫu nhiên 1 hàng ngang của bàn cờ.",
-                Icon = Resources.Load<Sprite>("Icons/Assassination"),
+                Description = "Gây sát thương bằng 10 lần sát thương hiện tại, phá hủy ngẫu nhiên 1 hàng ngang của bàn cờ.",
+                Icon = Resources.Load<Sprite>("Character/Jasmine/Jasmine_Skill_1"),
                 EnergyCost = 100,
                 DamageScale = 10f,
                 Execute = (character, shapesManager) =>
@@ -323,14 +323,14 @@ public static class JasmineSkills
             new Skill
             {
                 Name = "Phục kích",
-                Description = "Gây sát thương 22 * CurrentAttack, phá hủy 2 đường chéo lớn của bàn cờ.",
-                Icon = Resources.Load<Sprite>("Icons/Ambush"),
+                Description = "Gây sát thương bằng 20 lần sát thương hiện tại, phá hủy 2 đường chéo lớn của bàn cờ.",
+                Icon = Resources.Load<Sprite>("Character/Jasmine/Jasmine_Skill_2"),
                 EnergyCost = 200,
-                DamageScale = 22f,
+                DamageScale = 20f,
                 Execute = (character, shapesManager) =>
                 {
                     var opponent = shapesManager.isMyTurn ? shapesManager.enemyCharacter : shapesManager.playerCharacter;
-                    int damage = Mathf.RoundToInt(character.CurrentAttack * 22f);
+                    int damage = Mathf.RoundToInt(character.CurrentAttack * 20f);
                     opponent.CurrentHealth = Mathf.Max(0, opponent.CurrentHealth - damage);
 
                     // Phá hủy 2 đường chéo lớn
@@ -354,8 +354,8 @@ public static class JasmineSkills
             new Skill
             {
                 Name = "Chí mạng",
-                Description = "Gây sát thương 32 * CurrentAttack, đồng thời hấp thụ toàn bộ biểu tượng thanh kiếm trên bàn cờ và hồi phục lượng máu tương đương.",
-                Icon = Resources.Load<Sprite>("Icons/CriticalStrike"),
+                Description = "Gây sát thương bằng 32 lần sát thương hiện tại, đồng thời hấp thụ toàn bộ biểu tượng thanh kiếm trên bàn cờ và hồi phục lượng máu tương đương.",
+                Icon = Resources.Load<Sprite>("Character/Jasmine/Jasmine_Skill_3"),
                 EnergyCost = 300,
                 DamageScale = 32f,
                 Execute = (character, shapesManager) =>
@@ -400,8 +400,8 @@ public static class MariusSkills
             new Skill
             {
                 Name = "Lôi lực",
-                Description = "Gây sát thương 6 * CurrentAttack, đồng thời phá hủy ngẫu nhiên 5 ~ 8 biểu tượng giống nhau trên bàn cờ.",
-                Icon = Resources.Load<Sprite>("Icons/ThunderForce"),
+                Description = "Gây sát thương bằng 6 lần sát thương hiện tại, đồng thời phá hủy ngẫu nhiên 5 ~ 8 biểu tượng giống nhau trên bàn cờ.",
+                Icon = Resources.Load<Sprite>("Character/Marius/Marius_Skill_1"),
                 EnergyCost = 100,
                 DamageScale = 6f,
                 Execute = (character, shapesManager) =>
@@ -463,14 +463,14 @@ public static class MariusSkills
             new Skill
             {
                 Name = "Giông tố",
-                Description = "Gây sát thương 18 * CurrentAttack, phá hủy ngẫu nhiên 2 đường thẳng và ngang trên bàn cờ.",
-                Icon = Resources.Load<Sprite>("Icons/Storm"),
+                Description = "Gây sát thương bằng 22 lần sát thương hiện tại, phá hủy ngẫu nhiên 2 đường thẳng và ngang trên bàn cờ.",
+                Icon = Resources.Load<Sprite>("Character/Marius/Marius_Skill_2"),
                 EnergyCost = 200,
-                DamageScale = 18f,
+                DamageScale = 22f,
                 Execute = (character, shapesManager) =>
                 {
                     var opponent = shapesManager.isMyTurn ? shapesManager.enemyCharacter : shapesManager.playerCharacter;
-                    int damage = Mathf.RoundToInt(character.CurrentAttack * 18f);
+                    int damage = Mathf.RoundToInt(character.CurrentAttack * 22f);
                     opponent.CurrentHealth = Mathf.Max(0, opponent.CurrentHealth - damage);
 
                     // Phá hủy 2 đường thẳng và ngang
@@ -507,14 +507,14 @@ public static class MariusSkills
             new Skill
             {
                 Name = "Cuồng nộ",
-                Description = "Gây sát thương 25 * CurrentAttack, đồng thời phá hủy 32 ô xen kẽ nhau trên bàn cờ.",
-                Icon = Resources.Load<Sprite>("Icons/Fury"),
+                Description = "Gây sát thương bằng 28 lần sát thương hiện tại, đồng thời phá hủy 32 ô xen kẽ nhau trên bàn cờ.",
+                Icon = Resources.Load<Sprite>("Character/Marius/Marius_Skill_3"),
                 EnergyCost = 300,
-                DamageScale = 25f,
+                DamageScale = 28f,
                 Execute = (character, shapesManager) =>
                 {
                     var opponent = shapesManager.isMyTurn ? shapesManager.enemyCharacter : shapesManager.playerCharacter;
-                    int damage = Mathf.RoundToInt(character.CurrentAttack * 25f);
+                    int damage = Mathf.RoundToInt(character.CurrentAttack * 28f);
                     opponent.CurrentHealth = Mathf.Max(0, opponent.CurrentHealth - damage);
 
                     // Phá hủy 32 ô xen kẽ nhau

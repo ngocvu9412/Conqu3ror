@@ -9,9 +9,6 @@ public class GameplayUIController : Singleton<GameplayUIController>
     public Text myEnergyText;
     public Image myTimeBar;
     public Text myTimeText;
-    public Button mySkillButton1;
-    public Button mySkillButton2;
-    public Button mySkillButton3;
 
 
     public Image enemyHealthBar;
@@ -20,9 +17,7 @@ public class GameplayUIController : Singleton<GameplayUIController>
     public Text enemyEnergyText;
     public Image enemyTimeBar;
     public Text enemyTimeText;
-    public Button enemySkillButton1;
-    public Button enemySkillButton2;
-    public Button enemySkillButton3;
+
 
     public void UpdateTime(bool isMyTurn, float curTime, float totalTime)
     {
