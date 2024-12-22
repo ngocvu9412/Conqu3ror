@@ -1,31 +1,25 @@
 fileFormatVersion: 2
-guid: e5f98a1e69bc20345bfc5bd9ebe289d3
+guid: 6490e3a7515351543889229abc15112f
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6369722787752497797
-    second: Soldier-Walk_0
+      213: -3291933047493928793
+    second: Soldier-Attack01_0
   - first:
-      213: -4195647796165820189
-    second: Soldier-Walk_1
+      213: -6387132180496740656
+    second: Soldier-Attack01_1
   - first:
-      213: -8464097173789389841
-    second: Soldier-Walk_2
+      213: 3584784805190714906
+    second: Soldier-Attack01_2
   - first:
-      213: 4675039378008736925
-    second: Soldier-Walk_3
+      213: -4079507207558419125
+    second: Soldier-Attack01_3
   - first:
-      213: 8618280867664089372
-    second: Soldier-Walk_4
+      213: -868544849082176367
+    second: Soldier-Attack01_4
   - first:
-      213: 1914519734761289132
-    second: Soldier-Walk_5
-  - first:
-      213: -7471997188321437821
-    second: Soldier-Walk_6
-  - first:
-      213: -1920940785554729860
-    second: Soldier-Walk_7
+      213: -3853612353132079948
+    second: Soldier-Attack01_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -121,177 +115,133 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Soldier-Walk_0
+      name: Soldier-Attack01_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 100
-        height: 100
+        x: 40
+        y: 42
+        width: 17
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 16df896ef08649e478deeea6406de674
-      internalID: -1451162915
+      spriteID: 7a851cfa554b052d0800000000000000
+      internalID: -3291933047493928793
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Soldier-Walk_1
+      name: Soldier-Attack01_1
       rect:
         serializedVersion: 2
-        x: 100
-        y: 0
-        width: 100
-        height: 100
+        x: 140
+        y: 42
+        width: 21
+        height: 26
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 200a1e25d51a59642a84226677aa498c
-      internalID: -917965678
+      spriteID: 0de86005f195c57a0800000000000000
+      internalID: -6387132180496740656
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Soldier-Walk_2
+      name: Soldier-Attack01_2
       rect:
         serializedVersion: 2
-        x: 200
-        y: 0
-        width: 100
-        height: 100
+        x: 240
+        y: 42
+        width: 22
+        height: 25
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 780700b78dd4c124c83c1486a06b3184
-      internalID: 279128869
+      spriteID: a164c9d89c6bfb130800000000000000
+      internalID: 3584784805190714906
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Soldier-Walk_3
+      name: Soldier-Attack01_3
       rect:
         serializedVersion: 2
-        x: 300
-        y: 0
-        width: 100
-        height: 100
+        x: 335
+        y: 39
+        width: 36
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: e90e97541148d24489f0189676ed1c7f
-      internalID: -3797904
+      spriteID: b4da5d21fcda267c0800000000000000
+      internalID: -4079507207558419125
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Soldier-Walk_4
+      name: Soldier-Attack01_4
       rect:
         serializedVersion: 2
-        x: 400
-        y: 0
-        width: 100
-        height: 100
+        x: 435
+        y: 39
+        width: 36
+        height: 22
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: 46e2800d3dc3b0a4caaa184e52de9ece
-      internalID: 1861209454
+      spriteID: 19c26febf0f42f3f0800000000000000
+      internalID: -868544849082176367
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Soldier-Walk_5
+      name: Soldier-Attack01_5
       rect:
         serializedVersion: 2
-        x: 500
-        y: 0
-        width: 100
-        height: 100
+        x: 535
+        y: 41
+        width: 24
+        height: 20
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ebff958476193124a941a9d78b6f7a9e
-      internalID: -137601325
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Soldier-Walk_6
-      rect:
-        serializedVersion: 2
-        x: 600
-        y: 0
-        width: 100
-        height: 100
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 347d1887636fc4148b674224a6e6a9cc
-      internalID: 2140732299
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Soldier-Walk_7
-      rect:
-        serializedVersion: 2
-        x: 700
-        y: 0
-        width: 100
-        height: 100
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 52940c04daecefd499b5c62ca7d781ef
-      internalID: -1153142277
+      spriteID: 4b4518d6bf7358ac0800000000000000
+      internalID: -3853612353132079948
       vertices: []
       indices: 
       edges: []
@@ -300,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 60fa36260a3283d41823870ef331bf18
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -309,15 +259,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      Soldier-Walk_0: -1451162915
-      Soldier-Walk_1: -917965678
-      Soldier-Walk_2: 279128869
-      Soldier-Walk_3: -3797904
-      Soldier-Walk_4: 1861209454
-      Soldier-Walk_5: -137601325
-      Soldier-Walk_6: 2140732299
-      Soldier-Walk_7: -1153142277
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
