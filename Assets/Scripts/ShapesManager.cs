@@ -6,7 +6,7 @@ using DG.Tweening;
 using UnityEngine.UI;
 
 
-public class ShapesManager : MonoBehaviour
+public class ShapesManager : Singleton<ShapesManager>
 {
     public ShapesArray shapes;
 
@@ -36,14 +36,13 @@ public class ShapesManager : MonoBehaviour
     private Coroutine playerCountdownCoroutine;
     private Coroutine enemyCountdownCoroutine;
 
-
-    void Awake()
+    override public void Awake()
     {
         
     }
 
     // Use this for initialization
-    void Start()
+    override public void Start()
     {
         InitializeTypesOnPrefabShapesAndBonuses();
 
@@ -54,9 +53,9 @@ public class ShapesManager : MonoBehaviour
         playerCharacter = new CharacterInCombat
         {
             MaxHealth = 1000,
-            CurrentHealth = 200,
-            BaseAttack = 20,
-            CurrentAttack = 20,
+            CurrentHealth = 1000,
+            BaseAttack = 10,
+            CurrentAttack = 10,
             MaxEnergy = 300,
             CurrentEnergy = 300,
             CurrentTime = 45,
@@ -65,7 +64,7 @@ public class ShapesManager : MonoBehaviour
             Experience = 0
         };
 
-        playerCharacter.Skills = MariusSkills.GetSkills();
+        playerCharacter.Skills = PhoenixSkills.GetSkills();
 
         if (GameplayUIController.Ins)
         {
@@ -78,8 +77,8 @@ public class ShapesManager : MonoBehaviour
         {
             MaxHealth = 1200,
             CurrentHealth = 1200,
-            BaseAttack = 20,
-            CurrentAttack = 20,
+            BaseAttack = 10,
+            CurrentAttack = 10,
             MaxEnergy = 300,
             CurrentEnergy = 300,
             CurrentTime = 45,
@@ -87,6 +86,8 @@ public class ShapesManager : MonoBehaviour
             Gold = 0,
             Experience = 0
         };
+
+        enemyCharacter.Skills = MinervaSkills.GetSkills();
         if (GameplayUIController.Ins)
         {
             GameplayUIController.Ins.UpdateHealth(!isMyTurn, enemyCharacter.CurrentHealth, enemyCharacter.MaxHealth);
@@ -98,6 +99,18 @@ public class ShapesManager : MonoBehaviour
     }
 
     /// ////////////////////////////////////////////////////
+    public void OnSkillButtonClicked(int skillIndex)
+    {
+        Debug.Log("Click");
+        if (isMyTurn)
+        {
+            UseSkill(skillIndex, playerCharacter);
+        }
+        else
+        {
+            UseSkill(skillIndex, enemyCharacter);
+        }
+    }
 
     public IEnumerator ExecuteSkillLogic(List<Vector2Int> destroyedPositions)
     {
@@ -243,7 +256,7 @@ public class ShapesManager : MonoBehaviour
 
 
 
-    void UseSkill(int skillIndex, CharacterInCombat character)
+    public void UseSkill(int skillIndex, CharacterInCombat character)
     {
         if (character.Skills != null && skillIndex < character.Skills.Count)
         {
