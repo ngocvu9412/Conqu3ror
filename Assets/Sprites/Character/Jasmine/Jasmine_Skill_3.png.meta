@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Jasmine_Skill_3_0: 1105481634867034921
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

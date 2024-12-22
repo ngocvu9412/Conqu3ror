@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Phoenix_Skill_3_0: 530037301616917932
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

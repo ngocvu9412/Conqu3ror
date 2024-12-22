@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Minerva_Skill_2_0: 125342318739248937
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
