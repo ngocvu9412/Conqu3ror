@@ -64,21 +64,24 @@ public class ShapesManager : Singleton<ShapesManager>
             Experience = 0
         };
 
-        playerCharacter.Skills = PhoenixSkills.GetSkills();
+        playerCharacter.Skills = MinervaSkills.GetSkills();
 
         if (GameplayUIController.Ins)
         {
             GameplayUIController.Ins.UpdateHealth(isMyTurn, playerCharacter.CurrentHealth, playerCharacter.MaxHealth);
             GameplayUIController.Ins.UpdateEnergy(isMyTurn, playerCharacter.CurrentEnergy, playerCharacter.MaxEnergy);
             GameplayUIController.Ins.UpdateTime(isMyTurn, playerCharacter.CurrentTime, playerCharacter.MaxTime);
+            GameplayUIController.Ins.UpdateAttack(true, playerCharacter.CurrentAttack);
+            GameplayUIController.Ins.UpdateCharacter(true, Resources.Load<Sprite>("Character/Minerva/Minerva"));
+            GameplayUIController.Ins.UpdateSkills(true, playerCharacter.Skills[0].Icon, playerCharacter.Skills[1].Icon, playerCharacter.Skills[2].Icon);
         }
 
         enemyCharacter = new CharacterInCombat
         {
             MaxHealth = 1200,
             CurrentHealth = 1200,
-            BaseAttack = 10,
-            CurrentAttack = 10,
+            BaseAttack = 12,
+            CurrentAttack = 12,
             MaxEnergy = 300,
             CurrentEnergy = 300,
             CurrentTime = 45,
@@ -87,12 +90,15 @@ public class ShapesManager : Singleton<ShapesManager>
             Experience = 0
         };
 
-        enemyCharacter.Skills = MinervaSkills.GetSkills();
+        enemyCharacter.Skills = JasmineSkills.GetSkills();
         if (GameplayUIController.Ins)
         {
             GameplayUIController.Ins.UpdateHealth(!isMyTurn, enemyCharacter.CurrentHealth, enemyCharacter.MaxHealth);
             GameplayUIController.Ins.UpdateEnergy(!isMyTurn, enemyCharacter.CurrentEnergy, enemyCharacter.MaxEnergy);
             GameplayUIController.Ins.UpdateTime(!isMyTurn, enemyCharacter.CurrentTime, enemyCharacter.MaxTime);
+            GameplayUIController.Ins.UpdateAttack(false, enemyCharacter.CurrentAttack);
+            GameplayUIController.Ins.UpdateCharacter(false, Resources.Load<Sprite>("Character/Jasmine/Jasmine"));
+            GameplayUIController.Ins.UpdateSkills(false, enemyCharacter.Skills[0].Icon, enemyCharacter.Skills[1].Icon, enemyCharacter.Skills[2].Icon);
         }
 
         StartCountdown(isMyTurn);

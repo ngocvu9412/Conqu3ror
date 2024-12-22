@@ -251,7 +251,7 @@ public static class MinervaSkills
             new Skill
             {
                 Name = "Hàn băng vĩnh cửu",
-                Description = "Gây sát thương bằng 27 lần sát thương hiện tại, phá hủy 6 biểu tượng ngẫu nhiên, đồng thời thêm 2 lượt cho bản thân.",
+                Description = "Gây sát thương bằng 27 lần sát thương hiện tại, phá hủy 6 biểu tượng ngẫu nhiên, phong ấn đổi thủ trong 2 lượt và triệt tiêu toàn bộ năng lượng của kẻ địch.",
                 Icon = Resources.Load<Sprite>("Character/Minerva/Minerva_Skill_3"),
                 EnergyCost = 300,
                 DamageScale = 28f,

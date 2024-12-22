@@ -41,7 +41,7 @@ public class SkillHoverHandler : MonoBehaviour, IPointerEnterHandler, IPointerEx
         yield return new WaitForSeconds(0.3f);
 
         // Lấy thông tin kỹ năng từ ShapeManager
-        var shapesManager = FindObjectOfType<ShapesManager>();
+        var shapesManager = ShapesManager.Ins;
         if (shapesManager != null)
         {
             var currentCharacter = isPlayerSkill ? shapesManager.playerCharacter : shapesManager.enemyCharacter;
