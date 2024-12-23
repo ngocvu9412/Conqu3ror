@@ -20,6 +20,10 @@ public class CharacterInfoUI : MonoBehaviour
     [Space(20)]
     [SerializeField] CharactersDatabase CharacterDB;
 
+    void Start()
+    {
+        ShowCharacterInfoUI(GameDataManager.GetSelectedCharacterIndex());
+    }
     public void ShowCharacterInfoUI(int index)
     {
         Character characterInUse = CharacterDB.GetCharacter(index);

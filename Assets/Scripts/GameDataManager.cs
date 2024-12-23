@@ -5,7 +5,7 @@ using System.Linq;
 [System.Serializable] public class PlayerData
 {
     public int coins = 20000;
-    public List<int> UnlockedCharactersIndexes =new List<int> {0};
+    public List<int> UnlockedCharactersIndexes =new List<int> {0,1};
     public int selectedCharacterIndex = 0;
     public List<Equipment> PlayerEquipments = new List<Equipment>();
 	public Equipment[] UsingEquipments = new Equipment[4];
@@ -83,6 +83,10 @@ public class GameDataManager : MonoBehaviour
 	public static List<Equipment> GetPlayerEquipments()
 	{
 		return playerData.PlayerEquipments;
+	}
+	public static Equipment[] GetPlayerUsedEquips()
+	{
+		return playerData.UsingEquipments;
 	}
 	public static bool CanUseEquipment(int slot_Index, int equipment_Index)
 	{

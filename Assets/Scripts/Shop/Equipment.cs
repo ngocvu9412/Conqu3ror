@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 [System.Serializable]
 public struct Equipment 
@@ -11,6 +8,8 @@ public struct Equipment
     public string description;
     public int price;
     public int Level;
+    public string StatTypeEffect;
+    public float EffectStat;
     
     public bool IsUsing;
     public Sprite GetSprite()
@@ -20,5 +19,13 @@ public struct Equipment
     public void SetUsedStatus ( bool UsedStatus )
     {
         IsUsing = UsedStatus;
+    }
+    public string GetStatTypeEffect()
+    {
+        return StatTypeEffect;
+    }
+    public float GetEffectStat()
+    {
+        return EffectStat;
     }
 }
