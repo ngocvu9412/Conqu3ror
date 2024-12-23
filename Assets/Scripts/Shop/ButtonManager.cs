@@ -17,10 +17,10 @@ public class ButtonManager : MonoBehaviour
     private GameObject equipmentWindow;
     [SerializeField] 
     private Button equipmentButton;
-    [SerializeField] 
-    private GameObject itemsWindow;
-    [SerializeField] 
-    private Button itemsButton;
+    // [SerializeField] 
+    // private GameObject itemsWindow;
+    // [SerializeField] 
+    // private Button itemsButton;
 
 
     void Start()
@@ -31,8 +31,8 @@ public class ButtonManager : MonoBehaviour
         // Ensure the equipment window is hidden at the start
         equipmentWindow.SetActive(false);
 
-        // Ensure the items window is hidden at the start
-        itemsWindow.SetActive(false);
+        // // Ensure the items window is hidden at the start
+        // itemsWindow.SetActive(false);
     }
 
     // This method will be called when the button is clicked to toggle the shop window
@@ -61,12 +61,12 @@ public class ButtonManager : MonoBehaviour
     // This method will be called when the equipment button is clicked
     public void ToggleEquipmentWindow()
     {
-        // Close the Items Window if it's open
-        if (itemsWindow != null && itemsWindow.activeSelf)
-        {
-            itemsWindow.SetActive(false);
-            Debug.Log("Closing Items Window.");
-        }
+        // // Close the Items Window if it's open
+        // if (itemsWindow != null && itemsWindow.activeSelf)
+        // {
+        //     itemsWindow.SetActive(false);
+        //     Debug.Log("Closing Items Window.");
+        // }
 
         // Toggle the equipment Window visibility
         if (equipmentWindow != null && !equipmentWindow.activeSelf)
@@ -77,22 +77,22 @@ public class ButtonManager : MonoBehaviour
     }
 
     // This method will be called when the Items button is clicked
-    public void ToggleItemsWindow()
-    {
-        // Close the equipment Window if it's open
-        if (equipmentWindow != null && equipmentWindow.activeSelf)
-        {
-            equipmentWindow.SetActive(false);
-            Debug.Log("Closing equipment Window.");
-        }
+    // public void ToggleItemsWindow()
+    // {
+    //     // Close the equipment Window if it's open
+    //     if (equipmentWindow != null && equipmentWindow.activeSelf)
+    //     {
+    //         equipmentWindow.SetActive(false);
+    //         Debug.Log("Closing equipment Window.");
+    //     }
 
-        // Toggle the Items Window visibility
-        if (itemsWindow != null && !itemsWindow.activeSelf)
-        {
-            itemsWindow.SetActive(true);
-            Debug.Log("Opening Items Window.");
-        }
-    }
+    //     // Toggle the Items Window visibility
+    //     if (itemsWindow != null && !itemsWindow.activeSelf)
+    //     {
+    //         itemsWindow.SetActive(true);
+    //         Debug.Log("Opening Items Window.");
+    //     }
+    // }
 
     // Always open the equipment Window when the Shop is opened
     private void OpenEquipmentWindow()
@@ -104,11 +104,11 @@ public class ButtonManager : MonoBehaviour
             Debug.Log("Opening equipment Window.");
         }
 
-        // Close the Items Window if it's open
-        if (itemsWindow != null && itemsWindow.activeSelf)
-        {
-            itemsWindow.SetActive(false);
-            Debug.Log("Closing Items Window.");
-        }
+        // // Close the Items Window if it's open
+        // if (itemsWindow != null && itemsWindow.activeSelf)
+        // {
+        //     itemsWindow.SetActive(false);
+        //     Debug.Log("Closing Items Window.");
+        // }
     }
 }

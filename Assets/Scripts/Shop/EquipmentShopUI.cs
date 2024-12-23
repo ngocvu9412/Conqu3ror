@@ -10,14 +10,17 @@ public class EquipmentShopUI : MonoBehaviour
     [SerializeField] float itemSpace = 10;
 
     float itemHeight;
+    public PlayerData playerdata;
+
 
     [Header ("UI Elements")]
-    [SerializeField] GameObject ShopUI;
-    [SerializeField] Transform EquipmentShopMenu;
     [SerializeField] Transform EquipmentItemContainer;
     [SerializeField] GameObject ItemPrefab;
     [Space(20)]
     [SerializeField] EquipmentShopDatabase EquipmentDatabase;
+    [SerializeField] GameObject InventoryEquipment;
+    [SerializeField] GameObject MergeEquipment;
+    
     void Start ()
     {
         GenerateShopItemUI();
@@ -45,23 +48,29 @@ public class EquipmentShopUI : MonoBehaviour
             //Thêm thông tin
             uiItem.SetEquipmentName (equipment.name);
             uiItem.SetEquipmentDes (equipment.description);
-            uiItem.SetEquipmentImage (equipment.image);
+            uiItem.SetEquipmentImage (equipment.GetSprite());
             uiItem.SetEquipmentPrice (equipment.price);
 
 
-            if (equipment.isPurchased){
-                uiItem.SetEquipmentAsPurchased();
-            }
-            else {
-                uiItem.SetEquipmentPrice (equipment.price);
-                uiItem.OnItemPurchase (i, OnItemPurchased);
-            }
+            //Xử lý mua hàng
+            uiItem.OnItemPurchase (equipment, OnItemPurchased);
 
             //Chỉnh kích cỡ item container
             EquipmentItemContainer.GetComponent<RectTransform> ().sizeDelta = Vector2.up*(itemHeight+itemSpace)*EquipmentDatabase.EquipmentsCount;
         }
     }
-    void OnItemPurchased (int index)
+    void OnItemPurchased (Equipment equipment)
 	{
+        if(GameDataManager.GetPlayerEquipments().Count < 25)
+        {
+            if (GameDataManager.CanSpendCoins( equipment.price))
+            {
+                GameDataManager.SpendCoins( equipment.price);
+                GameDataManager.AddEquipment( equipment);
+            }
+            InventoryEquipment.GetComponent<EquipmentShowUI>().SetSlotEquipmentInfo();
+            MergeEquipment.GetComponent<MergeEquipmentShowUI>().SetSlotMergeEquipmentInfo();
+        }
+        else Debug.Log("Full Inventory");
 	}
 }

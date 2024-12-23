@@ -15,9 +15,4 @@ public class CharactersDatabase : ScriptableObject
     {
         return Characters[index];
     }
-
-    public void ChoseCharacter (int index)
-    {
-        Characters[index].isUsing = true;
-    } 
 }

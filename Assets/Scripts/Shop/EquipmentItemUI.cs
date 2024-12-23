@@ -37,14 +37,9 @@ public class EquipmentItemUI : MonoBehaviour
         EquipmentPrice.text = price.ToString();
     }
 
-    public void SetEquipmentAsPurchased ()
-    {
-        EquipmentPurchaseButton.gameObject.SetActive (false);
-    }
-
-    public void OnItemPurchase (int itemIndex, UnityAction<int> action)
+    public void OnItemPurchase (Equipment equipment, UnityAction<Equipment> action)
     {
         EquipmentPurchaseButton.onClick.RemoveAllListeners ();
-        EquipmentPurchaseButton.onClick.AddListener (() => action.Invoke (itemIndex));
+        EquipmentPurchaseButton.onClick.AddListener (() => action.Invoke (equipment));
     }
 }

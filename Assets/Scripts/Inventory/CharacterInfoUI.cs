@@ -20,15 +20,9 @@ public class CharacterInfoUI : MonoBehaviour
     [Space(20)]
     [SerializeField] CharactersDatabase CharacterDB;
 
-    void Start()
+    public void ShowCharacterInfoUI(int index)
     {
-        ShowCharacterInfoUI();
-    }
-
-    void ShowCharacterInfoUI()
-    {
-        // Tìm nhân vật có isUsing = true
-        var characterInUse = CharacterDB.Characters.FirstOrDefault(character => character.isUsing);
+        Character characterInUse = CharacterDB.GetCharacter(index);
 
         // Gán thông tin vào UI
         CharacterImage.sprite = characterInUse.Image;
