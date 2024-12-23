@@ -11,8 +11,7 @@ TagManager:
   - Time
   - Scroll
   - Road
-  - Red Point
-  - Green Point
+  - RedPoint
   layers:
   - Default
   - TransparentFX

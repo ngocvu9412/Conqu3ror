@@ -15,9 +15,4 @@ public class EquipmentShopDatabase : ScriptableObject
     {
         return equipments[index];
     }
-
-    public void PurchaseEquipment (int index)
-    {
-        equipments[index].isPurchased = true;
-    } 
 }

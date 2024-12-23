@@ -18,9 +18,13 @@ public class CharacterUI : MonoBehaviour
     {
         CharacterImage.sprite = sprite;
     }
-
     public void SetCharacterUnlockedStatus (bool unlocked)
     {
         CharacterChosingButton.interactable = unlocked;
+    }
+    public void OnCharacterChosing(int index, UnityAction< int> action)
+    {
+        CharacterChosingButton.onClick.RemoveAllListeners();
+        CharacterChosingButton.onClick.AddListener(() => action.Invoke(index));
     }
 }

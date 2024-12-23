@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-
 
 public class EquipmentShowUI : MonoBehaviour
 {
@@ -12,11 +9,17 @@ public class EquipmentShowUI : MonoBehaviour
     float itemWidth;
 
     [Header ("UI Elements")]
-    [SerializeField] GameObject EquipmentMenuUI;
     [SerializeField] Transform EquipmentContainer;
     [SerializeField] GameObject EquipmentPrefab;
-    [Space(20)]
-    [SerializeField] EquipmentShopDatabase EquipmentDB;
+    [SerializeField] GameObject Slot1;
+    [SerializeField] GameObject Slot2;
+
+    [SerializeField] GameObject Slot3;
+
+    [SerializeField] GameObject Slot4;
+    [SerializeField] List<(Equipment,int)> HighestLevelEquip;
+
+    
     void Start ()
     {
         GenerateEquipmentShowUI();
@@ -24,36 +27,67 @@ public class EquipmentShowUI : MonoBehaviour
     void GenerateEquipmentShowUI ()
     {
         //Xóa item template
-        itemWidth = EquipmentContainer.GetChild (0).GetComponent<RectTransform>().sizeDelta.x;
-        Destroy(EquipmentContainer.GetChild (0).gameObject);
-        EquipmentContainer.DetachChildren();
+        itemWidth = EquipmentPrefab.GetComponent<RectTransform>().sizeDelta.x;
 
         //Tạo items
-        for (int i=0; i < EquipmentDB.EquipmentsCount; i++)
+        for (int i=0; i < 6; i++)
         {
-            Equipment Equipment = EquipmentDB.GetEquipment(i);
             EquipmentUI uiEquipment = Instantiate (EquipmentPrefab, EquipmentContainer).GetComponent <EquipmentUI> ();
-
-            //Di chuyển item đến vị trí
-            Debug.Log(uiEquipment.GetComponent<RectTransform>().anchoredPosition);
             uiEquipment.SetEquipmentPos(Vector2.right*(itemWidth+itemSpace)*i);
-
-            //Thêm tên cho item trong Hierachy
-            uiEquipment.gameObject.name = "Equipment - " + Equipment.name; 
+            //Lưu vị trí cũ
+            uiEquipment.previous_position = uiEquipment.GetComponent<RectTransform>().anchoredPosition;      
+            //Di chuyển item đến vị trí
             
-            //Thêm thông tin
-            if(Equipment.image == null) Debug.Log("Image Set Fail");
-            uiEquipment.SetEquipmentImage (Equipment.image);
-
-            if (Equipment.isPurchased){
-                uiEquipment.SetEquipmentPurchasedStatus(true);
+        }
+        SetSlotEquipmentInfo();
+    }
+    public void SetSlotEquipmentInfo()
+    {
+        if(EquipmentContainer.childCount > 6)
+        {
+            HighestLevelEquip = GameDataManager.GetHighestLevelEquipments();
+            for( int i = 0; i< HighestLevelEquip.Count;i++)
+            {
+                Equipment Equipment = HighestLevelEquip[i].Item1;
+                EquipmentUI uiEquipment = EquipmentContainer.GetChild(i+6).GetComponent<EquipmentUI>();
+                int equipmentSlot=GameDataManager.IsEquipmentUsed(Equipment);
+                if(equipmentSlot != -1)
+                {
+                    switch (equipmentSlot)
+                    {
+                        case 0:
+                        {
+                            uiEquipment.GetComponent<RectTransform>().anchoredPosition = Slot1.GetComponent<RectTransform>().anchoredPosition;
+                        }
+                        break;
+                        case 1:
+                        {
+                            uiEquipment.GetComponent<RectTransform>().anchoredPosition = Slot2.GetComponent<RectTransform>().anchoredPosition;
+                        }
+                        break;
+                        case 2:
+                        {
+                            uiEquipment.GetComponent<RectTransform>().anchoredPosition = Slot3.GetComponent<RectTransform>().anchoredPosition;
+                        }
+                        break;
+                        case 3:
+                        {
+                            uiEquipment.GetComponent<RectTransform>().anchoredPosition = Slot4.GetComponent<RectTransform>().anchoredPosition;
+                        }
+                        break;
+                    }
+                }
+                //Thêm tên cho item trong Hierachy
+                uiEquipment.gameObject.name = "Equipment - " + Equipment.name + " - Lv" + Equipment.Level; 
+                
+                //Thêm thông tin
+                if(Equipment.GetSprite() == null) Debug.Log("Image Set Fail");
+                uiEquipment.SetEquipmentImage (Equipment.GetSprite());
+                uiEquipment.SetLevelText (Equipment.Level);
+                uiEquipment.SetIndex (HighestLevelEquip[i].Item2);  
+                uiEquipment.SetCanDrag(true); 
+                uiEquipment.SetInfoValid(true);
             }
-            else {
-                uiEquipment.SetEquipmentPurchasedStatus(false);
-            }
-
-            //Chỉnh kích cỡ item container
-            EquipmentContainer.GetComponent<RectTransform> ().sizeDelta = Vector2.right*(itemWidth+itemSpace)*EquipmentDB.EquipmentsCount;
         }
     }
 }

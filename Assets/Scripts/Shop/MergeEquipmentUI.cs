@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
+public class MergeEquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     [SerializeField] Image EquipmentImage;
     [SerializeField] TMP_Text EquipmentLevel;
@@ -15,11 +15,19 @@ public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
-    private float lastClickTime = 0f; // Thời gian lần nhấp trước
-    private float doubleClickThreshold = 0.3f; // Ngưỡng thời gian để coi là double-click
-    private bool CanDrag = false;
-    public bool InfoValid = false;
-
+    private bool CanDrag;
+    public bool InfoValid;
+    public bool CanMerge;
+    public void Initialize()
+    {
+        EquipmentImage.color = new Color(0.408f, 0.337f, 0.286f, 1.000f);
+        EquipmentImage.sprite=null;
+        EquipmentLevel.text="";
+        EquipmentIndex = -1;
+        CanDrag = false;
+        InfoValid = false;
+        CanMerge = false;
+    }
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -58,7 +66,6 @@ public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Debug.Log("Pointer Down on object: " + gameObject.name);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -69,7 +76,6 @@ public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
             return;
         }
 
-        Debug.Log("Begin Drag on object: " + gameObject.name);
         canvasGroup.alpha = .6f;
         canvasGroup.blocksRaycasts = false;
     }
@@ -78,7 +84,6 @@ public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     {
         if (!CanDrag) return;
 
-        Debug.Log("Dragging object: " + gameObject.name);
         rectTransform.anchoredPosition += eventData.delta;
     }
 
@@ -86,7 +91,6 @@ public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     {
         if (!CanDrag) return;
 
-        Debug.Log("End Drag on object: " + gameObject.name);
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
 
@@ -94,6 +98,7 @@ public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
         {
             rectTransform.anchoredPosition = previous_position;
         }
+        MergeEquipment(eventData);
     }
 
     private bool IsPointerOverDropArea(PointerEventData eventData)
@@ -103,34 +108,30 @@ public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
         foreach (var result in results)
         {
-            if (result.gameObject.GetComponent<IDropHandler>() != null && result.gameObject.GetComponent<EquipmentSlot>() != null && result.gameObject.GetComponent<EquipmentUI>() != null && result.gameObject.GetComponent<MergeEquipmentUI>())
+            if (result.gameObject.GetComponent<IDropHandler>() != null && result.gameObject.GetComponent<EquipmentSlot>() != null && result.gameObject.GetComponent<EquipmentUI>() != null && result.gameObject.GetComponent<MergeEquipmentUI>() != null)
             {
                 return true;
             }
         }
         return false;
     }
+    private void MergeEquipment(PointerEventData eventData)
+    {
+        var results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
 
+        foreach (var result in results)
+        {
+            if (result.gameObject.GetComponent<MergeEquipmentUI>() != null && (result.gameObject.GetComponent<MergeEquipmentUI>().CanMerge = CanMerge = true)) 
+            {
+                GameDataManager.MergeEquipment(EquipmentIndex, result.gameObject.GetComponent<MergeEquipmentUI>().EquipmentIndex);
+                gameObject.GetComponentInParent<MergeEquipmentShowUI>().ResetMergeEquipUI();
+                return;
+            }
+        }
+    }
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log("On Drop on object: " + gameObject.name);
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        float timeSinceLastClick = Time.time - lastClickTime;
-
-        if (timeSinceLastClick <= doubleClickThreshold)
-        {
-            HandleDoubleClick();
-        }
-
-        lastClickTime = Time.time;
-    }
-
-    private void HandleDoubleClick()
-    {
-        rectTransform.anchoredPosition = previous_position;
-        GameDataManager.RemoveEquipmentUsed(EquipmentIndex);
     }
 }
