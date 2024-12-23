@@ -275,10 +275,10 @@ public static class MinervaSkills
 
                     // Thêm 2 lượt cho bản thân
                     shapesManager.turnCount += 2;
-
                     shapesManager.StartCoroutine(shapesManager.ExecuteSkillLogic(destroyedPositions.ToList()));
 
-                    Debug.Log($"Skill 'Hàn băng vĩnh cửu' used by {(shapesManager.isMyTurn ? "Player" : "Enemy")}, causing {damage} damage, destroying 6 symbols, and gaining 3 extra turns!");
+                    Debug.Log($"Skill 'Hàn băng vĩnh cửu' used by {(shapesManager.isMyTurn ? "Player" : "Enemy")}, causing {damage} damage, destroying 6 symbols, and gaining 2 extra turns!");
+                    Debug.Log(shapesManager.turnCount + " turn remain");
                 }
             }
         };

@@ -68,7 +68,7 @@ public class ShapesManager : Singleton<ShapesManager>
             Experience = 0
         };
 
-        playerCharacter.Skills = JasmineSkills.GetSkills();
+        playerCharacter.Skills = MinervaSkills.GetSkills();
 
         if (GameplayUIController.Ins)
         {
@@ -76,7 +76,7 @@ public class ShapesManager : Singleton<ShapesManager>
             GameplayUIController.Ins.UpdateEnergy(isMyTurn, playerCharacter.CurrentEnergy, playerCharacter.MaxEnergy);
             GameplayUIController.Ins.UpdateTime(isMyTurn, playerCharacter.CurrentTime, playerCharacter.MaxTime);
             GameplayUIController.Ins.UpdateAttack(true, playerCharacter.CurrentAttack);
-            GameplayUIController.Ins.UpdateCharacter(true, Resources.Load<Sprite>("Character/Jasmine/Jasmine"));
+            GameplayUIController.Ins.UpdateCharacter(true, Resources.Load<Sprite>("Character/Minerva/Minerva"));
             GameplayUIController.Ins.UpdateSkills(true, playerCharacter.Skills[0].Icon, playerCharacter.Skills[1].Icon, playerCharacter.Skills[2].Icon);
         }
 
@@ -105,6 +105,9 @@ public class ShapesManager : Singleton<ShapesManager>
             GameplayUIController.Ins.UpdateSkills(false, enemyCharacter.Skills[0].Icon, enemyCharacter.Skills[1].Icon, enemyCharacter.Skills[2].Icon);
         }
 
+        if (TurnCounterUI.Ins)
+            TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
+
         StartCountdown(isMyTurn);
     }
 
@@ -115,10 +118,10 @@ public class ShapesManager : Singleton<ShapesManager>
         {
             UseSkill(skillIndex, playerCharacter);
         }
-        else
-        {
-            UseSkill(skillIndex, enemyCharacter);
-        }
+        //else
+        //{
+        //    UseSkill(skillIndex, enemyCharacter);
+        //}
     }
 
     public IEnumerator ExecuteSkillLogic(List<Vector2Int> destroyedPositions)
@@ -258,6 +261,8 @@ public class ShapesManager : Singleton<ShapesManager>
         }
         // Giảm lượt chơi
         turnCount--;
+        if (TurnCounterUI.Ins)
+            TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
     }
 
 
@@ -465,12 +470,16 @@ public class ShapesManager : Singleton<ShapesManager>
     {
         isMyTurn = !isMyTurn;
         turnCount = 1;
+        if (TurnCounterUI.Ins)
+            TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
         StartCountdown(isMyTurn);
         Debug.Log(isMyTurn ? "Player's turn started!" : "Enemy's turn started!");
     }
     private void AddTurn()
     {
         turnCount++;
+        if (TurnCounterUI.Ins)
+            TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
     }
 
     private bool isBoardLocked = false; // Biến kiểm tra trạng thái bàn cờ
@@ -786,9 +795,6 @@ public class ShapesManager : Singleton<ShapesManager>
             UpdateCharacterStats(collectiblesInChain);
             // In ra số lượng biểu tượng thu thập được sau mỗi chuỗi (chain)
             Debug.Log("Chain: " + timesRun);
-            //Debug.Log("Sword: " + collectiblesInChain["Sword"] + " Heart: " + collectiblesInChain["Heart"] + " Gold: " + collectiblesInChain["Gold"] + " Energy: " + collectiblesInChain["Energy"] + " Scroll: " + collectiblesInChain["Scroll"] + " Time: " + collectiblesInChain["Time"]);
-            //Debug.Log("Explode "+"Sword: " + collectiblesInExplode["Sword"] + " Heart: " + collectiblesInExplode["Heart"] + " Gold: " + collectiblesInExplode["Gold"] + " Energy: " + collectiblesInExplode["Energy"] + " Scroll: " + collectiblesInExplode["Scroll"] + " Time: " + collectiblesInExplode["Time"]);
-            //Debug.Log("");
 
             // Loại bỏ cột trùng lặp
             affectedColumns = affectedColumns.Distinct().ToList();
@@ -815,6 +821,8 @@ public class ShapesManager : Singleton<ShapesManager>
             
         }
         turnCount--;/////////
+        if (TurnCounterUI.Ins)
+            TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
         Debug.Log(turnCount + " turn remain");
 
         state = GameState.None;
