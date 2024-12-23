@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,11 +13,12 @@ public class CharacterChosingUI : MonoBehaviour
     float itemWidth;
 
     [Header ("UI Elements")]
-    [SerializeField] GameObject CharacterMenuUI;
     [SerializeField] Transform CharacterContainer;
     [SerializeField] GameObject CharacterPrefab;
     [Space(20)]
     [SerializeField] CharactersDatabase CharacterDB;
+    [SerializeField] GameObject characterInfoUI;
+
     void Start ()
     {
         GenerateCharactersMenuUI();
@@ -24,10 +26,9 @@ public class CharacterChosingUI : MonoBehaviour
     void GenerateCharactersMenuUI ()
     {
         //Xóa item template
-        itemWidth = CharacterContainer.GetChild (0).GetComponent<RectTransform>().sizeDelta.x;
-        Destroy(CharacterContainer.GetChild (0).gameObject);
-        CharacterContainer.DetachChildren();
+        itemWidth = CharacterPrefab.GetComponent<RectTransform>().sizeDelta.x;
 
+        characterInfoUI.GetComponent<CharacterInfoUI>().ShowCharacterInfoUI(GameDataManager.GetSelectedCharacterIndex());
         //Tạo items
         for (int i=0; i < CharacterDB.CharactersCount; i++)
         {
@@ -45,10 +46,12 @@ public class CharacterChosingUI : MonoBehaviour
             if(character.Image == null) Debug.Log("Image Set Fail");
             uiCharacter.SetCharacterImage (character.Image);
 
-            if (character.Unlocked){
+            if (CheckIfCharacterUnlocked(i)){
+                uiCharacter.OnCharacterChosing(i,OnCharacterChosing);
                 uiCharacter.SetCharacterUnlockedStatus(true);
             }
             else {
+                uiCharacter.OnCharacterChosing(i,OnCharacterChosing);
                 uiCharacter.SetCharacterUnlockedStatus(false);
             }
 
@@ -56,7 +59,18 @@ public class CharacterChosingUI : MonoBehaviour
             CharacterContainer.GetComponent<RectTransform> ().sizeDelta = Vector2.right*(itemWidth+itemSpace)*CharacterDB.CharactersCount;
         }
     }
-    // void OnCharacterChosing (int index)
-	// {
-	// }
+    void OnCharacterChosing (int index)
+	{
+        GameDataManager.SetSelectedCharacter(CharacterDB.GetCharacter(index),index);
+        characterInfoUI.GetComponent<CharacterInfoUI>().ShowCharacterInfoUI(GameDataManager.GetSelectedCharacterIndex());
+	}
+    void OnCharacterUnlocked(int index)
+    {
+        CharacterContainer.GetChild(index).GetComponent<CharacterUI>().SetCharacterUnlockedStatus(true);
+        GameDataManager.AddUnlockedCharacter(index);
+    }
+    bool CheckIfCharacterUnlocked(int index)
+    {
+        return GameDataManager.GetPlayerListUnlockedChar().Contains(index);
+    }
 }

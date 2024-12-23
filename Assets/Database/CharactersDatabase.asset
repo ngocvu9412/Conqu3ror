@@ -21,7 +21,6 @@ MonoBehaviour:
     attack_per_lv: 0.5
     Exp: 0
     Level: 0
-    isUsing: 1
     Unlocked: 1
   - Image: {fileID: 8262271927763056467, guid: cd323ea6c1db42f4b8832b3486099aa8, type: 3}
     name: Sylva
@@ -31,7 +30,6 @@ MonoBehaviour:
     attack_per_lv: 0.5
     Exp: 0
     Level: 0
-    isUsing: 0
     Unlocked: 0
   - Image: {fileID: -4855744160756122052, guid: 34a4f75d2a38361448a7bc5b559d3e70, type: 3}
     name: Kael
@@ -41,5 +39,4 @@ MonoBehaviour:
     attack_per_lv: 0.5
     Exp: 0
     Level: 0
-    isUsing: 0
     Unlocked: 0

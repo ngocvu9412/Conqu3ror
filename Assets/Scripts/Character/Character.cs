@@ -16,7 +16,6 @@ public struct Character
     public static int LvlExp = 100;
     public static int LvlExpPerLv = 20;
     public int Level;
-    public bool isUsing;
     public bool Unlocked;
 
     public float GetMaxHealth()
@@ -27,5 +26,9 @@ public struct Character
     public float GetMaxAttack()
     {
         return (attack+(attack_per_lv*Level));
+    }
+    public int GetExpLevel()
+    {
+        return (LvlExp+LvlExpPerLv*Level);
     }
 }

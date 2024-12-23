@@ -14,12 +14,12 @@ public class EquipmentShopUI : MonoBehaviour
 
 
     [Header ("UI Elements")]
-    [SerializeField] GameObject ShopUI;
-    [SerializeField] Transform EquipmentShopMenu;
     [SerializeField] Transform EquipmentItemContainer;
     [SerializeField] GameObject ItemPrefab;
     [Space(20)]
     [SerializeField] EquipmentShopDatabase EquipmentDatabase;
+    [SerializeField] GameObject InventoryEquipment;
+    [SerializeField] GameObject MergeEquipment;
     
     void Start ()
     {
@@ -48,7 +48,7 @@ public class EquipmentShopUI : MonoBehaviour
             //Thêm thông tin
             uiItem.SetEquipmentName (equipment.name);
             uiItem.SetEquipmentDes (equipment.description);
-            uiItem.SetEquipmentImage (equipment.image);
+            uiItem.SetEquipmentImage (equipment.GetSprite());
             uiItem.SetEquipmentPrice (equipment.price);
 
 
@@ -61,10 +61,16 @@ public class EquipmentShopUI : MonoBehaviour
     }
     void OnItemPurchased (Equipment equipment)
 	{
-        if (GameDataManager.CanSpendCoins( equipment.price))
+        if(GameDataManager.GetPlayerEquipments().Count < 25)
         {
-            GameDataManager.AddEquipment( equipment);
+            if (GameDataManager.CanSpendCoins( equipment.price))
+            {
+                GameDataManager.SpendCoins( equipment.price);
+                GameDataManager.AddEquipment( equipment);
+            }
+            InventoryEquipment.GetComponent<EquipmentShowUI>().SetSlotEquipmentInfo();
+            MergeEquipment.GetComponent<MergeEquipmentShowUI>().SetSlotMergeEquipmentInfo();
         }
-        else Debug.Log("No enough coins!!");
+        else Debug.Log("Full Inventory");
 	}
 }
