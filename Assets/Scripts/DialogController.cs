@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class DialogController : MonoBehaviour
 {
     public UnityEngine.UI.Image dialogImage;
+    public UnityEngine.UI.Image textboxImage;
 
     void Update()
     {
@@ -22,14 +23,18 @@ public class DialogController : MonoBehaviour
                 // Hiển thị dialog
                 if (hit.collider.gameObject.CompareTag("RedPoint"))
                 {
-                    dialogImage.gameObject.SetActive(true);
+                    textboxImage.gameObject.SetActive(true);
                 }
             }
         }
     }
 
     // Hàm hiển thị dialog
-
+    public void ShowDialog()
+    {
+        HideTextbox();
+        dialogImage.gameObject.SetActive(true);
+    }
 
     // Gọi hàm này để ẩn dialog (nút Close hoặc sau khi hoàn thành hành động)
     public void HideDialog()
@@ -37,6 +42,10 @@ public class DialogController : MonoBehaviour
         dialogImage.gameObject.SetActive(false);
     }
 
+    public void HideTextbox()
+    {
+        textboxImage.gameObject.SetActive(false);
+    }
     public void PlayGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
