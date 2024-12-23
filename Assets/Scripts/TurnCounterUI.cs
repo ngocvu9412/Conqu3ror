@@ -1,88 +1,72 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using DG.Tweening;
 
 public class TurnCounterUI : Singleton<TurnCounterUI>
 {
-    public Image rubyIcon;            // Icon của viên ruby
-    public Image arrowIcon;           // Icon của mũi tên
-    public Text turnCountText;        // Hiển thị số lượt còn lại
+    [Header("UI References")]
+    public RectTransform counterRect;  // RectTransform của toàn bộ UI Counter
+    public Image rubyIcon;            // Hình ảnh của viên ruby
+    public Image arrowIcon;           // Hình ảnh của mũi tên
+    public Text turnCountText;        // Text hiển thị số lượt
 
-    public Color playerColor;         // Màu của người chơi
-    public Color enemyColor;          // Màu của đối thủ
-    public float smoothDuration = 1f; // Thời gian mượt mà (xoay và đổi màu)
+    [Header("Settings")]
+    public Color playerColor = Color.blue;   // Màu của lượt người chơi
+    public Color enemyColor = Color.red;  // Màu của lượt đối thủ
+    public float animationDuration = 0.5f; // Thời gian thực hiện animation
 
-    private RectTransform rectTransform;
-
-    override public void Awake()
-    {
-        rectTransform = GetComponent<RectTransform>();
-    }
+    private int currentTurnCount = 0;       // Số lượt hiện tại
 
     /// <summary>
-    /// Cập nhật Turn Counter UI khi đổi lượt
+    /// Cập nhật giao diện Turn Counter
     /// </summary>
-    /// <param name="isPlayerTurn">true nếu là lượt của người chơi, false nếu là lượt của đối thủ</param>
+    /// <param name="isPlayerTurn">Lượt hiện tại là của người chơi</param>
     /// <param name="turnCount">Số lượt còn lại</param>
-    private Coroutine transitionCoroutine;
-
     public void UpdateTurnCounter(bool isPlayerTurn, int turnCount)
     {
         // Cập nhật số lượt
+        currentTurnCount = turnCount;
         if (turnCountText != null)
         {
-            turnCountText.text = turnCount.ToString();
+            turnCountText.text = currentTurnCount.ToString();
         }
 
-        // Dừng Coroutine trước đó
-        if (transitionCoroutine != null)
-        {
-            StopCoroutine(transitionCoroutine);
-        }
-
-        // Bắt đầu Coroutine mới
+        // Đặt màu sắc
         Color targetColor = isPlayerTurn ? playerColor : enemyColor;
+
+        // Xoay viên ruby 180 độ
         float targetRotation = isPlayerTurn ? -180 : 0;
 
-        transitionCoroutine = StartCoroutine(SmoothTransition(targetColor, targetRotation));
+        // Thực hiện hiệu ứng
+        AnimateTurnCounter(targetColor, targetRotation);
     }
-
 
     /// <summary>
-    /// Coroutine xử lý hiệu ứng mượt mà cho đổi màu và xoay
+    /// Thực hiện animation bằng DoTween
     /// </summary>
-    private IEnumerator SmoothTransition(Color targetColor, float targetRotation)
+    /// <param name="targetColor">Màu đích</param>
+    /// <param name="targetRotation">Góc xoay đích</param>
+    private void AnimateTurnCounter(Color targetColor, float targetRotation)
     {
-        float elapsedTime = 0;
-        Quaternion startRotation = rectTransform.localRotation;
-        Quaternion endRotation = Quaternion.Euler(0, 0, targetRotation);
-
-        Color startRubyColor = rubyIcon.color;
-        Color startArrowColor = arrowIcon.color;
-
-        while (elapsedTime < smoothDuration)
+        // Đổi màu viên ruby
+        if (rubyIcon != null)
         {
-            float t = elapsedTime / smoothDuration;
-
-            // Xoay dần
-            rectTransform.localRotation = Quaternion.Lerp(startRotation, endRotation, t);
-
-            // Đổi màu dần
-            if (rubyIcon != null)
-                rubyIcon.color = Color.Lerp(startRubyColor, targetColor, t);
-            if (arrowIcon != null)
-                arrowIcon.color = Color.Lerp(startArrowColor, targetColor, t);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
+            rubyIcon.DOColor(targetColor, animationDuration);
         }
 
-        // Đảm bảo trạng thái cuối cùng là chính xác
-        rectTransform.localRotation = endRotation;
-        if (rubyIcon != null)
-            rubyIcon.color = targetColor;
+        // Đổi màu mũi tên
         if (arrowIcon != null)
-            arrowIcon.color = targetColor;
-       
+        {
+            arrowIcon.DOColor(targetColor, animationDuration);
+        }
+
+        // Xoay viên ruby
+        if (counterRect != null)
+        {
+            counterRect.DOLocalRotate(new Vector3(0, 0, targetRotation), animationDuration, RotateMode.FastBeyond360)
+                .SetEase(Ease.OutQuad);
+        }
     }
 }
+

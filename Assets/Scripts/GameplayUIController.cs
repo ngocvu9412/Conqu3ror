@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class GameplayUIController : Singleton<GameplayUIController>
 {
@@ -42,22 +43,62 @@ public class GameplayUIController : Singleton<GameplayUIController>
     public GameObject loseDialog;
     public Text myCurrentLive;
 
+    public RectTransform winDialogTransform; // RectTransform của WinDialog
+    public RectTransform loseDialogTransform; // RectTransform của LoseDialog
+
     public void ShowWinDialog()
     {
-        if (winDialog != null)
+        if (winDialog != null && winDialogTransform != null)
         {
-            winDialog.SetActive(true); // Hiển thị dialog thắng
-            Time.timeScale = 0;        // Dừng thời gian trong game
+            winDialog.SetActive(true); // Kích hoạt dialog trước
+            winDialogTransform.localScale = Vector3.zero; // Đặt kích thước ban đầu là 0
+            winDialogTransform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack).SetUpdate(true); // Tăng kích thước lên 1 với hiệu ứng mượt
+
+            Time.timeScale = 0; // Dừng thời gian trong game
         }
     }
+
     public void ShowLoseDialog()
     {
-        if (loseDialog != null)
+        if (loseDialog != null && loseDialogTransform != null)
         {
-            loseDialog.SetActive(true); // Hiển thị dialog thua
-            Time.timeScale = 0;         // Dừng thời gian trong game
+            loseDialog.SetActive(true); // Kích hoạt dialog trước
+            loseDialogTransform.localScale = Vector3.zero; // Đặt kích thước ban đầu là 0
+            loseDialogTransform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack).SetUpdate(true); // Tăng kích thước lên 1 với hiệu ứng mượt
+
+            Time.timeScale = 0; // Dừng thời gian trong game
         }
     }
+
+    public void HideWinDialog()
+    {
+        if (winDialog != null && winDialogTransform != null)
+        {
+            // Animation thu nhỏ dialog
+            winDialogTransform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack).SetUpdate(true)
+                .OnComplete(() =>
+                {
+                    Debug.Log("Win Dialog Hidden");
+                    winDialog.SetActive(false); // Ẩn hoàn toàn dialog sau khi animation kết thúc
+                Time.timeScale = 1; // Tiếp tục thời gian
+            });
+        }
+    }
+
+    public void HideLoseDialog()
+    {
+        if (loseDialog != null && loseDialogTransform != null)
+        {
+            // Animation thu nhỏ dialog
+            loseDialogTransform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack).SetUpdate(true)
+                .OnComplete(() =>
+                {
+                    loseDialog.SetActive(false); // Ẩn hoàn toàn dialog sau khi animation kết thúc
+                Time.timeScale = 1; // Tiếp tục thời gian
+            });
+        }
+    }
+
 
     public void ReloadGame()
     {
@@ -74,60 +115,63 @@ public class GameplayUIController : Singleton<GameplayUIController>
     public void UpdateTime(bool isMyTurn, float curTime, float totalTime)
     {
         float rate = curTime / totalTime;
+
         if (isMyTurn)
         {
             if (myTimeBar)
-                myTimeBar.fillAmount = rate;
+                myTimeBar.DOFillAmount(rate, 0.3f).SetEase(Ease.OutQuad); // Cập nhật thanh trạng thái mượt mà
             if (myTimeText)
-                myTimeText.text = curTime.ToString();
+                myTimeText.text = Mathf.CeilToInt(curTime).ToString();
         }
         else
         {
             if (enemyTimeBar)
-                enemyTimeBar.fillAmount = rate;
+                enemyTimeBar.DOFillAmount(rate, 0.3f).SetEase(Ease.OutQuad); // Cập nhật thanh trạng thái mượt mà
             if (enemyTimeText)
-                enemyTimeText.text = curTime.ToString();
+                enemyTimeText.text = Mathf.CeilToInt(curTime).ToString();
         }
     }
 
     public void UpdateHealth(bool isMyTurn, int curHealth, int maxHealth)
     {
-        float rate = (float)curHealth / (float)maxHealth;
+        float rate = (float)curHealth / maxHealth;
+
         if (isMyTurn)
         {
             if (myHealthBar)
-                myHealthBar.fillAmount = rate;
+                myHealthBar.DOFillAmount(rate, 0.3f).SetEase(Ease.OutQuad); // Cập nhật thanh trạng thái mượt mà
             if (myHealthText)
-                myHealthText.text = curHealth + "/" + maxHealth;
+                myHealthText.text = $"{curHealth}/{maxHealth}";
         }
         else
         {
             if (enemyHealthBar)
-                enemyHealthBar.fillAmount = rate;
-            if(enemyHealthText)
-                enemyHealthText.text = curHealth + "/" + maxHealth;
-
+                enemyHealthBar.DOFillAmount(rate, 0.3f).SetEase(Ease.OutQuad); // Cập nhật thanh trạng thái mượt mà
+            if (enemyHealthText)
+                enemyHealthText.text = $"{curHealth}/{maxHealth}";
         }
     }
 
     public void UpdateEnergy(bool isMyTurn, int curEnergy, int maxEnergy)
     {
-        float rate = (float)curEnergy / (float)maxEnergy;
+        float rate = (float)curEnergy / maxEnergy;
+
         if (isMyTurn)
         {
             if (myEnergyBar)
-                myEnergyBar.fillAmount = rate;
+                myEnergyBar.DOFillAmount(rate, 0.3f).SetEase(Ease.OutQuad); // Cập nhật thanh trạng thái mượt mà
             if (myEnergyText)
-                myEnergyText.text = curEnergy + "/" + maxEnergy;
+                myEnergyText.text = $"{curEnergy}/{maxEnergy}";
         }
         else
         {
             if (enemyEnergyBar)
-                enemyEnergyBar.fillAmount = rate;
+                enemyEnergyBar.DOFillAmount(rate, 0.3f).SetEase(Ease.OutQuad); // Cập nhật thanh trạng thái mượt mà
             if (enemyEnergyText)
-                enemyEnergyText.text = curEnergy + "/" + maxEnergy;
+                enemyEnergyText.text = $"{curEnergy}/{maxEnergy}";
         }
     }
+
     public void UpdateAttack(bool isMyAtk, int curAtk)
     {
         if (isMyAtk)

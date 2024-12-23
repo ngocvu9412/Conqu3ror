@@ -1,9 +1,11 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PauseManager : MonoBehaviour
 {
-    public GameObject pausePanel; // Tham chiếu tới Panel Pause
+    public GameObject pausePanel; // GameObject của Pause Panel
+    public RectTransform pauseDialog; // RectTransform của dialog bên trong Panel
     private bool isGamePaused = false;
 
     void Start()
@@ -27,20 +29,29 @@ public class PauseManager : MonoBehaviour
 
     public void PauseGame()
     {
-        if (pausePanel != null)
+        if (pausePanel != null && pauseDialog != null)
         {
             pausePanel.SetActive(true); // Hiển thị panel
-            Time.timeScale = 0;        // Dừng thời gian trong game
+
+            // Hiển thị dialog với hiệu ứng trượt từ trên xuống
+            pauseDialog.DOAnchorPos(Vector2.zero, 1f).From(new Vector2(0, 1000)).SetUpdate(true);
+
+            Time.timeScale = 0; // Dừng thời gian trong game
             isGamePaused = true;
         }
     }
 
     public void ResumeGame()
     {
-        if (pausePanel != null)
+        if (pausePanel != null && pauseDialog != null)
         {
-            pausePanel.SetActive(false); // Ẩn panel
-            Time.timeScale = 1;          // Tiếp tục thời gian
+            // Ẩn dialog với hiệu ứng trượt ra khỏi màn hình
+            pauseDialog.DOAnchorPos(new Vector2(0, 1000), 1f).SetUpdate(true).OnComplete(() =>
+            {
+                pausePanel.SetActive(false); // Tắt panel sau khi animation hoàn tất
+            });
+
+            Time.timeScale = 1; // Tiếp tục thời gian trong game
             isGamePaused = false;
         }
     }

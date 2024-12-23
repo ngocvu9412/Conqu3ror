@@ -1399,12 +1399,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9873d9414da4abc4185f3cf5e3502e01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  counterRect: {fileID: 251424885}
   rubyIcon: {fileID: 795797571}
   arrowIcon: {fileID: 12766518}
   turnCountText: {fileID: 1467886500}
   playerColor: {r: 0, g: 0.08879924, b: 1, a: 1}
   enemyColor: {r: 1, g: 0.008679497, b: 0, a: 1}
-  smoothDuration: 0.5
+  animationDuration: 0.5
 --- !u!1 &297287177
 GameObject:
   m_ObjectHideFlags: 0
@@ -7309,7 +7310,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1992350242}
         m_TargetAssemblyTypeName: GameplayUIController, Assembly-CSharp
-        m_MethodName: GoToMainMenu
+        m_MethodName: HideLoseDialog
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7897,6 +7898,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pausePanel: {fileID: 997364493}
+  pauseDialog: {fileID: 1628207950}
 --- !u!1 &1425895432
 GameObject:
   m_ObjectHideFlags: 0
@@ -9430,7 +9432,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1992350242}
         m_TargetAssemblyTypeName: GameplayUIController, Assembly-CSharp
-        m_MethodName: GoToMainMenu
+        m_MethodName: HideWinDialog
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11369,6 +11371,8 @@ MonoBehaviour:
   expCollected: {fileID: 1759443365}
   loseDialog: {fileID: 230235784}
   myCurrentLive: {fileID: 600015693}
+  winDialogTransform: {fileID: 1337311199}
+  loseDialogTransform: {fileID: 1253927452}
 --- !u!114 &1992350243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11444,13 +11448,13 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 242871483}
   - {fileID: 2070892399}
   - {fileID: 1750747677}
   - {fileID: 1418363772}
   - {fileID: 997364494}
   - {fileID: 230235785}
   - {fileID: 1006948971}
-  - {fileID: 242871483}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
