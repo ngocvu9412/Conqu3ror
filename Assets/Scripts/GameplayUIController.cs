@@ -1,4 +1,5 @@
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameplayUIController : Singleton<GameplayUIController>
@@ -26,6 +27,49 @@ public class GameplayUIController : Singleton<GameplayUIController>
     public Image enemySkill1;
     public Image enemySkill2;
     public Image enemySkill3;
+
+    public GameObject winDialog;
+    public Image myCharAvatar;
+    public Text myCharLevel;
+    public Text myCharName;
+    public Text myAtk;
+    public Text myHealth;
+    public Image myExpBar;
+    public Text myExpText;
+    public Text goldCollected;
+    public Text expCollected;
+
+    public GameObject loseDialog;
+    public Text myCurrentLive;
+
+    public void ShowWinDialog()
+    {
+        if (winDialog != null)
+        {
+            winDialog.SetActive(true); // Hiển thị dialog thắng
+            Time.timeScale = 0;        // Dừng thời gian trong game
+        }
+    }
+    public void ShowLoseDialog()
+    {
+        if (loseDialog != null)
+        {
+            loseDialog.SetActive(true); // Hiển thị dialog thua
+            Time.timeScale = 0;         // Dừng thời gian trong game
+        }
+    }
+
+    public void ReloadGame()
+    {
+        Time.timeScale = 1; // Đặt lại thời gian về bình thường
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reload lại màn chơi
+    }
+
+    public void GoToMainMenu()
+    {
+        Time.timeScale = 1; // Đặt lại thời gian về bình thường
+        SceneManager.LoadScene("MainMenu"); // Chuyển tới màn hình chính
+    }
 
     public void UpdateTime(bool isMyTurn, float curTime, float totalTime)
     {
@@ -130,6 +174,81 @@ public class GameplayUIController : Singleton<GameplayUIController>
                 enemySkill2.sprite = skill2;
             if (enemySkill3)
                 enemySkill3.sprite = skill3;
+        }
+    }
+
+    public void UpdateWinDialog(Sprite charAvatar, string charName, int charLevel, int attack, int maxHealth, int curExp, int maxExp, int goldReward, int expReward)
+    {
+        if (winDialog != null)
+        {
+            // Activate the win dialog
+            winDialog.SetActive(true);
+
+            // Update character avatar
+            if (myCharAvatar != null)
+            {
+                myCharAvatar.sprite = charAvatar;
+            }
+
+            // Update character name
+            if (myCharName != null)
+            {
+                myCharName.text = charName;
+            }
+
+            // Update character level
+            if (myCharLevel != null)
+            {
+                myCharLevel.text = charLevel.ToString();
+            }
+
+            // Update attack value
+            if (myAtk != null)
+            {
+                myAtk.text = attack.ToString();
+            }
+
+            // Update health value
+            if (myHealth != null)
+            {
+                myHealth.text = maxHealth.ToString();
+            }
+
+            // Update experience bar
+            if (myExpBar != null)
+            {
+                myExpBar.fillAmount = (float)curExp / maxExp; // Expecting expRate as a value between 0 and 1
+            }
+
+            // Update experience text
+            if (myExpText != null)
+            {
+                myExpText.text = curExp + "/" + maxExp; // Convert to percentage
+            }
+
+            // Update gold collected
+            if (goldCollected != null)
+            {
+                goldCollected.text = goldReward.ToString();
+            }
+
+            // Update experience collected
+            if (expCollected != null)
+            {
+                expCollected.text = expReward.ToString();
+            }
+
+            // Pause the game
+            Time.timeScale = 0;
+        }
+    }
+
+    public void UpdateLoseDialog(int curLive)
+    {
+        if (loseDialog != null)
+        {
+            if (myCurrentLive)
+                myCurrentLive.text = curLive.ToString();
         }
     }
 

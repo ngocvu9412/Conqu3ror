@@ -36,6 +36,10 @@ public class ShapesManager : Singleton<ShapesManager>
     private Coroutine playerCountdownCoroutine;
     private Coroutine enemyCountdownCoroutine;
 
+    public GameObject winDialog;  // Tham chiếu tới dialog thắng
+    public GameObject loseDialog; // Tham chiếu tới dialog thua
+
+
     override public void Awake()
     {
         
@@ -64,7 +68,7 @@ public class ShapesManager : Singleton<ShapesManager>
             Experience = 0
         };
 
-        playerCharacter.Skills = MinervaSkills.GetSkills();
+        playerCharacter.Skills = JasmineSkills.GetSkills();
 
         if (GameplayUIController.Ins)
         {
@@ -72,7 +76,7 @@ public class ShapesManager : Singleton<ShapesManager>
             GameplayUIController.Ins.UpdateEnergy(isMyTurn, playerCharacter.CurrentEnergy, playerCharacter.MaxEnergy);
             GameplayUIController.Ins.UpdateTime(isMyTurn, playerCharacter.CurrentTime, playerCharacter.MaxTime);
             GameplayUIController.Ins.UpdateAttack(true, playerCharacter.CurrentAttack);
-            GameplayUIController.Ins.UpdateCharacter(true, Resources.Load<Sprite>("Character/Minerva/Minerva"));
+            GameplayUIController.Ins.UpdateCharacter(true, Resources.Load<Sprite>("Character/Jasmine/Jasmine"));
             GameplayUIController.Ins.UpdateSkills(true, playerCharacter.Skills[0].Icon, playerCharacter.Skills[1].Icon, playerCharacter.Skills[2].Icon);
         }
 
@@ -90,14 +94,14 @@ public class ShapesManager : Singleton<ShapesManager>
             Experience = 0
         };
 
-        enemyCharacter.Skills = JasmineSkills.GetSkills();
+        enemyCharacter.Skills = MariusSkills.GetSkills();
         if (GameplayUIController.Ins)
         {
             GameplayUIController.Ins.UpdateHealth(!isMyTurn, enemyCharacter.CurrentHealth, enemyCharacter.MaxHealth);
             GameplayUIController.Ins.UpdateEnergy(!isMyTurn, enemyCharacter.CurrentEnergy, enemyCharacter.MaxEnergy);
             GameplayUIController.Ins.UpdateTime(!isMyTurn, enemyCharacter.CurrentTime, enemyCharacter.MaxTime);
             GameplayUIController.Ins.UpdateAttack(false, enemyCharacter.CurrentAttack);
-            GameplayUIController.Ins.UpdateCharacter(false, Resources.Load<Sprite>("Character/Jasmine/Jasmine"));
+            GameplayUIController.Ins.UpdateCharacter(false, Resources.Load<Sprite>("Character/Marius/Marius"));
             GameplayUIController.Ins.UpdateSkills(false, enemyCharacter.Skills[0].Icon, enemyCharacter.Skills[1].Icon, enemyCharacter.Skills[2].Icon);
         }
 
@@ -107,7 +111,6 @@ public class ShapesManager : Singleton<ShapesManager>
     /// ////////////////////////////////////////////////////
     public void OnSkillButtonClicked(int skillIndex)
     {
-        Debug.Log("Click");
         if (isMyTurn)
         {
             UseSkill(skillIndex, playerCharacter);
@@ -485,6 +488,19 @@ public class ShapesManager : Singleton<ShapesManager>
             ChangeTurn();
         }
 
+        // Kiểm tra nếu máu bản thân hoặc đối thủ về 0
+        if (playerCharacter.CurrentHealth <= 0 || playerCharacter.CurrentTime <= 0)
+        {
+            GameplayUIController.Ins.UpdateLoseDialog(2);
+            GameplayUIController.Ins.ShowLoseDialog();// Hiện dialog thua
+        }
+        else if (enemyCharacter.CurrentHealth <= 0 || enemyCharacter.CurrentTime <= 0)
+        {
+            GameplayUIController.Ins.UpdateWinDialog(Resources.Load<Sprite>("Character/Jasmine/Jasmine"), "Jasmine", 24, playerCharacter.BaseAttack, playerCharacter.MaxHealth, 600, 1200, playerCharacter.Gold, playerCharacter.Experience);
+            GameplayUIController.Ins.ShowWinDialog(); // Hiện dialog thắng
+        }
+        
+
 
         //
         if (state == GameState.None)
@@ -804,70 +820,6 @@ public class ShapesManager : Singleton<ShapesManager>
         state = GameState.None;
         StartCheckForPotentialMatches();
     }
-    //private void UpdateCharacterStats(Dictionary<string, float> collectibles)
-    //{
-    //    // Xác định nhân vật hiện tại và đối thủ
-    //    CharacterInCombat currentCharacter = isMyTurn ? playerCharacter : enemyCharacter;
-    //    CharacterInCombat opponentCharacter = isMyTurn ? enemyCharacter : playerCharacter;
-
-    //    foreach (var key in collectibles.Keys)
-    //    {
-    //        float value = collectibles[key]; // Giữ nguyên float để tính toán
-
-    //        switch (key)
-    //        {
-    //            case "Sword":
-    //                // Tính sát thương dựa trên CurrentAttack và làm tròn kết quả
-    //                float rawDamage = currentCharacter.CurrentAttack * value;
-    //                int damage = Mathf.RoundToInt(rawDamage);
-    //                opponentCharacter.CurrentHealth -= damage;
-    //                opponentCharacter.CurrentHealth = Mathf.Max(0, opponentCharacter.CurrentHealth); // Giới hạn không dưới 0
-    //                if (GameplayUIController.Ins)
-    //                    GameplayUIController.Ins.UpdateHealth(!isMyTurn, opponentCharacter.CurrentHealth, opponentCharacter.MaxHealth);
-    //                break;
-
-    //            case "Heart":
-    //                // Hồi máu dựa trên 3% MaxHealth và làm tròn kết quả
-    //                float rawHeal = 0.03f * value * currentCharacter.MaxHealth;
-    //                int healAmount = Mathf.RoundToInt(rawHeal);
-    //                currentCharacter.CurrentHealth = Mathf.Min(currentCharacter.MaxHealth, currentCharacter.CurrentHealth + healAmount);
-    //                if (GameplayUIController.Ins)
-    //                    GameplayUIController.Ins.UpdateHealth(isMyTurn, currentCharacter.CurrentHealth, currentCharacter.MaxHealth);
-    //                break;
-
-    //            case "Gold":
-    //                // Tăng vàng và làm tròn kết quả
-    //                float rawGold = value * 10f;
-    //                int goldGained = Mathf.RoundToInt(rawGold);
-    //                currentCharacter.Gold += goldGained;
-    //                break;
-
-    //            case "Energy":
-    //                // Tăng năng lượng và làm tròn kết quả
-    //                float rawEnergy = value * 10f;
-    //                int energyGained = Mathf.RoundToInt(rawEnergy);
-    //                currentCharacter.CurrentEnergy = Mathf.Min(currentCharacter.MaxEnergy, currentCharacter.CurrentEnergy + energyGained);
-    //                if (GameplayUIController.Ins)
-    //                    GameplayUIController.Ins.UpdateEnergy(isMyTurn, currentCharacter.CurrentEnergy, currentCharacter.MaxEnergy);
-    //                break;
-
-    //            case "Time":
-    //                // Tăng thời gian (lưu ý giá trị thời gian vẫn là float)
-    //                float rawTime = value * 2f;
-    //                currentCharacter.CurrentTime = Mathf.Min(currentCharacter.MaxTime, currentCharacter.CurrentTime + rawTime);
-    //                if (GameplayUIController.Ins)
-    //                    GameplayUIController.Ins.UpdateTime(isMyTurn, currentCharacter.CurrentTime, currentCharacter.MaxTime);
-    //                break;
-
-    //            case "Scroll":
-    //                // Tăng kinh nghiệm và làm tròn kết quả
-    //                float rawExp = value * 10f;
-    //                int expGained = Mathf.RoundToInt(rawExp);
-    //                currentCharacter.Experience += expGained;
-    //                break;
-    //        }
-    //    }
-    //}
 
     private void UpdateCharacterStats(Dictionary<string, float> collectibles)
     {

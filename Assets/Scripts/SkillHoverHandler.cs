@@ -56,7 +56,7 @@ public class SkillHoverHandler : MonoBehaviour, IPointerEnterHandler, IPointerEx
                     var dialogController = dialog.GetComponent<SkillDialogController>();
                     if (dialogController != null)
                     {
-                        dialogController.SetSkillDetails(skill.Name, skill.Description, skill.Icon);
+                        dialogController.SetSkillDetails(skill.Name, skill.EnergyCost, skill.Description, skill.Icon);
                     }
                 }
             }
