@@ -18,6 +18,8 @@ public class CharacterChosingUI : MonoBehaviour
     [Space(20)]
     [SerializeField] CharactersDatabase CharacterDB;
     [SerializeField] GameObject characterInfoUI;
+    [SerializeField] GameObject characterInfoFull;
+    [SerializeField] GameObject SkillLoadUI;
 
     void Start ()
     {
@@ -63,6 +65,8 @@ public class CharacterChosingUI : MonoBehaviour
 	{
         GameDataManager.SetSelectedCharacter(CharacterDB.GetCharacter(index),index);
         characterInfoUI.GetComponent<CharacterInfoUI>().ShowCharacterInfoUI(GameDataManager.GetSelectedCharacterIndex());
+        characterInfoFull.GetComponent<CharacterInfoUI>().ShowCharacterInfoUI(GameDataManager.GetSelectedCharacterIndex());
+        SkillLoadUI.GetComponent<SkillShowUI>().SetSkillInfo(GameDataManager.GetSelectedCharacterIndex());
 	}
     void OnCharacterUnlocked(int index)
     {

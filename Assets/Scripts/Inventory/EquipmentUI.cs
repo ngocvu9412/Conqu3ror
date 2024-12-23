@@ -103,7 +103,7 @@ public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
         foreach (var result in results)
         {
-            if (result.gameObject.GetComponent<IDropHandler>() != null && result.gameObject.GetComponent<EquipmentSlot>() != null && result.gameObject.GetComponent<EquipmentUI>() != null && result.gameObject.GetComponent<MergeEquipmentUI>())
+            if (result.gameObject.GetComponent<IDropHandler>() != null && result.gameObject.GetComponent<EquipmentUI>() != null && result.gameObject.GetComponent<MergeEquipmentUI>())
             {
                 return true;
             }

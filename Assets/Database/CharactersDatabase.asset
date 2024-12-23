@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CharactersDatabase
   m_EditorClassIdentifier: 
   Characters:
-  - Image: {fileID: -4453784588268070965, guid: bdc1b0142beb25e4bac7e06ca17dd7b3, type: 3}
+  - Image: {fileID: -4453784588268070965, guid: 7a3d790aa5566934b8ea9f7b4df8eb4c, type: 3}
     name: Phoenix
     health: 120
     health_per_lv: 15
@@ -22,17 +22,26 @@ MonoBehaviour:
     Exp: 0
     Level: 0
     Unlocked: 1
-  - Image: {fileID: 8262271927763056467, guid: cd323ea6c1db42f4b8832b3486099aa8, type: 3}
-    name: Sylva
+  - Image: {fileID: 6126225977653088430, guid: ff806c8c0c4b27f43b19d14864dd1527, type: 3}
+    name: Minerva
     health: 120
     health_per_lv: 15
     attack: 5
     attack_per_lv: 0.5
     Exp: 0
     Level: 0
-    Unlocked: 0
-  - Image: {fileID: -4855744160756122052, guid: 34a4f75d2a38361448a7bc5b559d3e70, type: 3}
-    name: Kael
+    Unlocked: 1
+  - Image: {fileID: -2408873480607560697, guid: a42cf90e52e04ba4187ce041ff28f1fc, type: 3}
+    name: Marius
+    health: 120
+    health_per_lv: 15
+    attack: 5
+    attack_per_lv: 0.5
+    Exp: 0
+    Level: 0
+    Unlocked: 1
+  - Image: {fileID: 6678045564113122982, guid: 79c3f26cf62d9c5498cbba1f460c9b28, type: 3}
+    name: Jasmine
     health: 120
     health_per_lv: 15
     attack: 5

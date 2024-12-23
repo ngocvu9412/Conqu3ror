@@ -18,31 +18,31 @@ MonoBehaviour:
     description: "T\u0103ng 50 m\xE1u c\u01A1 b\u1EA3n"
     price: 400
     Level: 0
+    StatTypeEffect: Health
+    EffectStat: 50
+    IsUsing: 0
   - SpriteName: "G\u01B0\u01A1m \xE1nh s\xE1ng"
     name: "G\u01B0\u01A1m \xE1nh s\xE1ng"
     description: "T\u0103ng 4 s\xE1t th\u01B0\u01A1ng c\u01A1 b\u1EA3n"
     price: 800
     Level: 0
+    StatTypeEffect: Attack
+    EffectStat: 4
+    IsUsing: 0
   - SpriteName: "Qu\u1EA3 c\u1EA7u ph\xF9 th\u1EE7y"
     name: "Qu\u1EA3 c\u1EA7u ph\xF9 th\u1EE7y"
     description: "Nh\u1EADn 70 n\u0103ng l\u01B0\u1EE3ng khi b\u1EAFt \u0111\u1EA7u
       tr\u1EADn \u0111\u1EA5u"
     price: 600
     Level: 0
+    StatTypeEffect: StartEnergy
+    EffectStat: 70
+    IsUsing: 0
   - SpriteName: "Nh\u1EABn ph\xF9 th\u1EE7y"
     name: "Nh\u1EABn ph\xF9 th\u1EE7y"
-    description: "S\xE1t th\u01B0\u01A1ng t\u1EEB chi\xEAu th\u1EE9c t\u0103ng th\xEAm
-      20%"
+    description: "T\u0103ng 50 n\u0103ng l\u01B0\u1EE3ng t\u1ED1i \u0111a"
     price: 800
     Level: 0
-  - SpriteName: "\u0110\u1ED3ng h\u1ED3 sinh m\u1EC7nh"
-    name: "\u0110\u1ED3ng h\u1ED3 sinh m\u1EC7nh"
-    description: "T\u0103ng 30s sinh m\u1EC7nh t\u1ED1i \u0111a khi b\u1EAFt \u0111\u1EA7u
-      tr\u1EADn"
-    price: 400
-    Level: 0
-  - SpriteName: "Tr\u01B0\u1EE3ng ma ph\xE1p"
-    name: "Tr\u01B0\u1EE3ng ma ph\xE1p"
-    description: "N\u0103ng l\u01B0\u1EE3ng h\u1EA5p th\u1EE5 t\u0103ng 20%"
-    price: 400
-    Level: 0
+    StatTypeEffect: MaxEnergy
+    EffectStat: 50
+    IsUsing: 0
