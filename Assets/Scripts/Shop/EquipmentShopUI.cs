@@ -18,8 +18,7 @@ public class EquipmentShopUI : MonoBehaviour
     [SerializeField] GameObject ItemPrefab;
     [Space(20)]
     [SerializeField] EquipmentShopDatabase EquipmentDatabase;
-    [SerializeField] GameObject InventoryEquipment;
-    [SerializeField] GameObject MergeEquipment;
+    [SerializeField] GameObject MergeShow;
     
     void Start ()
     {
@@ -67,9 +66,9 @@ public class EquipmentShopUI : MonoBehaviour
             {
                 GameDataManager.SpendCoins( equipment.price);
                 GameDataManager.AddEquipment( equipment);
+                GoldSharedUI.Instance.UpdateCoinsUIText();
             }
-            InventoryEquipment.GetComponent<EquipmentShowUI>().SetSlotEquipmentInfo();
-            MergeEquipment.GetComponent<MergeEquipmentShowUI>().SetSlotMergeEquipmentInfo();
+            MergeShow.GetComponent<MergeEquipmentShowUI>().ResetMergeEquipUI();
         }
         else Debug.Log("Full Inventory");
 	}

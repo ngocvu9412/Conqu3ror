@@ -7,8 +7,12 @@ public class CharacterEquipmentUI : MonoBehaviour
     [SerializeField] Image EquipmentImage;
     [SerializeField] TMP_Text EquipmentLevel;
     
-    private RectTransform rectTransform;
+    private RectTransform rectTransform ;
 
+    private void Awake()
+    {
+        rectTransform = GetComponent<RectTransform>();
+    }
     public void SetEquipmentPos(Vector2 pos)
     {
         rectTransform.anchoredPosition += pos;

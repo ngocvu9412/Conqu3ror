@@ -13,6 +13,7 @@ public class CharacterButtonManager : MonoBehaviour
     private GameObject CharacterWindow;
     [SerializeField] 
     private Button CharacterButton;
+    [SerializeField] GameObject CharacterEquipShow;
 
     void Start()
     {
@@ -35,6 +36,7 @@ public class CharacterButtonManager : MonoBehaviour
         {
             CharacterButton.interactable=false;
             CloseButton.interactable=true;
+            CharacterEquipShow.GetComponent<CharacterEquipShowUI>().SetUsedEquipInfo();
         }
 
         CharacterWindow.SetActive(!isActive);

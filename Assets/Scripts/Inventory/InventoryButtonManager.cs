@@ -13,6 +13,7 @@ public class InventoryButtonManager : MonoBehaviour
     private GameObject InventoryWindow;
     [SerializeField] 
     private Button InventoryButton;
+    [SerializeField] GameObject InventoryEquipShow;
 
 
     void Start()
@@ -36,6 +37,7 @@ public class InventoryButtonManager : MonoBehaviour
         {
             InventoryButton.interactable=false;
             CloseButton.interactable=true;
+            InventoryEquipShow.GetComponent<EquipmentShowUI>().SetSlotEquipmentInfo();
         }
 
         // Toggle the active state of the shop window
