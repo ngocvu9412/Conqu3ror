@@ -57,7 +57,7 @@ public class ShapesManager : Singleton<ShapesManager>
         playerCharacter = new CharacterInCombat
         {
             MaxHealth = 1000,
-            CurrentHealth = 100,
+            CurrentHealth = 1000,
             BaseAttack = 10,
             CurrentAttack = 10,
             MaxEnergy = 300,
@@ -83,7 +83,7 @@ public class ShapesManager : Singleton<ShapesManager>
         enemyCharacter = new CharacterInCombat
         {
             MaxHealth = 1200,
-            CurrentHealth = 120,
+            CurrentHealth = 1200,
             BaseAttack = 12,
             CurrentAttack = 12,
             MaxEnergy = 300,

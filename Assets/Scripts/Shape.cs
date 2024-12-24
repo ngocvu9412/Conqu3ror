@@ -44,6 +44,7 @@ public class Shape : MonoBehaviour
         Column = column;
         Row = row;
         Type = type;
+        Debug.Log(type);
     }
 
     /// <summary>
