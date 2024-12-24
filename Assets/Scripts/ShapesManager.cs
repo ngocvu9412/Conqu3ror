@@ -36,7 +36,7 @@ public class ShapesManager : Singleton<ShapesManager>
     private Coroutine playerCountdownCoroutine;
     private Coroutine enemyCountdownCoroutine;
 
-    public AIController aiController;
+    private bool isUsingSkill = false; // Đánh dấu trạng thái skill đang được sử dụng
 
     override public void Awake()
     {
@@ -121,7 +121,6 @@ public class ShapesManager : Singleton<ShapesManager>
 
     public IEnumerator ExecuteSkillLogic(List<Vector2Int> destroyedPositions)
     {
-        yield return new WaitForSeconds(1f);
         Dictionary<string, float> destroyedSymbols = new Dictionary<string, float>
     {
         { "Sword", 0 },
@@ -255,21 +254,27 @@ public class ShapesManager : Singleton<ShapesManager>
             // Cập nhật cột bị ảnh hưởng
             affectedColumns = totalMatches.Select(m => m.GetComponent<Shape>().Column).Distinct().ToList();
         }
+        yield return new WaitForSeconds(1f);
         // Giảm lượt chơi
         turnCount--;
         if (TurnCounterUI.Ins)
             TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
 
         state = GameState.None;
+
+        if (!isMyTurn)
+            AIController.Ins.EndAIActions();
+        else
+            isUsingSkill = false; // Tắt cờ sau khi skill hoàn tất
     }
-
-
-
-
-
 
     public void UseSkill(int skillIndex, CharacterInCombat character)
     {
+        if (isUsingSkill)
+        {
+            Debug.LogWarning("Skill is already being used. Please wait.");
+            return; // Nếu skill đang được sử dụng, không làm gì cả
+        }
         state = GameState.Animating;
         if (character.Skills != null && skillIndex < character.Skills.Count)
         {
@@ -277,6 +282,7 @@ public class ShapesManager : Singleton<ShapesManager>
 
             if (character.CurrentEnergy >= skill.EnergyCost)
             {
+                isUsingSkill = true; // Bật cờ trước khi thực hiện skill
                 character.CurrentEnergy -= skill.EnergyCost;
 
                 // Cập nhật năng lượng trên UI (nếu có UI)
@@ -287,6 +293,7 @@ public class ShapesManager : Singleton<ShapesManager>
 
                 // Khóa bàn cờ khi sử dụng kỹ năng
                 isBoardLocked = true;
+                state = GameState.Animating;
 
                 // Thực hiện kỹ năng
                 skill.Execute(character, this);
@@ -298,6 +305,7 @@ public class ShapesManager : Singleton<ShapesManager>
             else
             {
                 Debug.Log("Not enough energy to use skill!");
+                state = GameState.None;
             }
         }
     }
@@ -306,8 +314,9 @@ public class ShapesManager : Singleton<ShapesManager>
 
     IEnumerator UnlockBoardAfterSkill()
     {
-        yield return new WaitForSeconds(Constants.SkillAnimationDuration);
+        yield return new WaitForSeconds(1f);
         isBoardLocked = false;
+        state = GameState.None;
     }
 
 
@@ -467,6 +476,11 @@ public class ShapesManager : Singleton<ShapesManager>
 
     public void ChangeTurn()
     {
+        if (isUsingSkill)
+        {
+            Debug.Log("Cannot change turn while skill is in use.");
+            return;
+        }
         isMyTurn = !isMyTurn;
 
         turnCount = 1;
@@ -490,7 +504,7 @@ public class ShapesManager : Singleton<ShapesManager>
 
     void Update()
     {
-        Debug.Log(state);
+        if (isUsingSkill) return; // Không làm gì nếu đang sử dụng skill
 
         // Kiểm tra và reset bàn cờ nếu cần thiết, nhưng không xử lý khi bàn cờ bị khóa
         if (!isBoardLocked)
@@ -498,7 +512,7 @@ public class ShapesManager : Singleton<ShapesManager>
             CheckAndResetBoardIfNeeded();
         }
 
-        if (turnCount <= 0)
+        if (turnCount <= 0 && state == GameState.None)
         {
             ChangeTurn();
         }
@@ -827,7 +841,8 @@ public class ShapesManager : Singleton<ShapesManager>
         if (TurnCounterUI.Ins)
             TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
         Debug.Log(turnCount + " turn remain");
-        state = GameState.None; // Chuyển sang trạng thái AIMove
+
+        AIController.Ins.EndAIActions();
 
     }
 

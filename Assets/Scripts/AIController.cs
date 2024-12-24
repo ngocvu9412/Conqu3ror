@@ -7,6 +7,7 @@ public class AIController : Singleton<AIController>
     public CharacterInCombat character; // AI character info
     private ShapesManager shapesManager; // Board manager
     public DifficultyLevel aiDifficulty; // AI difficulty level
+    private bool isExecutingAction = false; // Đảm bảo AI chỉ thực hiện một hành động tại một thời điểm
 
     // AI difficulty levels
     public enum DifficultyLevel
@@ -23,11 +24,18 @@ public class AIController : Singleton<AIController>
 
     public void ExecuteAIMove(string difficulty)
     {
-
         // Step 1: Attempt to use a skill if appropriate
+        if (isExecutingAction)
+        {
+            Debug.Log("AI is already performing an action.");
+            return; // Không làm gì nếu AI đang bận
+        }
+
+        isExecutingAction = true; // Đặt cờ bắt đầu hành động
+
         if (TryUseSkill(difficulty))
         {
-            shapesManager.state = GameState.None;
+            return; // Nếu đã sử dụng skill, không thực hiện nước đi
         }
 
         // Step 2: Perform the best move based on difficulty
@@ -43,6 +51,7 @@ public class AIController : Singleton<AIController>
             shapesManager.state = GameState.None;
         }
     }
+
 
     public (GameObject, GameObject)? GetBestMoveByDifficulty(string difficulty)
     {
@@ -62,39 +71,52 @@ public class AIController : Singleton<AIController>
 
     private bool TryUseSkill(string difficulty)
     {
-        // Sort skills by energy cost descending
+        Debug.Log("AI is attempting to use a skill...");
+
+        // Sắp xếp skill theo năng lượng từ cao xuống thấp
         character.Skills.Sort((a, b) => b.EnergyCost.CompareTo(a.EnergyCost));
 
         foreach (var skill in character.Skills)
         {
             if (character.CurrentEnergy >= skill.EnergyCost)
             {
-                
                 // Easy: Randomly decide whether to use a skill
                 if (difficulty == "easy" && Random.value > 0.5f)
                 {
-                    ActivateSkill(skill);
-                    return true;
+                    StartCoroutine(ActivateSkill(skill));
+                    return true; // Skill được sử dụng
                 }
 
                 // Medium/Hard: Use skill if it's the last turn
                 if (difficulty != "easy" && shapesManager.turnCount == 1)
                 {
-                    ActivateSkill(skill);
-                    return true;
+                    StartCoroutine(ActivateSkill(skill));
+                    return true; // Skill được sử dụng
                 }
             }
         }
 
-        return false;
+        return false; // Không sử dụng skill
     }
 
-    private void ActivateSkill(Skill skill)
+
+    private IEnumerator ActivateSkill(Skill skill)
     {
+        yield return new WaitForSeconds(1f); // Chờ trước khi sử dụng skill
         Debug.Log("AI uses skill: " + skill.Name);
         character.CurrentEnergy -= skill.EnergyCost;
+
+        // Cập nhật năng lượng trên UI
+        if (GameplayUIController.Ins)
+        {
+            GameplayUIController.Ins.UpdateEnergy(false, character.CurrentEnergy, character.MaxEnergy);
+        }
+
         skill.Execute(character, shapesManager);
+
+        //EndAIActions();
     }
+
 
     private (GameObject, GameObject)? GetEasyMove()
     {
@@ -198,9 +220,17 @@ public class AIController : Singleton<AIController>
     private IEnumerator PerformAIMove(GameObject go1, GameObject go2)
     {
         Debug.Log($"AI performs move: {go1.name} <-> {go2.name}");
-        yield return new WaitForSeconds(1f); // Delay for smooth AI actions
-        yield return shapesManager.PerformSwapAndCollapse(go1, go2); // Perform move and handle matches
+        yield return new WaitForSeconds(1f); // Chờ để tạo hiệu ứng mượt mà
+        yield return shapesManager.PerformSwapAndCollapse(go1, go2); // Thực hiện nước đi và xử lý match
+        //EndAIActions();
     }
 
-        
+
+    public void EndAIActions()
+    {
+        isExecutingAction = false; // Đặt lại cờ
+        shapesManager.state = GameState.None; // Trả về trạng thái chờ
+        Debug.Log("AI turn completed.");
+    }
+
 }

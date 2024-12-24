@@ -196,7 +196,7 @@ public static class MinervaSkills
 
                     // Triệt tiêu năng lượng của đối thủ
                     opponent.CurrentEnergy = Mathf.Max(0, opponent.CurrentEnergy - 100);
-                    GameplayUIController.Ins.UpdateEnergy(!shapesManager.isMyTurn, character.CurrentEnergy, character.MaxEnergy);
+                    GameplayUIController.Ins.UpdateEnergy(!shapesManager.isMyTurn, opponent.CurrentEnergy, opponent.MaxEnergy);
 
                     // Phá hủy ngẫu nhiên 4 ô (không trùng lặp)
                     HashSet<Vector2Int> destroyedPositions = new HashSet<Vector2Int>();
@@ -262,7 +262,7 @@ public static class MinervaSkills
                     opponent.CurrentHealth = Mathf.Max(0, opponent.CurrentHealth - damage);
                     // Triệt tiêu năng lượng của đối thủ
                     opponent.CurrentEnergy = 0;
-                    GameplayUIController.Ins.UpdateEnergy(!shapesManager.isMyTurn, character.CurrentEnergy, character.MaxEnergy);
+                    GameplayUIController.Ins.UpdateEnergy(!shapesManager.isMyTurn, opponent.CurrentEnergy, opponent.MaxEnergy);
 
                     // Phá hủy 6 biểu tượng ngẫu nhiên (không trùng lặp)
                     HashSet<Vector2Int> destroyedPositions = new HashSet<Vector2Int>();
