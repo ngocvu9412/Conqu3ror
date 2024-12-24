@@ -13,7 +13,7 @@ public class ShapesManager : Singleton<ShapesManager>
     public readonly Vector2 BottomRight = new Vector2(-3.5f, -3.5f);
     public readonly Vector2 CandySize = new Vector2(1f, 1f);
 
-    private GameState state = GameState.None;
+    public GameState state = GameState.None;
     private GameObject hitGo = null;
     private Vector2[] SpawnPositions;
     public GameObject[] CandyPrefabs;
@@ -36,9 +36,7 @@ public class ShapesManager : Singleton<ShapesManager>
     private Coroutine playerCountdownCoroutine;
     private Coroutine enemyCountdownCoroutine;
 
-    public GameObject winDialog;  // Tham chiếu tới dialog thắng
-    public GameObject loseDialog; // Tham chiếu tới dialog thua
-
+    public AIController aiController;
 
     override public void Awake()
     {
@@ -61,7 +59,7 @@ public class ShapesManager : Singleton<ShapesManager>
             BaseAttack = 10,
             CurrentAttack = 10,
             MaxEnergy = 300,
-            CurrentEnergy = 300,
+            CurrentEnergy = 100,
             CurrentTime = 45,
             MaxTime = 90,
             Gold = 0,
@@ -84,7 +82,7 @@ public class ShapesManager : Singleton<ShapesManager>
         {
             MaxHealth = 1200,
             CurrentHealth = 1200,
-            BaseAttack = 12,
+            BaseAttack = 5,
             CurrentAttack = 12,
             MaxEnergy = 300,
             CurrentEnergy = 300,
@@ -108,6 +106,7 @@ public class ShapesManager : Singleton<ShapesManager>
         if (TurnCounterUI.Ins)
             TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
 
+        AIController.Ins.character = enemyCharacter;
         StartCountdown(isMyTurn);
     }
 
@@ -118,14 +117,11 @@ public class ShapesManager : Singleton<ShapesManager>
         {
             UseSkill(skillIndex, playerCharacter);
         }
-        //else
-        //{
-        //    UseSkill(skillIndex, enemyCharacter);
-        //}
     }
 
     public IEnumerator ExecuteSkillLogic(List<Vector2Int> destroyedPositions)
     {
+        yield return new WaitForSeconds(1f);
         Dictionary<string, float> destroyedSymbols = new Dictionary<string, float>
     {
         { "Sword", 0 },
@@ -263,6 +259,8 @@ public class ShapesManager : Singleton<ShapesManager>
         turnCount--;
         if (TurnCounterUI.Ins)
             TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
+
+        state = GameState.None;
     }
 
 
@@ -272,6 +270,7 @@ public class ShapesManager : Singleton<ShapesManager>
 
     public void UseSkill(int skillIndex, CharacterInCombat character)
     {
+        state = GameState.Animating;
         if (character.Skills != null && skillIndex < character.Skills.Count)
         {
             var skill = character.Skills[skillIndex];
@@ -466,10 +465,13 @@ public class ShapesManager : Singleton<ShapesManager>
     }
 
 
-    private void ChangeTurn()
+    public void ChangeTurn()
     {
         isMyTurn = !isMyTurn;
+
         turnCount = 1;
+        state = GameState.None;
+        
         if (TurnCounterUI.Ins)
             TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
         StartCountdown(isMyTurn);
@@ -482,10 +484,14 @@ public class ShapesManager : Singleton<ShapesManager>
             TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
     }
 
+    
+
     private bool isBoardLocked = false; // Biến kiểm tra trạng thái bàn cờ
 
     void Update()
     {
+        Debug.Log(state);
+
         // Kiểm tra và reset bàn cờ nếu cần thiết, nhưng không xử lý khi bàn cờ bị khóa
         if (!isBoardLocked)
         {
@@ -495,6 +501,17 @@ public class ShapesManager : Singleton<ShapesManager>
         if (turnCount <= 0)
         {
             ChangeTurn();
+        }
+
+        // Trạng thái AI thực hiện nước đi
+        if (state == GameState.None && !isMyTurn)
+        {
+            state = GameState.Animating;
+            if (!isBoardLocked)
+            {
+                AIController.Ins.ExecuteAIMove(AIController.Ins.aiDifficulty.ToString());
+            }
+            return;
         }
 
         // Kiểm tra nếu máu bản thân hoặc đối thủ về 0
@@ -508,27 +525,12 @@ public class ShapesManager : Singleton<ShapesManager>
             GameplayUIController.Ins.UpdateWinDialog(Resources.Load<Sprite>("Character/Jasmine/Jasmine"), "Jasmine", 24, playerCharacter.BaseAttack, playerCharacter.MaxHealth, 600, 1200, playerCharacter.Gold, playerCharacter.Experience);
             GameplayUIController.Ins.ShowWinDialog(); // Hiện dialog thắng
         }
-        
+
 
 
         //
-        if (state == GameState.None)
+        if (state == GameState.None && isMyTurn)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1) && isMyTurn)
-            {
-                UseSkill(0, playerCharacter);
-            }
-
-            if (Input.GetKeyDown(KeyCode.Alpha2) && isMyTurn)
-            {
-                UseSkill(1, playerCharacter);
-            }
-
-            if (Input.GetKeyDown(KeyCode.Alpha3) && isMyTurn)
-            {
-                UseSkill(2, playerCharacter);
-            }
-
             // Người dùng đã nhấp chuột hoặc chạm màn hình
             if (Input.GetMouseButtonDown(0) && !isBoardLocked)
             {
@@ -552,7 +554,7 @@ public class ShapesManager : Singleton<ShapesManager>
                 }
             }
         }
-        else if (state == GameState.SelectionStarted)
+        else if (state == GameState.SelectionStarted && isMyTurn)
         {
             // Người dùng kéo chuột
             if (Input.GetMouseButton(0) && !isBoardLocked)
@@ -588,7 +590,7 @@ public class ShapesManager : Singleton<ShapesManager>
                 }
             }
         }
-        
+
     }
 
     // Kiểm tra và reset bàn cờ nếu không còn nước đi hợp lệ
@@ -646,6 +648,187 @@ public class ShapesManager : Singleton<ShapesManager>
             sp1.sortingOrder = 1;
             sp2.sortingOrder = 0;
         }
+    }
+
+    public IEnumerator PerformSwapAndCollapse(GameObject go1, GameObject go2)
+    {
+        state = GameState.Animating;
+        // Lấy đối tượng thứ hai trong việc hoán đổi
+
+        shapes.Swap(go1, go2);
+
+        // Di chuyển các đối tượng đã hoán đổi
+        go1.transform.DOMove(go2.transform.position, Constants.AnimationDuration);
+        go2.transform.DOMove(go1.transform.position, Constants.AnimationDuration);
+        yield return new WaitForSeconds(Constants.AnimationDuration);
+
+        // Lấy các match từ hai đối tượng đã hoán đổi
+        var hitGoMatchesInfo = shapes.GetMatches(go1);
+        var hitGo2MatchesInfo = shapes.GetMatches(go2);
+
+        var totalMatches = hitGoMatchesInfo.MatchedCandy
+            .Union(hitGo2MatchesInfo.MatchedCandy).Distinct();
+
+        // Nếu số lượng match ít hơn 3, quay lại và không thực hiện hoán đổi
+        if (totalMatches.Count() < Constants.MinimumMatches)
+        {
+            go1.transform.DOMove(go2.transform.position, Constants.AnimationDuration);
+            go2.transform.DOMove(go1.transform.position, Constants.AnimationDuration);
+            yield return new WaitForSeconds(Constants.AnimationDuration);
+
+            shapes.UndoSwap();
+        }
+
+        int timesRun = 1;
+
+        while (totalMatches.Count() >= Constants.MinimumMatches)
+        {
+            // Tính điểm cho trận đấu và biểu tượng thu thập
+            Dictionary<string, float> collectiblesInChain = new Dictionary<string, float>
+        {
+            { "Sword", 0 },
+            { "Heart", 0 },
+            { "Gold", 0 },
+            { "Energy", 0 },
+            { "Scroll", 0 },
+            { "Time", 0 },
+        };
+
+            foreach (var match in totalMatches)
+            {
+                string collectibleTag = match.tag; // Lấy Tag của đối tượng (sword, heart, gold, energy)
+                if (!collectiblesInChain.ContainsKey(collectibleTag))
+                {
+                    collectiblesInChain[collectibleTag] = 0; // Nếu chưa có, khởi tạo bằng 0
+                }
+
+                collectiblesInChain[collectibleTag]++;  // Tăng số lượng biểu tượng thu thập
+            }
+
+            foreach (var key in collectiblesInChain.Keys.ToList())
+            {
+                if (collectiblesInChain[key] >= 5)
+                {
+                    // Nếu có từ 5 biểu tượng trở lên, nhân với 2
+                    collectiblesInChain[key] *= 2f;
+                    AddTurn();
+                }
+                else if (collectiblesInChain[key] == 4)
+                {
+                    // Nếu có 4 biểu tượng, nhân với 1.5
+                    collectiblesInChain[key] *= 1.5f;
+                    AddTurn();
+                }
+
+                // Nhân với timesRun (hệ số chuỗi)
+                collectiblesInChain[key] *= (timesRun * 0.5f + 0.5f);  // chain 
+
+            }
+
+
+            soundManager.PlayCrincle();
+
+            List<int> affectedColumns = new List<int>();
+
+            Dictionary<string, float> collectiblesInExplode = new Dictionary<string, float>
+        {
+            { "Sword", 0 },
+            { "Heart", 0 },
+            { "Gold", 0 },
+            { "Energy", 0 },
+            { "Scroll", 0 },
+            { "Time", 0 },
+        };
+
+
+            foreach (var item in totalMatches)
+            {
+                var shape = item.GetComponent<Shape>();
+
+                if (shape.Bonus == BonusType.SpecialSword)
+                {
+                    // Xử lý nổ 3x3 và thu thập các biểu tượng bị ảnh hưởng
+                    var affectedShapes = HandleSpecialSword(item);
+
+                    foreach (var affected in affectedShapes)
+                    {
+                        string collectibleTag = affected.tag;
+
+                        if (collectiblesInExplode.ContainsKey(collectibleTag))
+                        {
+                            collectiblesInExplode[collectibleTag]++;
+                        }
+                        else
+                        {
+                            collectiblesInExplode[collectibleTag] = 1;
+                        }
+
+                        shapes.Remove(affected);
+                        RemoveFromScene(affected);
+
+                        int column = affected.GetComponent<Shape>().Column;
+                        if (!affectedColumns.Contains(column))
+                        {
+                            affectedColumns.Add(column);
+                        }
+                    }
+                }
+                else
+                {
+                    // Xử lý biểu tượng thường
+                    shapes.Remove(item);
+                    RemoveFromScene(item);
+
+                    int column = item.GetComponent<Shape>().Column;
+                    if (!affectedColumns.Contains(column))
+                    {
+                        affectedColumns.Add(column);
+                    }
+                }
+            }
+
+            foreach (var key in collectiblesInExplode.Keys.ToList())
+            {
+                // Nhân với timesRun (hệ số chuỗi)
+                collectiblesInExplode[key] *= (timesRun * 0.5f + 0.5f);  // chain 
+                collectiblesInChain[key] += collectiblesInExplode[key];
+
+            }
+
+            UpdateCharacterStats(collectiblesInChain);
+            // In ra số lượng biểu tượng thu thập được sau mỗi chuỗi (chain)
+            Debug.Log("Chain: " + timesRun);
+
+            // Loại bỏ cột trùng lặp
+            affectedColumns = affectedColumns.Distinct().ToList();
+            // Xử lý các cột bị ảnh hưởng
+            var collapsedCandyInfo = shapes.Collapse(affectedColumns);
+            var newCandyInfo = CreateNewCandyInSpecificColumns(affectedColumns);
+
+            // Di chuyển và hoạt ảnh
+            int maxDistance = Mathf.Max(collapsedCandyInfo.MaxDistance, newCandyInfo.MaxDistance);
+            MoveAndAnimate(newCandyInfo.AlteredCandy, maxDistance);
+            MoveAndAnimate(collapsedCandyInfo.AlteredCandy, maxDistance);
+
+            yield return new WaitForSeconds(Constants.MoveAnimationMinDuration * maxDistance);
+
+            totalMatches = shapes.GetMatches(collapsedCandyInfo.AlteredCandy)
+                .Union(shapes.GetMatches(newCandyInfo.AlteredCandy)).Distinct();
+
+            //////
+            // Nếu không có match mới, thoát vòng lặp
+            if (totalMatches.Count() < Constants.MinimumMatches)
+                break;
+
+            timesRun++;
+
+        }
+        turnCount--;/////////
+        if (TurnCounterUI.Ins)
+            TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
+        Debug.Log(turnCount + " turn remain");
+        state = GameState.None; // Chuyển sang trạng thái AIMove
+
     }
 
     private IEnumerator FindMatchesAndCollapse(RaycastHit2D hit2)

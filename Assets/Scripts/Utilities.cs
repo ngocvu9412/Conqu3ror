@@ -1077,6 +1077,54 @@ public static class Utilities
                                 score += symbolPriority[cleanType];
                             }
                         }
+                        // Add move to the list if it has a score
+                        if (score > 0)
+                        {
+                            movesWithScores.Add((item1, item2, score));
+                        }
+                    }
+                }
+            }
+        }
+
+        // Sort moves by score in descending order
+        movesWithScores.Sort((x, y) => y.Item3.CompareTo(x.Item3));
+        return movesWithScores;
+    }
+
+    public static List<(GameObject, GameObject, int)> CalculateMovesAndScoresForMatch4(ShapesArray shapes, Dictionary<string, int> symbolPriority)
+    {
+        List<(GameObject, GameObject, int)> movesWithScores = new List<(GameObject, GameObject, int)>();
+
+        for (int row = 0; row < Constants.Rows; row++)
+        {
+            for (int column = 0; column < Constants.Columns; column++)
+            {
+                // Get potential moves
+                var potentialMoves = new List<(List<GameObject>, string)>
+            {
+                Match4Horizontal(row,column,shapes),
+                Match4Vertical(row, column, shapes)
+            };
+
+                // Calculate scores for potential moves
+                foreach (var move in potentialMoves)
+                {
+                    if (move.Item1 != null && move.Item1.Count == 2)
+                    {
+                        var item1 = move.Item1[0];
+                        var item2 = move.Item1[1];
+
+                        // Calculate the score for this move
+                        int score = 0;
+                        if (move.Item2 != null && move.Item2.StartsWith("Symbol_"))
+                        {
+                            string cleanType = move.Item2.Substring(7); // Remove "Symbol_" prefix
+                            if (symbolPriority.ContainsKey(cleanType))
+                            {
+                                score += symbolPriority[cleanType];
+                            }
+                        }
 
                         // Add move to the list if it has a score
                         if (score > 0)
