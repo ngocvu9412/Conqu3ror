@@ -1312,6 +1312,63 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &239785785
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 239785787}
+  - component: {fileID: 239785786}
+  m_Layer: 0
+  m_Name: AIController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &239785786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239785785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 931bff50e97967342859e578b0e4ed47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  character:
+    MaxHealth: 0
+    CurrentHealth: 0
+    BaseAttack: 0
+    CurrentAttack: 0
+    MaxEnergy: 300
+    CurrentEnergy: 0
+    MaxTime: 90
+    CurrentTime: 0
+    CharacterIndex: 0
+    Gold: 0
+    Experience: 0
+  aiDifficulty: 0
+--- !u!4 &239785787
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 239785785}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1612.8005, y: 589.585, z: -16.21088}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &242871482
 GameObject:
   m_ObjectHideFlags: 0
@@ -7387,6 +7444,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc043a35351bec840a343783f285c0aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: 0
   CandyPrefabs:
   - {fileID: 92260243084181745, guid: 4d27d93bdbcc48c42b8dbf38103e0abd, type: 3}
   - {fileID: 6127602938770882643, guid: e313a64ddda57c140856437ab8d83491, type: 3}
@@ -7428,8 +7486,6 @@ MonoBehaviour:
     Gold: 0
     Experience: 0
   soundManager: {fileID: 1624638383}
-  winDialog: {fileID: 0}
-  loseDialog: {fileID: 0}
 --- !u!4 &1363272350
 Transform:
   m_ObjectHideFlags: 0
@@ -12658,3 +12714,4 @@ SceneRoots:
   - {fileID: 1624638385}
   - {fileID: 656230261}
   - {fileID: 1992350246}
+  - {fileID: 239785787}
