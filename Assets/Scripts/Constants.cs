@@ -14,7 +14,7 @@ public static class Constants
 
     public static readonly float ExplosionDuration = 0.3f;
 
-    public static readonly float WaitBeforePotentialMatchesCheck = 5f;
+    public static readonly float WaitBeforePotentialMatchesCheck = 2f;
     public static readonly float OpacityAnimationFrameDelay = 0.05f;
 
     public static readonly int MinimumMatches = 3;

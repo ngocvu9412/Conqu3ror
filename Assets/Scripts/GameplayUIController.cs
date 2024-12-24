@@ -78,7 +78,6 @@ public class GameplayUIController : Singleton<GameplayUIController>
             winDialogTransform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack).SetUpdate(true)
                 .OnComplete(() =>
                 {
-                    Debug.Log("Win Dialog Hidden");
                     winDialog.SetActive(false); // Ẩn hoàn toàn dialog sau khi animation kết thúc
                 Time.timeScale = 1; // Tiếp tục thời gian
             });
