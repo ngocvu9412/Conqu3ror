@@ -5,8 +5,10 @@ using UnityEngine.SceneManagement;
 public class DialogController : MonoBehaviour
 {
     public UnityEngine.UI.Image dialogImage;
-    public UnityEngine.UI.Image textboxImage;
-
+    public UnityEngine.UI.Image textboxImage1;
+    public UnityEngine.UI.Image textboxImage2;
+    public UnityEngine.UI.Image menuImage;
+    public UnityEngine.UI.Button menuBtn;
     void Update()
     {
         // Kiểm tra nếu nhấn chuột trái
@@ -23,7 +25,7 @@ public class DialogController : MonoBehaviour
                 // Hiển thị dialog
                 if (hit.collider.gameObject.CompareTag("RedPoint"))
                 {
-                    textboxImage.gameObject.SetActive(true);
+                    textboxImage1.gameObject.SetActive(true);
                 }
             }
         }
@@ -32,7 +34,7 @@ public class DialogController : MonoBehaviour
     // Hàm hiển thị dialog
     public void ShowDialog()
     {
-        HideTextbox();
+        HideTextbox(textboxImage2);
         dialogImage.gameObject.SetActive(true);
     }
 
@@ -42,9 +44,26 @@ public class DialogController : MonoBehaviour
         dialogImage.gameObject.SetActive(false);
     }
 
-    public void HideTextbox()
+    public void ShowNextTextbox()
     {
-        textboxImage.gameObject.SetActive(false);
+        HideTextbox(textboxImage1);
+        textboxImage2.gameObject.SetActive(true);
+    }
+
+    public void HideTextbox(UnityEngine.UI.Image textbox)
+    {
+        textbox.gameObject.SetActive(false);
+    }
+
+    public void OpenMenu()
+    {
+        menuImage.gameObject.SetActive(true);
+        menuBtn.interactable = false;
+    }
+    public void HideMenu()
+    {
+        menuImage.gameObject.SetActive(false);
+        menuBtn.interactable = true;
     }
     public void PlayGame()
     {
