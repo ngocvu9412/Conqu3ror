@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
@@ -103,12 +101,56 @@ public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
 
         foreach (var result in results)
         {
-            if (result.gameObject.GetComponent<IDropHandler>() != null && result.gameObject.GetComponent<EquipmentUI>() != null && result.gameObject.GetComponent<MergeEquipmentUI>())
+            if (result.gameObject.GetComponent<IDropHandler>() != null)
             {
+                if( result.gameObject.GetComponent<EquipmentUI>() != null && result.gameObject.GetComponent<MergeEquipmentUI>())
                 return true;
+                if( result.gameObject.GetComponent<EquipmentSlot>() != null) 
+                    if( CheckIfSlotInValid(result.gameObject))
+                    return true;
             }
         }
         return false;
+    }
+    bool CheckIfSlotInValid(GameObject gameObject)
+    {
+        Equipment[] PlayerUsedEquips = GameDataManager.GetPlayerUsedEquips();
+        switch (gameObject.name)
+        {
+            case "Slot1":
+            {
+                if(PlayerUsedEquips[0].Equals(default(Equipment)))
+                {
+                    return false;
+                }
+            }
+            break;
+            case "Slot2":
+            {
+                if(PlayerUsedEquips[0].Equals(default(Equipment)))
+                {
+                    return false;
+                }
+            }
+            break;
+            case "Slot3":
+            {
+                if(PlayerUsedEquips[0].Equals(default(Equipment)))
+                {
+                    return false;
+                }
+            }
+            break;
+            case "Slot4":
+            {
+                if(PlayerUsedEquips[0].Equals(default(Equipment)))
+                {
+                    return false;
+                }
+            }
+            break;
+        }
+        return true;
     }
 
     public void OnDrop(PointerEventData eventData)

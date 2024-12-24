@@ -16,10 +16,6 @@ public struct Equipment
     {
         return Resources.Load<Sprite>("Equipment/"+SpriteName); // hoặc cách khác nếu bạn lưu sprite theo cách khác
     }
-    public void SetUsedStatus ( bool UsedStatus )
-    {
-        IsUsing = UsedStatus;
-    }
     public string GetStatTypeEffect()
     {
         return StatTypeEffect;

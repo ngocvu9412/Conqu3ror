@@ -39,13 +39,18 @@ public class MergeEquipmentShowUI : MonoBehaviour
     }
     public void SetSlotMergeEquipmentInfo()
     {
+        int j =0;
         List<Equipment> PlayerEquipments = GameDataManager.GetPlayerEquipments();
-        for( int i = 0; i< PlayerEquipments.Count;i++)
+        for( int i = 0 ; i< PlayerEquipments.Count;i++)
         {
             Equipment Equipment = PlayerEquipments[i];
-            MergeEquipmentUI uiMergeEquipment = MergeEquipmentContainer.GetChild(i).GetComponent<MergeEquipmentUI>();
+            MergeEquipmentUI uiMergeEquipment = MergeEquipmentContainer.GetChild(j).GetComponent<MergeEquipmentUI>();
             int equipmentSlot=GameDataManager.IsEquipmentUsed(Equipment);
-            if(equipmentSlot == -1) uiMergeEquipment.CanMerge = true;
+            if(equipmentSlot == -1) 
+            { 
+                uiMergeEquipment.CanMerge = true;
+            }
+            else continue;
             //Thêm tên cho item trong Hierachy
             uiMergeEquipment.gameObject.name = "Equipment - " + Equipment.name + " - Lv" + Equipment.Level; 
             
@@ -56,15 +61,17 @@ public class MergeEquipmentShowUI : MonoBehaviour
             uiMergeEquipment.SetIndex (i);  
             uiMergeEquipment.SetCanDrag(true); 
             uiMergeEquipment.SetInfoValid(true);
+            j++;
         }
     }
     public void ResetMergeEquipUI()
     {
+        if(MergeEquipmentContainer.childCount < 25)
+        return;
         for( int i = 0; i < 25; i++)
         {
             MergeEquipmentContainer.GetChild(i).GetComponent<MergeEquipmentUI>().Initialize();
         }
-        InventoryEquip.GetComponent<EquipmentShowUI>().SetSlotEquipmentInfo();
         SetSlotMergeEquipmentInfo();
     }
 }

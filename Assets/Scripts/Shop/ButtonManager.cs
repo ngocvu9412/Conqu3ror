@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class ButtonManager : MonoBehaviour
 {
     [Header ("Shop Buttons")]
@@ -17,6 +16,7 @@ public class ButtonManager : MonoBehaviour
     private GameObject equipmentWindow;
     [SerializeField] 
     private Button equipmentButton;
+    [SerializeField] GameObject MergeEquipShow;
     // [SerializeField] 
     // private GameObject itemsWindow;
     // [SerializeField] 
@@ -48,6 +48,7 @@ public class ButtonManager : MonoBehaviour
         }
         else
         {
+            MergeEquipShow.GetComponent<MergeEquipmentShowUI>().ResetMergeEquipUI();
             ShopButton.interactable=false;
             CloseButton.interactable=true;
             // Always open the equipment Window when the Shop is opened, and close the Items Window

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EquipmentShowUI : MonoBehaviour
@@ -49,6 +50,7 @@ public class EquipmentShowUI : MonoBehaviour
             for( int i = 0; i< HighestLevelEquip.Count;i++)
             {
                 Equipment Equipment = HighestLevelEquip[i].Item1;
+                ChangeUsedWeaponToItsHigherLevel(Equipment);
                 EquipmentUI uiEquipment = EquipmentContainer.GetChild(i+6).GetComponent<EquipmentUI>();
                 int equipmentSlot=GameDataManager.IsEquipmentUsed(Equipment);
                 if(equipmentSlot != -1)
@@ -87,6 +89,18 @@ public class EquipmentShowUI : MonoBehaviour
                 uiEquipment.SetIndex (HighestLevelEquip[i].Item2);  
                 uiEquipment.SetCanDrag(true); 
                 uiEquipment.SetInfoValid(true);
+            }
+        }
+    }
+    public void ChangeUsedWeaponToItsHigherLevel(Equipment equipment)
+    {
+        Equipment[]PlayerUsedEquip = GameDataManager.GetPlayerUsedEquips();
+        for(int i =0; i<PlayerUsedEquip.Length;i++)
+        {
+            if(PlayerUsedEquip[i].name == equipment.name && PlayerUsedEquip[i].Level < equipment.Level)
+            {
+                GameDataManager.RemoveEquipmentUsed(GameDataManager.GetPlayerEquipments().IndexOf(PlayerUsedEquip[i]));
+                GameDataManager.AddEquipmentToSlot(i,GameDataManager.GetPlayerEquipments().IndexOf(equipment));
             }
         }
     }

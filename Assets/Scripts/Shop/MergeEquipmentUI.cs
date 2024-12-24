@@ -66,6 +66,7 @@ public class MergeEquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHa
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        Debug.Log("OnPointerDown");
     }
 
     public void OnBeginDrag(PointerEventData eventData)

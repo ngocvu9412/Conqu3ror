@@ -5,6 +5,8 @@ using System.Linq;
 [System.Serializable] public class PlayerData
 {
     public int coins = 20000;
+	public int HealthEnergy;
+	public int currentHealthEnergy;
     public List<int> UnlockedCharactersIndexes =new List<int> {0,1};
     public int selectedCharacterIndex = 0;
     public List<Equipment> PlayerEquipments = new List<Equipment>();
@@ -45,6 +47,19 @@ public class GameDataManager : MonoBehaviour
 	{
 		return playerData.UnlockedCharactersIndexes;
 	}
+	//Health Funcs
+	public static int GetMaxHealthEner()
+	{
+		return playerData.HealthEnergy;
+	}
+	public static int GetCurrentHealthEner()
+	{
+		return playerData.currentHealthEnergy;
+	}
+	public static void SetCurrentHealthEner(int healthEnergy)
+	{
+		playerData.currentHealthEnergy = healthEnergy;
+	}
     //Coins Funcs
 	public static int GetCoins ()
 	{
@@ -71,13 +86,15 @@ public class GameDataManager : MonoBehaviour
     {
         Equipment equip = equipment;
         playerData.PlayerEquipments.Add (equip);
+		SortPlayerEquipments();
         SavePlayerData ();
     }
 	public static void AddEquipmentToSlot (int slot_Index,int equipment_Index)
 	{
-
+		Equipment tempEquip = playerData.PlayerEquipments[equipment_Index];
+		tempEquip.IsUsing = true;
+		playerData.PlayerEquipments[equipment_Index] = tempEquip;
 		playerData.UsingEquipments[slot_Index] = playerData.PlayerEquipments[equipment_Index];
-		playerData.PlayerEquipments[equipment_Index].SetUsedStatus(true);
 		SavePlayerData();
 	}
 	public static List<Equipment> GetPlayerEquipments()
@@ -122,7 +139,10 @@ public class GameDataManager : MonoBehaviour
 		if(EquipmentSlot != -1)
 		{
 			playerData.UsingEquipments[EquipmentSlot] = default(Equipment);
-			playerData.PlayerEquipments[EquipmentIndex].SetUsedStatus(false);
+			Equipment tempEquip = playerData.PlayerEquipments[EquipmentIndex];
+			tempEquip.IsUsing = false;
+			playerData.PlayerEquipments[EquipmentIndex] = tempEquip;
+
 		}
 		SavePlayerData();
 	}
@@ -141,7 +161,7 @@ public class GameDataManager : MonoBehaviour
         Equipment equip2 = playerData.PlayerEquipments[index2];
 
         // Kiểm tra xem chúng có cùng cấp không
-        if (equip1.Level == equip2.Level)
+        if (equip1.Level == equip2.Level && equip1.name == equip2.name)
         {
             // Tạo trang bị mới với cấp độ tăng thêm 1
             Equipment newEquip = new Equipment
@@ -170,28 +190,56 @@ public class GameDataManager : MonoBehaviour
 		SavePlayerData();
     }
 	public static void SortPlayerEquipments()
-	{
-	    // Sao chép danh sách hiện tại để lưu thứ tự ban đầu
-	    List<Equipment> originalOrder = new List<Equipment>(playerData.PlayerEquipments);
+{
+    // Định nghĩa thứ tự tên cụ thể
+    List<string> nameOrder = new List<string>
+    {
+        "Trái tim hoàng gia",
+        "Gươm ánh sáng",
+        "Quả cầu phù thủy",
+        "Nhẫn phù thủy"
+    };
 
-	    // Sắp xếp danh sách
-	    playerData.PlayerEquipments.Sort((equip1, equip2) =>
-	    {
-	        // So sánh theo cấp độ trước
-	        int levelComparison = equip1.Level.CompareTo(equip2.Level);
-	        if (levelComparison != 0)
-	        {
-	            return levelComparison;
-	        }
+    // Tạo từ điển ánh xạ tên với thứ tự ưu tiên
+    Dictionary<string, int> namePriority = new Dictionary<string, int>();
+    for (int i = 0; i < nameOrder.Count; i++)
+    {
+        namePriority[nameOrder[i]] = i; // Gán chỉ số thứ tự
+    }
 
-	        // Nếu cùng cấp độ, so sánh theo thứ tự ban đầu
-	        int originalOrderIndex1 = originalOrder.IndexOf(equip1);
-	        int originalOrderIndex2 = originalOrder.IndexOf(equip2);
-	        return originalOrderIndex1.CompareTo(originalOrderIndex2);
-	    });
+    // Sắp xếp danh sách
+    playerData.PlayerEquipments.Sort((equip1, equip2) =>
+    {
+        // So sánh theo thứ tự tên
+        int nameComparison = namePriority[equip1.name].CompareTo(namePriority[equip2.name]);
+        if (nameComparison != 0)
+        {
+            return nameComparison;
+        }
 
-	    Debug.Log("PlayerEquipments sorted successfully.");
-	}
+        // Nếu cùng thứ tự tên, sắp xếp theo cấp độ giảm dần
+        int levelComparison = equip2.Level.CompareTo(equip1.Level);
+        if (levelComparison != 0)
+        {
+            return levelComparison;
+        }
+
+        // Nếu cùng loại và cùng cấp độ, ưu tiên IsUsing
+        bool equip1Using = equip1.IsUsing;
+        bool equip2Using = equip2.IsUsing;
+        if (equip1Using != equip2Using)
+        {
+            return equip2Using.CompareTo(equip1Using); // true > false
+        }
+
+        // Không có sự khác biệt, giữ nguyên thứ tự
+        return 0;
+    });
+
+    Debug.Log("PlayerEquipments sorted successfully by name order, descending level, and IsUsing status.");
+}
+
+
 	public static List<(Equipment, int)> GetHighestLevelEquipments()
 	{
 	    // Nhóm theo name và chọn phần tử có level cao nhất
