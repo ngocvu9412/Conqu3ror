@@ -576,28 +576,6 @@ public class ShapesManager : Singleton<ShapesManager>
     {
         if (isUsingSkill) return; // Không làm gì nếu đang sử dụng skill
 
-        // Kiểm tra và reset bàn cờ nếu cần thiết, nhưng không xử lý khi bàn cờ bị khóa
-        if (!isBoardLocked)
-        {
-            CheckAndResetBoardIfNeeded();
-        }
-
-        if (turnCount <= 0 && state == GameState.None)
-        {
-            ChangeTurn();
-        }
-
-        // Trạng thái AI thực hiện nước đi
-        if (state == GameState.None && !isMyTurn)
-        {
-            state = GameState.Animating;
-            if (!isBoardLocked)
-            {
-                AIController.Ins.ExecuteAIMove(AIController.Ins.aiDifficulty.ToString());
-            }
-            return;
-        }
-
         if (playerCharacter.CurrentHealth <= 0 || playerCharacter.CurrentTime <= 0)
         {
             // Nếu người chơi thua
@@ -613,6 +591,28 @@ public class ShapesManager : Singleton<ShapesManager>
             return;
         }
 
+        // Kiểm tra và reset bàn cờ nếu cần thiết, nhưng không xử lý khi bàn cờ bị khóa
+        if (!isBoardLocked)
+        {
+            CheckAndResetBoardIfNeeded();
+        }
+
+        if (turnCount <= 0 && state == GameState.None)
+        {
+            ChangeTurn();
+        }
+
+
+        // Trạng thái AI thực hiện nước đi
+        if (state == GameState.None && !isMyTurn)
+        {
+            state = GameState.Animating;
+            if (!isBoardLocked)
+            {
+                AIController.Ins.ExecuteAIMove(AIController.Ins.aiDifficulty.ToString());
+            }
+            return;
+        }
         //
         if (state == GameState.None && isMyTurn)
         {

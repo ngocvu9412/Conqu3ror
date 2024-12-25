@@ -2,6 +2,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using DG.Tweening;
+using System.Collections;
 
 public class GameplayUIController : Singleton<GameplayUIController>
 {
@@ -290,8 +291,93 @@ public class GameplayUIController : Singleton<GameplayUIController>
 
             // Pause the game
             Time.timeScale = 0;
+
+            ReduceExpWithDOTween(expReward, curExp, maxExp, charLevel, attack, maxHealth);
+        }
+       
+    }
+    private void ReduceExpWithDOTween(int expReward, int currentExp, int maxExp, int charLevel, int attack, int maxHealth)
+    {
+        int displayedExp = expReward; // Giá trị hiển thị ban đầu
+        int totalExp = currentExp + expReward; // Tổng kinh nghiệm hiện tại
+        int initialTotalExp = totalExp;
+
+        Debug.Log("Start updating experience with animation...");
+
+        DOTween.To(() => displayedExp, x =>
+        {
+            displayedExp = x;
+
+            // Hiển thị số kinh nghiệm còn lại
+            if (expCollected != null)
+            {
+                expCollected.text = displayedExp.ToString();
+            }
+
+            // Đồng bộ tăng thanh kinh nghiệm
+            int consumedExp = expReward - displayedExp;
+            UpdateExperienceBarSync(currentExp, consumedExp, maxExp, ref charLevel, ref attack, ref maxHealth, ref totalExp);
+
+        }, 0, 2f)
+        .SetUpdate(true) // Đảm bảo hoạt động khi Time.timeScale = 0
+        .OnComplete(() =>
+        {
+            Debug.Log("Exp reduced to 0, completing experience update...");
+            // Cập nhật trạng thái nhân vật sau khi hiệu ứng hoàn tất
+
+        
+
+        });
+    }
+
+    private void UpdateExperienceBarSync(int currentExp, int consumedExp, int maxExp, ref int charLevel, ref int attack, ref int maxHealth, ref int totalExp)
+    {
+        totalExp = currentExp + consumedExp; // Tổng kinh nghiệm hiện tại
+
+        // Xử lý logic lên cấp nếu vượt qua maxExp
+        while (totalExp >= maxExp)
+        {
+            totalExp -= maxExp; // Trừ kinh nghiệm đã dùng để lên cấp
+            charLevel++;        // Tăng cấp
+            attack += Constants.atkPerLevel;
+            maxHealth += Constants.healthPerLevel;
+            maxExp += Constants.expPerLevel; // Tăng giá trị MaxExp (có thể tùy chỉnh)
+
+            // Cập nhật hiển thị cấp độ
+            if (myCharLevel != null)
+            {
+                myCharLevel.text = charLevel.ToString();
+            }
+            // Tăng chỉ số hiển thị khác như sức mạnh và máu tối đa
+            if (myAtk != null)
+            {
+                myAtk.text = attack.ToString();
+            }
+
+            if (myHealth != null)
+            {
+                myHealth.text = maxHealth.ToString();
+            }
+        }
+
+        // Cập nhật thanh kinh nghiệm
+        if (myExpBar != null)
+        {
+            float fillAmount = (float)totalExp / maxExp;
+            myExpBar.fillAmount = fillAmount;
+        }
+
+        // Cập nhật kinh nghiệm còn lại trên UI
+        if (myExpText != null)
+        {
+            myExpText.text = totalExp + "/" + maxExp;
         }
     }
+
+
+
+
+
 
     public void UpdateLoseDialog(int curLive)
     {

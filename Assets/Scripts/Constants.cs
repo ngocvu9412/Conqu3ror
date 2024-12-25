@@ -25,6 +25,11 @@ public static class Constants
     public static readonly int SubsequentMatchScore = 100;
 
     public static readonly float SkillAnimationDuration = 0.5f;
+
+    public static readonly int atkPerLevel = 1;
+    public static readonly int healthPerLevel = 30;
+    public static readonly int expPerLevel = 10;
+
 }
 
    
