@@ -52,31 +52,32 @@ public class ShapesManager : Singleton<ShapesManager>
 
         StartCheckForPotentialMatches();
 
-        playerCharacter = new CharacterInCombat
-        {
-            MaxHealth = 1000,
-            CurrentHealth = 100,
-            BaseAttack = 10,
-            CurrentAttack = 10,
-            MaxEnergy = 300,
-            CurrentEnergy = 300,
-            CurrentTime = 45,
-            MaxTime = 90,
-            Gold = 0,
-            Experience = 0
-        };
+        InitMyCharacter();
+        //playerCharacter = new CharacterInCombat
+        //{
+        //    MaxHealth = 1000,
+        //    CurrentHealth = 100,
+        //    BaseAttack = 10,
+        //    CurrentAttack = 10,
+        //    MaxEnergy = 300,
+        //    CurrentEnergy = 300,
+        //    CurrentTime = 45,
+        //    MaxTime = 90,
+        //    Gold = 0,
+        //    Experience = 0
+        //};
 
-        playerCharacter.Skills = MinervaSkills.GetSkills();
+        //playerCharacter.Skills = MinervaSkills.GetSkills();
 
-        if (GameplayUIController.Ins)
-        {
-            GameplayUIController.Ins.UpdateHealth(isMyTurn, playerCharacter.CurrentHealth, playerCharacter.MaxHealth);
-            GameplayUIController.Ins.UpdateEnergy(isMyTurn, playerCharacter.CurrentEnergy, playerCharacter.MaxEnergy);
-            GameplayUIController.Ins.UpdateTime(isMyTurn, playerCharacter.CurrentTime, playerCharacter.MaxTime);
-            GameplayUIController.Ins.UpdateAttack(true, playerCharacter.CurrentAttack);
-            GameplayUIController.Ins.UpdateCharacter(true, Resources.Load<Sprite>("Character/Minerva/Minerva"));
-            GameplayUIController.Ins.UpdateSkills(true, playerCharacter.Skills[0].Icon, playerCharacter.Skills[1].Icon, playerCharacter.Skills[2].Icon);
-        }
+        //if (GameplayUIController.Ins)
+        //{
+        //    GameplayUIController.Ins.UpdateHealth(isMyTurn, playerCharacter.CurrentHealth, playerCharacter.MaxHealth);
+        //    GameplayUIController.Ins.UpdateEnergy(isMyTurn, playerCharacter.CurrentEnergy, playerCharacter.MaxEnergy);
+        //    GameplayUIController.Ins.UpdateTime(isMyTurn, playerCharacter.CurrentTime, playerCharacter.MaxTime);
+        //    GameplayUIController.Ins.UpdateAttack(true, playerCharacter.CurrentAttack);
+        //    GameplayUIController.Ins.UpdateCharacter(true, Resources.Load<Sprite>("Character/Minerva/Minerva"));
+        //    GameplayUIController.Ins.UpdateSkills(true, playerCharacter.Skills[0].Icon, playerCharacter.Skills[1].Icon, playerCharacter.Skills[2].Icon);
+        //}
 
         enemyCharacter = new CharacterInCombat
         {
@@ -85,8 +86,8 @@ public class ShapesManager : Singleton<ShapesManager>
             BaseAttack = 5,
             CurrentAttack = 12,
             MaxEnergy = 300,
-            CurrentEnergy = 300,
-            CurrentTime = 45,
+            CurrentEnergy = 0,
+            CurrentTime = 90,
             MaxTime = 90,
             Gold = 0,
             Experience = 0
@@ -108,6 +109,51 @@ public class ShapesManager : Singleton<ShapesManager>
 
         AIController.Ins.character = enemyCharacter;
         StartCountdown(isMyTurn);
+    }
+
+    private void InitMyCharacter()
+    {
+        GameDataManager gameData = GameDataManager.Ins;
+        if(gameData)
+        playerCharacter = new CharacterInCombat
+        {
+            MaxHealth = gameData.GetSelectedCharacter().health,
+            CurrentHealth = gameData.GetSelectedCharacter().health,
+            BaseAttack = gameData.GetSelectedCharacter().attack,
+            CurrentAttack = gameData.GetSelectedCharacter().attack,
+            MaxEnergy = 300,
+            CurrentEnergy = 300,
+            CurrentTime = 90,
+            MaxTime = 90,
+            Gold = 0,
+            Experience = 0
+        };
+        if(gameData.GetSelectedCharacter().name == "Minerva")
+        {
+            playerCharacter.Skills = MinervaSkills.GetSkills();
+        }
+        else if (gameData.GetSelectedCharacter().name == "Phoenix")
+        {
+            playerCharacter.Skills = PhoenixSkills.GetSkills();
+        }
+        else if (gameData.GetSelectedCharacter().name == "Jasmine")
+        {
+            playerCharacter.Skills = JasmineSkills.GetSkills();
+        }
+        else if (gameData.GetSelectedCharacter().name == "Marius")
+        {
+            playerCharacter.Skills = MariusSkills.GetSkills();
+        }
+        if (GameplayUIController.Ins)
+        {
+            GameplayUIController.Ins.UpdateHealth(true, playerCharacter.CurrentHealth, playerCharacter.MaxHealth);
+            GameplayUIController.Ins.UpdateEnergy(true, playerCharacter.CurrentEnergy, playerCharacter.MaxEnergy);
+            GameplayUIController.Ins.UpdateTime(true, playerCharacter.CurrentTime, playerCharacter.MaxTime);
+            GameplayUIController.Ins.UpdateAttack(true, playerCharacter.CurrentAttack);
+            GameplayUIController.Ins.UpdateCharacter(true, gameData.GetSelectedCharacter().Image);
+            GameplayUIController.Ins.UpdateSkills(true, playerCharacter.Skills[0].Icon, playerCharacter.Skills[1].Icon, playerCharacter.Skills[2].Icon);
+        }
+
     }
 
     /// ////////////////////////////////////////////////////
@@ -517,18 +563,10 @@ public class ShapesManager : Singleton<ShapesManager>
         }
         else
         {
+            GameDataManager gameData = GameDataManager.Ins;
+            if(gameData)
             // Hiện dialog thắng
-            GameplayUIController.Ins.UpdateWinDialog(
-                Resources.Load<Sprite>("Character/Jasmine/Jasmine"),
-                "Jasmine",
-                24,
-                playerCharacter.BaseAttack,
-                playerCharacter.MaxHealth,
-                600,
-                1200,
-                playerCharacter.Gold,
-                playerCharacter.Experience
-            );
+            GameplayUIController.Ins.UpdateWinDialog(gameData.GetSelectedCharacter().Image, gameData.GetSelectedCharacter().name, gameData.GetSelectedCharacter().Level, gameData.GetSelectedCharacter().attack, gameData.GetSelectedCharacter().health,gameData.GetSelectedCharacter().Exp,gameData.GetSelectedCharacter().MaxExp,playerCharacter.Gold,playerCharacter.Experience);
             GameplayUIController.Ins.ShowWinDialog();
         }
     }

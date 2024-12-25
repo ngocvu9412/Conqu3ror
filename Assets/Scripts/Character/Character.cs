@@ -7,12 +7,13 @@ public struct Character
 {
     public Sprite Image;
     public string name;
-    public float health;
-    public float health_per_lv;
-    public float attack;
-    public float attack_per_lv;
+    public int health;
+    public int health_per_lv;
+    public int attack;
+    public int attack_per_lv;
 
     public int Exp;
+    public int MaxExp;
     public static int LvlExp = 100;
     public static int LvlExpPerLv = 20;
     public int Level;

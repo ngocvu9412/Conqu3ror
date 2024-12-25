@@ -11,13 +11,16 @@ public class KnightMovement : MonoBehaviour
     public bool isActive = true;
     public static bool isShip;
     public static bool isUIClick = false;
+
+    private Rigidbody2D rb2d;
     private Animator animator;
 
     public DialogController dialogManager; // Tham chiếu đến DialogManager
 
     private void Start()
     {
-        //animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
+        rb2d = GetComponent<Rigidbody2D>();
     }
 
     private void LateUpdate()
@@ -71,6 +74,7 @@ public class KnightMovement : MonoBehaviour
             var step = speed * Time.deltaTime;
             Vector3 newPosition = new(lastClickedPos.x, lastClickedPos.y, transform.position.z);
             transform.position = Vector3.MoveTowards(transform.position, newPosition, step);
+            rb2d.MovePosition(transform.position);
 
             //if (Vector2.Distance(transform.position, lastClickedPos) < 0.1f)
             //{
@@ -89,18 +93,14 @@ public class KnightMovement : MonoBehaviour
             isMoving = false;
         }
 
-        //Animate();
-
-
-
+        Animate();
     }
 
     private void Animate()
     {
         animator.SetBool("IsMoving", isMoving);
-        animator.SetFloat("LastMoveX", moveDirection.x);
-        animator.SetFloat("LastMoveY", moveDirection.y);
-        animator.SetBool("IsShip", isShip);
+        animator.SetFloat("Look X", moveDirection.x);
+        animator.SetFloat("Look Y", moveDirection.y);
     }
 
     public void EnableCharacter()
