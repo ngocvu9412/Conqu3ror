@@ -17,6 +17,7 @@ public struct Character
     public static int LvlExpPerLv = 20;
     public int Level;
     public bool Unlocked;
+    public int Price;
 
     public List<Skill> Skills; // Danh sách kỹ năng của nhân vật
     public float GetMaxHealth()

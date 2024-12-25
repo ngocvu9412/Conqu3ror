@@ -22,7 +22,7 @@ public class CharacterInfoUI : MonoBehaviour
 
     void Start()
     {
-        ShowCharacterInfoUI(GameDataManager.GetSelectedCharacterIndex());
+        ShowCharacterInfoUI(GameDataManager.Ins.GetSelectedCharacterIndex());
     }
     public void ShowCharacterInfoUI(int index)
     {

@@ -125,7 +125,7 @@ public class MergeEquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHa
         {
             if (result.gameObject.GetComponent<MergeEquipmentUI>() != null && (result.gameObject.GetComponent<MergeEquipmentUI>().CanMerge = CanMerge = true)) 
             {
-                GameDataManager.MergeEquipment(EquipmentIndex, result.gameObject.GetComponent<MergeEquipmentUI>().EquipmentIndex);
+                GameDataManager.Ins.MergeEquipment(EquipmentIndex, result.gameObject.GetComponent<MergeEquipmentUI>().EquipmentIndex);
                 gameObject.GetComponentInParent<MergeEquipmentShowUI>().ResetMergeEquipUI();
                 return;
             }
