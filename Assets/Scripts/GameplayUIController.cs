@@ -292,47 +292,41 @@ public class GameplayUIController : Singleton<GameplayUIController>
             // Pause the game
             Time.timeScale = 0;
 
-            ReduceExpWithDOTween(expReward, curExp, maxExp, charLevel, attack, maxHealth);
+            ReduceExpWithDOTween(expReward, curExp, maxExp, charLevel, attack, maxHealth, goldReward);
         }
        
     }
-    private void ReduceExpWithDOTween(int expReward, int currentExp, int maxExp, int charLevel, int attack, int maxHealth)
+
+    private void ReduceExpWithDOTween(int expReward, int currentExp, int maxExp, int charLevel, int attack, int maxHealth, int goldReward)
     {
         int displayedExp = expReward; // Giá trị hiển thị ban đầu
-        int totalExp = currentExp + expReward; // Tổng kinh nghiệm hiện tại
-        int initialTotalExp = totalExp;
+        int totalExp = currentExp + expReward; // Tổng kinh nghiệm sau khi nhận thưởng
 
         Debug.Log("Start updating experience with animation...");
 
         DOTween.To(() => displayedExp, x =>
         {
             displayedExp = x;
-
-            // Hiển thị số kinh nghiệm còn lại
             if (expCollected != null)
             {
                 expCollected.text = displayedExp.ToString();
             }
 
             // Đồng bộ tăng thanh kinh nghiệm
-            int consumedExp = expReward - displayedExp;
-            UpdateExperienceBarSync(currentExp, consumedExp, maxExp, ref charLevel, ref attack, ref maxHealth, ref totalExp);
-
+            UpdateExperienceBarSync(currentExp, expReward - displayedExp, maxExp, charLevel, attack, maxHealth);
         }, 0, 2f)
         .SetUpdate(true) // Đảm bảo hoạt động khi Time.timeScale = 0
         .OnComplete(() =>
         {
             Debug.Log("Exp reduced to 0, completing experience update...");
-            // Cập nhật trạng thái nhân vật sau khi hiệu ứng hoàn tất
-
-        
-
+            GameDataManager.Ins.LevelUp(expReward);
+            GameDataManager.Ins.AddCoins(goldReward);
         });
     }
 
-    private void UpdateExperienceBarSync(int currentExp, int consumedExp, int maxExp, ref int charLevel, ref int attack, ref int maxHealth, ref int totalExp)
+    private void UpdateExperienceBarSync(int currentExp, int consumedExp, int maxExp, int charLevel, int attack, int maxHealth)
     {
-        totalExp = currentExp + consumedExp; // Tổng kinh nghiệm hiện tại
+        int totalExp = currentExp + consumedExp; // Tổng kinh nghiệm hiện tại
 
         // Xử lý logic lên cấp nếu vượt qua maxExp
         while (totalExp >= maxExp)

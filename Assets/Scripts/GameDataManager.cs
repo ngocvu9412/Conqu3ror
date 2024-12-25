@@ -45,6 +45,22 @@ public class GameDataManager : Singleton<GameDataManager>
         SavePlayerData();
     }
 
+    public void LevelUp(int expEarn)
+    {
+        int total = expEarn + selectedCharacter.Exp;
+        while (total >= selectedCharacter.MaxExp)
+        {
+            total -= selectedCharacter.MaxExp;
+            selectedCharacter.Level++;
+            selectedCharacter.health += Constants.healthPerLevel;
+            selectedCharacter.attack += Constants.atkPerLevel;
+            selectedCharacter.MaxExp += Constants.expPerLevel;
+        }
+        selectedCharacter.Exp = total;
+        Debug.Log("CharLv: "+ selectedCharacter.Level);
+        SavePlayerData();
+    }
+
     public  int GetSelectedCharacterIndex()
     {
         return playerData.selectedCharacterIndex;

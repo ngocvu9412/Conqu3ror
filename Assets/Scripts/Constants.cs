@@ -28,7 +28,7 @@ public static class Constants
 
     public static readonly int atkPerLevel = 1;
     public static readonly int healthPerLevel = 30;
-    public static readonly int expPerLevel = 10;
+    public static readonly int expPerLevel = 120;
 
 }
 
