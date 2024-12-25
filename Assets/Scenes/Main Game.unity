@@ -1353,7 +1353,7 @@ MonoBehaviour:
     CharacterIndex: 0
     Gold: 0
     Experience: 0
-  aiDifficulty: 0
+  aiDifficulty: 2
 --- !u!4 &239785787
 Transform:
   m_ObjectHideFlags: 0
@@ -11429,6 +11429,9 @@ MonoBehaviour:
   myCurrentLive: {fileID: 600015693}
   winDialogTransform: {fileID: 1337311199}
   loseDialogTransform: {fileID: 1253927452}
+  skillButton1: {fileID: 236743432}
+  skillButton2: {fileID: 1937320136}
+  skillButton3: {fileID: 868936501}
 --- !u!114 &1992350243
 MonoBehaviour:
   m_ObjectHideFlags: 0
