@@ -34,7 +34,7 @@ public class CharacterEquipShowUI : MonoBehaviour
     {
         if(CharacterEquipmentContainer.childCount > 1)
         {
-            Equipment[] playerUsedEquips = GameDataManager.GetPlayerUsedEquips();
+            Equipment[] playerUsedEquips = GameDataManager.Ins.GetPlayerUsedEquips();
             for (int i=0; i < playerUsedEquips.Length; i++)
             {
                 if(playerUsedEquips[i].Equals(default(Equipment))) continue;

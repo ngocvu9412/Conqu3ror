@@ -46,13 +46,13 @@ public class EquipmentShowUI : MonoBehaviour
     {
         if(EquipmentContainer.childCount > 6)
         {
-            HighestLevelEquip = GameDataManager.GetHighestLevelEquipments();
+            HighestLevelEquip = GameDataManager.Ins.GetHighestLevelEquipments();
             for( int i = 0; i< HighestLevelEquip.Count;i++)
             {
                 Equipment Equipment = HighestLevelEquip[i].Item1;
                 ChangeUsedWeaponToItsHigherLevel(Equipment);
                 EquipmentUI uiEquipment = EquipmentContainer.GetChild(i+6).GetComponent<EquipmentUI>();
-                int equipmentSlot=GameDataManager.IsEquipmentUsed(Equipment);
+                int equipmentSlot=GameDataManager.Ins.IsEquipmentUsed(Equipment);
                 if(equipmentSlot != -1)
                 {
                     switch (equipmentSlot)
@@ -94,13 +94,13 @@ public class EquipmentShowUI : MonoBehaviour
     }
     public void ChangeUsedWeaponToItsHigherLevel(Equipment equipment)
     {
-        Equipment[]PlayerUsedEquip = GameDataManager.GetPlayerUsedEquips();
+        Equipment[]PlayerUsedEquip = GameDataManager.Ins.GetPlayerUsedEquips();
         for(int i =0; i<PlayerUsedEquip.Length;i++)
         {
             if(PlayerUsedEquip[i].name == equipment.name && PlayerUsedEquip[i].Level < equipment.Level)
             {
-                GameDataManager.RemoveEquipmentUsed(GameDataManager.GetPlayerEquipments().IndexOf(PlayerUsedEquip[i]));
-                GameDataManager.AddEquipmentToSlot(i,GameDataManager.GetPlayerEquipments().IndexOf(equipment));
+                GameDataManager.Ins.RemoveEquipmentUsed(GameDataManager.Ins.GetPlayerEquipments().IndexOf(PlayerUsedEquip[i]));
+                GameDataManager.Ins.AddEquipmentToSlot(i,GameDataManager.Ins.GetPlayerEquipments().IndexOf(equipment));
             }
         }
     }

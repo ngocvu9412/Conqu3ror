@@ -24,7 +24,7 @@ public class SkillShowUI : MonoBehaviour
     void Start()
     {
         GenerateSkillUI();
-        SetSkillInfo(GameDataManager.GetSelectedCharacterIndex());
+        SetSkillInfo(GameDataManager.Ins.GetSelectedCharacterIndex());
     }
 
     void GenerateSkillUI()

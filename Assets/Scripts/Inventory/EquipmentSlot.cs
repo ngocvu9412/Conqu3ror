@@ -39,10 +39,10 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler
     }
     private void SetEquipToSlot(int slot_index,PointerEventData eventData)
     {
-        if(GameDataManager.CanUseEquipment(slot_index,eventData.pointerDrag.GetComponent<EquipmentUI>().EquipmentIndex))
+        if(GameDataManager.Ins.CanUseEquipment(slot_index,eventData.pointerDrag.GetComponent<EquipmentUI>().EquipmentIndex))
         {
             eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition = GetComponent<RectTransform>().anchoredPosition;
-            GameDataManager.AddEquipmentToSlot(slot_index,eventData.pointerDrag.GetComponent<EquipmentUI>().EquipmentIndex);
+            GameDataManager.Ins.AddEquipmentToSlot(slot_index,eventData.pointerDrag.GetComponent<EquipmentUI>().EquipmentIndex);
         }
         else eventData.pointerDrag.GetComponent<RectTransform>().anchoredPosition = eventData.pointerDrag.GetComponent<EquipmentUI>().previous_position;
     }

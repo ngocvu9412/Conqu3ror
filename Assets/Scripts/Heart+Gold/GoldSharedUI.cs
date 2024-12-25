@@ -1,23 +1,15 @@
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting;
 
-public class GoldSharedUI : MonoBehaviour
+public class GoldSharedUI : Singleton<GoldSharedUI>
 {
-	#region Singleton class: GameSharedUI
 
 	public static GoldSharedUI Instance {get;private set;}
 
-	private void Awake ()
-	{
-		if (Instance == null) 
-        Instance = this;
-	}
-
-	#endregion
-
 	[SerializeField] TMP_Text[] coinsUIText;
 
-	void Start ()
+	public override void Start ()
 	{
 		UpdateCoinsUIText ();
 	}
@@ -25,7 +17,7 @@ public class GoldSharedUI : MonoBehaviour
 	public void UpdateCoinsUIText ()
 	{
 		for (int i = 0; i < coinsUIText.Length; i++) {
-			SetCoinsText (coinsUIText [i], GameDataManager.GetCoins());
+			SetCoinsText (coinsUIText [i], GameDataManager.Ins.GetCoins());
 		}
 	}
 

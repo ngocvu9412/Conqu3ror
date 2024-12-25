@@ -40,12 +40,12 @@ public class MergeEquipmentShowUI : MonoBehaviour
     public void SetSlotMergeEquipmentInfo()
     {
         int j =0;
-        List<Equipment> PlayerEquipments = GameDataManager.GetPlayerEquipments();
+        List<Equipment> PlayerEquipments = GameDataManager.Ins.GetPlayerEquipments();
         for( int i = 0 ; i< PlayerEquipments.Count;i++)
         {
             Equipment Equipment = PlayerEquipments[i];
             MergeEquipmentUI uiMergeEquipment = MergeEquipmentContainer.GetChild(j).GetComponent<MergeEquipmentUI>();
-            int equipmentSlot=GameDataManager.IsEquipmentUsed(Equipment);
+            int equipmentSlot=GameDataManager.Ins.IsEquipmentUsed(Equipment);
             if(equipmentSlot == -1) 
             { 
                 uiMergeEquipment.CanMerge = true;
