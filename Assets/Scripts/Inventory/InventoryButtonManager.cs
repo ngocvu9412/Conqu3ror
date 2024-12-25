@@ -1,18 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 
 public class InventoryButtonManager : MonoBehaviour
 {
     [Header ("Inventory Buttons")]
-    [SerializeField] 
-    private Button CloseButton;
-    [SerializeField] 
-    private GameObject InventoryWindow;
-    [SerializeField] 
-    private Button InventoryButton;
+    [SerializeField] private Button CloseButton;
+    [SerializeField] private GameObject InventoryWindow;
+    [SerializeField] private Button InventoryButton;
     [SerializeField] GameObject InventoryEquipShow;
 
 
@@ -42,5 +38,12 @@ public class InventoryButtonManager : MonoBehaviour
 
         // Toggle the active state of the shop window
         InventoryWindow.SetActive(!isActive);
+        if(isActive)
+        {
+            InventoryWindow.GetComponent<RectTransform>().localScale = Vector3.zero; // Đặt kích thước ban đầu là 0
+            InventoryWindow.GetComponent<RectTransform>().DOScale(Vector3.one, 1f).SetEase(Ease.OutBack).SetUpdate(true); // Tăng kích thước lên 1 với hiệu ứng mượt
+
+            Time.timeScale = 0;
+        }
     }
 }

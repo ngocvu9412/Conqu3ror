@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class ButtonManager : MonoBehaviour
 {
@@ -19,7 +20,6 @@ public class ButtonManager : MonoBehaviour
     private GameObject CharactersWindow;
     [SerializeField] 
     private Button CharactersButton;
-
 
     void Start()
     {
@@ -56,6 +56,13 @@ public class ButtonManager : MonoBehaviour
 
         // Toggle the active state of the shop window
         shopWindow.SetActive(!isActive);
+        if(isActive)
+        {
+            shopWindow.GetComponent<RectTransform>().localScale = Vector3.zero; // Đặt kích thước ban đầu là 0
+            shopWindow.GetComponent<RectTransform>().DOScale(Vector3.one, 1f).SetEase(Ease.OutBack).SetUpdate(true); // Tăng kích thước lên 1 với hiệu ứng mượt
+
+            Time.timeScale = 0;
+        }
     }
 
     // This method will be called when the equipment button is clicked
