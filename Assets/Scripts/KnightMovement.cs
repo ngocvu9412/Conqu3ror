@@ -11,13 +11,14 @@ public class KnightMovement : MonoBehaviour
     public bool isActive = true;
     public static bool isShip;
     public static bool isUIClick = false;
+
     private Animator animator;
 
     public DialogController dialogManager; // Tham chiếu đến DialogManager
 
     private void Start()
     {
-        //animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
     }
 
     private void LateUpdate()
@@ -89,18 +90,16 @@ public class KnightMovement : MonoBehaviour
             isMoving = false;
         }
 
-        //Animate();
-
-
-
+        Animate();
+        Debug.Log(moveDirection.x);
+        Debug.Log(moveDirection.y);
     }
 
     private void Animate()
     {
         animator.SetBool("IsMoving", isMoving);
-        animator.SetFloat("LastMoveX", moveDirection.x);
-        animator.SetFloat("LastMoveY", moveDirection.y);
-        animator.SetBool("IsShip", isShip);
+        animator.SetFloat("Look X", moveDirection.x);
+        animator.SetFloat("Look Y", moveDirection.y);
     }
 
     public void EnableCharacter()
