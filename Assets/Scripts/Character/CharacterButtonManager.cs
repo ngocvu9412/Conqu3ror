@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using DG.Tweening;
 
 public class CharacterButtonManager : MonoBehaviour
 {
@@ -40,5 +38,12 @@ public class CharacterButtonManager : MonoBehaviour
         }
 
         CharacterWindow.SetActive(!isActive);
+        if(isActive)
+        {
+            CharacterWindow.GetComponent<RectTransform>().localScale = Vector3.zero; // Đặt kích thước ban đầu là 0
+            CharacterWindow.GetComponent<RectTransform>().DOScale(Vector3.one, 1f).SetEase(Ease.OutBack).SetUpdate(true); // Tăng kích thước lên 1 với hiệu ứng mượt
+
+            Time.timeScale = 0;
+        }
     }
 }
