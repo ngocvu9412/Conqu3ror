@@ -91,8 +91,6 @@ public class KnightMovement : MonoBehaviour
         }
 
         Animate();
-        Debug.Log(moveDirection.x);
-        Debug.Log(moveDirection.y);
     }
 
     private void Animate()
