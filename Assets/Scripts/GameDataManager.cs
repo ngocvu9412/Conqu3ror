@@ -24,8 +24,8 @@ public class GameDataManager : Singleton<GameDataManager>
     {
         base.Awake(); // Bảo đảm Singleton hoạt động đúng
         LoadPlayerData(); // Tải dữ liệu ngay khi khởi tạo
-    }
-
+		selectedCharacter = CharacterDatabaseManager.GetDatabase().GetCharacter(playerData.selectedCharacterIndex);
+	}
     // Player Data Methods
     public  void AddUnlockedCharacter(int characterIndex)
     {
@@ -69,6 +69,7 @@ public class GameDataManager : Singleton<GameDataManager>
     public  void SetCurrentHealthEner(int healthEnergy)
     {
         playerData.currentHealthEnergy = healthEnergy;
+		SavePlayerData();
     }
 
     // Coins Funcs
