@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +6,7 @@ public class CharacterButtonUI : MonoBehaviour
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] Image image;
-    [SerializeField] TMP_Text Level;
+    [SerializeField] Text Level;
     void Start()
     {
         UpdateUI();

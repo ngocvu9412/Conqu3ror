@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using UnityEngine.Events;
 
 public class EquipmentItemUI : MonoBehaviour
 {
     [SerializeField] Image EquipmentImage;
-    [SerializeField] TMP_Text EquipmentName;
-    [SerializeField] TMP_Text EquipmentDes;
-    [SerializeField] TMP_Text EquipmentPrice;
+    [SerializeField] Text EquipmentName;
+    [SerializeField] Text EquipmentDes;
+    [SerializeField] Text EquipmentPrice;
     [SerializeField] Button EquipmentPurchaseButton;
     public void SetItemPos (Vector2 pos)
     {

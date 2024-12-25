@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CharactersDatabase", menuName = "Characters/Characters database")]
@@ -15,6 +13,10 @@ public class CharactersDatabase : ScriptableObject
     public Character GetCharacter(int index)
     {
         return Characters[index];
+    }
+    public int GetIndex(Character character)
+    {
+        return System.Array.IndexOf(Characters, character);
     }
 }
 

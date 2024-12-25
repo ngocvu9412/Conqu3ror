@@ -21,7 +21,7 @@ MonoBehaviour:
     MaxExp: 100
     Level: 1
     Unlocked: 1
-    Price: 0
+    Price: 20000
   - Image: {fileID: 6126225977653088430, guid: ff806c8c0c4b27f43b19d14864dd1527, type: 3}
     name: Minerva
     health: 120
@@ -30,7 +30,7 @@ MonoBehaviour:
     MaxExp: 100
     Level: 1
     Unlocked: 1
-    Price: 0
+    Price: 20000
   - Image: {fileID: -2408873480607560697, guid: a42cf90e52e04ba4187ce041ff28f1fc, type: 3}
     name: Marius
     health: 120
@@ -39,7 +39,7 @@ MonoBehaviour:
     MaxExp: 100
     Level: 1
     Unlocked: 1
-    Price: 0
+    Price: 20000
   - Image: {fileID: 6678045564113122982, guid: 79c3f26cf62d9c5498cbba1f460c9b28, type: 3}
     name: Jasmine
     health: 120
@@ -48,4 +48,4 @@ MonoBehaviour:
     MaxExp: 100
     Level: 1
     Unlocked: 0
-    Price: 0
+    Price: 20000
