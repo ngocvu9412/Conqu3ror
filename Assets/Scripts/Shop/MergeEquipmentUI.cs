@@ -1,15 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class MergeEquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
     [SerializeField] Image EquipmentImage;
-    [SerializeField] TMP_Text EquipmentLevel;
+    [SerializeField] Text EquipmentLevel;
     public int EquipmentIndex;
     public Vector2 previous_position;
 

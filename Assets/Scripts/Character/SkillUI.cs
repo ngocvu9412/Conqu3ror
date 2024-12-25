@@ -1,15 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using UnityEngine.Events;
 
 public class SkillUI : MonoBehaviour
 {
     [SerializeField] Image SkillImage;
-    [SerializeField] TMP_Text SkillName;
-    [SerializeField] TMP_Text SkillDes;
+    [SerializeField] Text SkillName;
+    [SerializeField] Text SkillDes;
     public void SetItemPos (Vector2 pos)
     {
         GetComponent<RectTransform>().anchoredPosition += pos;

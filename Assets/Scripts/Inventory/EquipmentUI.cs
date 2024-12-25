@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 using UnityEngine.EventSystems;
 
 public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerClickHandler
 {
     [SerializeField] Image EquipmentImage;
-    [SerializeField] TMP_Text EquipmentLevel;
+    [SerializeField] Text EquipmentLevel;
     public int EquipmentIndex;
     public Vector2 previous_position;
 

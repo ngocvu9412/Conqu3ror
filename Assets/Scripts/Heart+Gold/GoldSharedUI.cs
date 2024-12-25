@@ -1,14 +1,17 @@
 using UnityEngine;
-using TMPro;
-using Unity.VisualScripting;
+using UnityEngine.UI;
 
 public class GoldSharedUI : Singleton<GoldSharedUI>
 {
 
 	public static GoldSharedUI Instance {get;private set;}
 
-	[SerializeField] TMP_Text[] coinsUIText;
+	[SerializeField] Text[] coinsUIText;
 
+	public override void Awake()
+	{
+		base.Awake();
+	}
 	public override void Start ()
 	{
 		UpdateCoinsUIText ();
@@ -21,7 +24,7 @@ public class GoldSharedUI : Singleton<GoldSharedUI>
 		}
 	}
 
-	public void SetCoinsText (TMP_Text textMesh, int value)
+	public void SetCoinsText (Text textMesh, int value)
 	{
 		// if (value >= 1000000)...
 		// .....

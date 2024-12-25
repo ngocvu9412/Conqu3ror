@@ -66,7 +66,7 @@ public class EquipmentShopUI : MonoBehaviour
             {
                 GameDataManager.Ins.SpendCoins( equipment.price);
                 GameDataManager.Ins.AddEquipment( equipment);
-                GoldSharedUI.Instance.UpdateCoinsUIText();
+                GoldSharedUI.Ins.UpdateCoinsUIText();
             }
             MergeShow.GetComponent<MergeEquipmentShowUI>().ResetMergeEquipUI();
         }

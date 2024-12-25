@@ -1,13 +1,12 @@
 using System;
 using UnityEngine;
-using TMPro;
-
+using UnityEngine.UI;
 public class HealthSystem : Singleton<HealthSystem>
 {
     public float lifeRegenerateTime = 900f; // Thời gian hồi 1 mạng (30 phút)
     private DateTime lastSaveTime; // Thời gian lần cuối cùng sử dụng mạng
-    [SerializeField] TMP_Text CurrentHealth;
-    [SerializeField] TMP_Text Time;
+    [SerializeField] Text CurrentHealth;
+    [SerializeField] Text Time;
 
     public override void Awake()
     {

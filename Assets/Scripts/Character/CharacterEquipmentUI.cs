@@ -1,11 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class CharacterEquipmentUI : MonoBehaviour
 {
     [SerializeField] Image EquipmentImage;
-    [SerializeField] TMP_Text EquipmentLevel;
+    [SerializeField] Text EquipmentLevel;
     
     private RectTransform rectTransform ;
 
