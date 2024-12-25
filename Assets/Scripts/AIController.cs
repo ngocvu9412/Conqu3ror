@@ -17,6 +17,11 @@ public class AIController : Singleton<AIController>
         Hard    // Hard
     }
 
+    public override void Awake()
+    {
+        MakeSingleton(false);
+    }
+
     public override void Start()
     {
         shapesManager = ShapesManager.Ins; // Get ShapesManager instance

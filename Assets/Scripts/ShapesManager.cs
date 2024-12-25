@@ -38,9 +38,9 @@ public class ShapesManager : Singleton<ShapesManager>
 
     private bool isUsingSkill = false; // Đánh dấu trạng thái skill đang được sử dụng
 
-    override public void Awake()
+    public override void Awake()
     {
-        
+        MakeSingleton(false);
     }
 
     // Use this for initialization
@@ -55,11 +55,11 @@ public class ShapesManager : Singleton<ShapesManager>
         playerCharacter = new CharacterInCombat
         {
             MaxHealth = 1000,
-            CurrentHealth = 1000,
+            CurrentHealth = 100,
             BaseAttack = 10,
             CurrentAttack = 10,
             MaxEnergy = 300,
-            CurrentEnergy = 100,
+            CurrentEnergy = 300,
             CurrentTime = 45,
             MaxTime = 90,
             Gold = 0,
@@ -81,7 +81,7 @@ public class ShapesManager : Singleton<ShapesManager>
         enemyCharacter = new CharacterInCombat
         {
             MaxHealth = 1200,
-            CurrentHealth = 1200,
+            CurrentHealth = 100,
             BaseAttack = 5,
             CurrentAttack = 12,
             MaxEnergy = 300,
@@ -171,8 +171,8 @@ public class ShapesManager : Singleton<ShapesManager>
     public IEnumerator HandleCollapseAndRefill(IEnumerable<int> affectedColumns)
     {
         int chainCount = 1; // Bắt đầu với chuỗi đầu tiên
-
-        while (true)
+        bool isCollapseComplete = false; // Cờ để kiểm tra hoàn tất collapse
+        while (!isCollapseComplete)
         {
             // Dictionary để lưu số lượng biểu tượng thu thập được trong chain
             Dictionary<string, float> collectiblesInChain = new Dictionary<string, float>
@@ -203,10 +203,11 @@ public class ShapesManager : Singleton<ShapesManager>
 
             if (totalMatches.Count() < Constants.MinimumMatches)
             {
+                isCollapseComplete = true;
                 // Không có trận đấu mới, thoát khỏi vòng lặp
                 break;
             }
-
+            isCollapseComplete = false;
             // Tăng số chuỗi
             chainCount++;
             soundManager.PlayCrincle();
@@ -254,6 +255,7 @@ public class ShapesManager : Singleton<ShapesManager>
             // Cập nhật cột bị ảnh hưởng
             affectedColumns = totalMatches.Select(m => m.GetComponent<Shape>().Column).Distinct().ToList();
         }
+
         yield return new WaitForSeconds(1f);
         // Giảm lượt chơi
         turnCount--;
@@ -264,8 +266,8 @@ public class ShapesManager : Singleton<ShapesManager>
 
         if (!isMyTurn)
             AIController.Ins.EndAIActions();
-        else
-            isUsingSkill = false; // Tắt cờ sau khi skill hoàn tất
+
+        isUsingSkill = false; // Tắt cờ sau khi skill hoàn tất
     }
 
     public void UseSkill(int skillIndex, CharacterInCombat character)
@@ -502,6 +504,36 @@ public class ShapesManager : Singleton<ShapesManager>
 
     private bool isBoardLocked = false; // Biến kiểm tra trạng thái bàn cờ
 
+    private IEnumerator HandleEndGame(bool isPlayerDefeated)
+    {
+        // Đợi 1 giây để đảm bảo UI đã cập nhật máu về 0
+        yield return new WaitForSeconds(1f);
+
+        if (isPlayerDefeated)
+        {
+            // Hiện dialog thua
+            GameplayUIController.Ins.UpdateLoseDialog(2);
+            GameplayUIController.Ins.ShowLoseDialog();
+        }
+        else
+        {
+            // Hiện dialog thắng
+            GameplayUIController.Ins.UpdateWinDialog(
+                Resources.Load<Sprite>("Character/Jasmine/Jasmine"),
+                "Jasmine",
+                24,
+                playerCharacter.BaseAttack,
+                playerCharacter.MaxHealth,
+                600,
+                1200,
+                playerCharacter.Gold,
+                playerCharacter.Experience
+            );
+            GameplayUIController.Ins.ShowWinDialog();
+        }
+    }
+
+
     void Update()
     {
         if (isUsingSkill) return; // Không làm gì nếu đang sử dụng skill
@@ -528,19 +560,20 @@ public class ShapesManager : Singleton<ShapesManager>
             return;
         }
 
-        // Kiểm tra nếu máu bản thân hoặc đối thủ về 0
         if (playerCharacter.CurrentHealth <= 0 || playerCharacter.CurrentTime <= 0)
         {
-            GameplayUIController.Ins.UpdateLoseDialog(2);
-            GameplayUIController.Ins.ShowLoseDialog();// Hiện dialog thua
+            // Nếu người chơi thua
+            state = GameState.Lose;
+            StartCoroutine(HandleEndGame(true));
+            return;
         }
         else if (enemyCharacter.CurrentHealth <= 0 || enemyCharacter.CurrentTime <= 0)
         {
-            GameplayUIController.Ins.UpdateWinDialog(Resources.Load<Sprite>("Character/Jasmine/Jasmine"), "Jasmine", 24, playerCharacter.BaseAttack, playerCharacter.MaxHealth, 600, 1200, playerCharacter.Gold, playerCharacter.Experience);
-            GameplayUIController.Ins.ShowWinDialog(); // Hiện dialog thắng
+            // Nếu người chơi thắng
+            state = GameState.Win;
+            StartCoroutine(HandleEndGame(false));
+            return;
         }
-
-
 
         //
         if (state == GameState.None && isMyTurn)

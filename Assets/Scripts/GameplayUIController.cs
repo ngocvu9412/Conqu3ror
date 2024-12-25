@@ -46,6 +46,11 @@ public class GameplayUIController : Singleton<GameplayUIController>
     public RectTransform winDialogTransform; // RectTransform của WinDialog
     public RectTransform loseDialogTransform; // RectTransform của LoseDialog
 
+    public override void Awake()
+    {
+        MakeSingleton(false);
+    }
+
     public void ShowWinDialog()
     {
         if (winDialog != null && winDialogTransform != null)
@@ -102,7 +107,9 @@ public class GameplayUIController : Singleton<GameplayUIController>
     public void ReloadGame()
     {
         Time.timeScale = 1; // Đặt lại thời gian về bình thường
+        HideLoseDialog();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reload lại màn chơi
+        ShapesManager.Ins.state = GameState.None;
     }
 
     public void GoToMainMenu()
