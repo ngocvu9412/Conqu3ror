@@ -27,10 +27,12 @@ public class DialogController : MonoBehaviour
     public Text playerLevel;
     public Text enemyLevel;
 
+    public Image playerAvt;
+    public Image enemyAvt;
+
     public Text convo1;
     public Text convo2;
 
-    void 
     void Update()
     {
         // Kiểm tra nếu nhấn chuột trái
