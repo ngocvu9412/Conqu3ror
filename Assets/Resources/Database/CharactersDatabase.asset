@@ -16,40 +16,36 @@ MonoBehaviour:
   - Image: {fileID: -4453784588268070965, guid: 7a3d790aa5566934b8ea9f7b4df8eb4c, type: 3}
     name: Phoenix
     health: 120
-    health_per_lv: 15
     attack: 5
-    attack_per_lv: 0.5
     Exp: 0
-    Level: 0
+    MaxExp: 100
+    Level: 1
     Unlocked: 1
     Price: 20000
   - Image: {fileID: 6126225977653088430, guid: ff806c8c0c4b27f43b19d14864dd1527, type: 3}
     name: Minerva
     health: 120
-    health_per_lv: 15
     attack: 5
-    attack_per_lv: 0.5
     Exp: 0
-    Level: 0
-    Unlocked: 0
+    MaxExp: 100
+    Level: 1
+    Unlocked: 1
     Price: 20000
   - Image: {fileID: -2408873480607560697, guid: a42cf90e52e04ba4187ce041ff28f1fc, type: 3}
     name: Marius
     health: 120
-    health_per_lv: 15
     attack: 5
-    attack_per_lv: 0.5
     Exp: 0
-    Level: 0
-    Unlocked: 0
+    MaxExp: 100
+    Level: 1
+    Unlocked: 1
     Price: 20000
   - Image: {fileID: 6678045564113122982, guid: 79c3f26cf62d9c5498cbba1f460c9b28, type: 3}
     name: Jasmine
     health: 120
-    health_per_lv: 15
     attack: 5
-    attack_per_lv: 0.5
     Exp: 0
-    Level: 0
+    MaxExp: 100
+    Level: 1
     Unlocked: 0
     Price: 20000

@@ -32,7 +32,7 @@ public class CharacterInfoUI : MonoBehaviour
         CharacterAttack.text = characterInUse.attack.ToString();
         // Tính Exp
         Exp = characterInUse.Exp;
-        LvlExp = Character.LvlExpPerLv * characterInUse.Level + Character.LvlExp;
+        LvlExp = characterInUse.MaxExp;
         // Cập nhật thanh Exp
         ExpFill.fillAmount = (float)Exp / LvlExp;
         // Cập nhật văn bản Exp
