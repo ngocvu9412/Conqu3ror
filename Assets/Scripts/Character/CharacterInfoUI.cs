@@ -1,22 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
-using System.Linq;
 
 public class CharacterInfoUI : MonoBehaviour
 {
     [Header ("UI Elements")]
     [SerializeField] Image CharacterImage;
-    [SerializeField] TMP_Text CharacterName;
-    [SerializeField] TMP_Text CharacterLevel;
-    [SerializeField] TMP_Text CharacterHealth;
-    [SerializeField] TMP_Text CharacterAttack;
+    [SerializeField] Text CharacterName;
+    [SerializeField] Text CharacterLevel;
+    [SerializeField] Text CharacterHealth;
+    [SerializeField] Text CharacterAttack;
     [SerializeField] int Exp;
     [SerializeField] Image ExpFill;
     [SerializeField] int LvlExp;
-    [SerializeField] TMP_Text ExpText;
+    [SerializeField] Text ExpText;
     [Space(20)]
     [SerializeField] CharactersDatabase CharacterDB;
 
