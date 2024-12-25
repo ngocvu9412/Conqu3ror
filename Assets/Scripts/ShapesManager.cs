@@ -52,32 +52,32 @@ public class ShapesManager : Singleton<ShapesManager>
 
         StartCheckForPotentialMatches();
 
-        InitMyCharacter();
-        //playerCharacter = new CharacterInCombat
-        //{
-        //    MaxHealth = 1000,
-        //    CurrentHealth = 100,
-        //    BaseAttack = 10,
-        //    CurrentAttack = 10,
-        //    MaxEnergy = 300,
-        //    CurrentEnergy = 300,
-        //    CurrentTime = 45,
-        //    MaxTime = 90,
-        //    Gold = 0,
-        //    Experience = 0
-        //};
+        //InitMyCharacter();
+        playerCharacter = new CharacterInCombat
+        {
+            MaxHealth = 1000,
+            CurrentHealth = 100,
+            BaseAttack = 10,
+            CurrentAttack = 10,
+            MaxEnergy = 300,
+            CurrentEnergy = 300,
+            CurrentTime = 45,
+            MaxTime = 90,
+            Gold = 0,
+            Experience = 0
+        };
 
-        //playerCharacter.Skills = MinervaSkills.GetSkills();
+        playerCharacter.Skills = MinervaSkills.GetSkills();
 
-        //if (GameplayUIController.Ins)
-        //{
-        //    GameplayUIController.Ins.UpdateHealth(isMyTurn, playerCharacter.CurrentHealth, playerCharacter.MaxHealth);
-        //    GameplayUIController.Ins.UpdateEnergy(isMyTurn, playerCharacter.CurrentEnergy, playerCharacter.MaxEnergy);
-        //    GameplayUIController.Ins.UpdateTime(isMyTurn, playerCharacter.CurrentTime, playerCharacter.MaxTime);
-        //    GameplayUIController.Ins.UpdateAttack(true, playerCharacter.CurrentAttack);
-        //    GameplayUIController.Ins.UpdateCharacter(true, Resources.Load<Sprite>("Character/Minerva/Minerva"));
-        //    GameplayUIController.Ins.UpdateSkills(true, playerCharacter.Skills[0].Icon, playerCharacter.Skills[1].Icon, playerCharacter.Skills[2].Icon);
-        //}
+        if (GameplayUIController.Ins)
+        {
+            GameplayUIController.Ins.UpdateHealth(isMyTurn, playerCharacter.CurrentHealth, playerCharacter.MaxHealth);
+            GameplayUIController.Ins.UpdateEnergy(isMyTurn, playerCharacter.CurrentEnergy, playerCharacter.MaxEnergy);
+            GameplayUIController.Ins.UpdateTime(isMyTurn, playerCharacter.CurrentTime, playerCharacter.MaxTime);
+            GameplayUIController.Ins.UpdateAttack(true, playerCharacter.CurrentAttack);
+            GameplayUIController.Ins.UpdateCharacter(true, Resources.Load<Sprite>("Character/Minerva/Minerva"));
+            GameplayUIController.Ins.UpdateSkills(true, playerCharacter.Skills[0].Icon, playerCharacter.Skills[1].Icon, playerCharacter.Skills[2].Icon);
+        }
 
         enemyCharacter = new CharacterInCombat
         {

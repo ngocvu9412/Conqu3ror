@@ -47,9 +47,39 @@ public class GameplayUIController : Singleton<GameplayUIController>
     public RectTransform winDialogTransform; // RectTransform của WinDialog
     public RectTransform loseDialogTransform; // RectTransform của LoseDialog
 
+    public Button skillButton1;
+    public Button skillButton2;
+    public Button skillButton3;
+
     public override void Awake()
     {
         MakeSingleton(false);
+    }
+
+    public override void Start()
+    {
+        InitializeSkillButtons();
+    }
+
+    public void InitializeSkillButtons()
+    {
+        if (skillButton1 != null)
+        {
+            skillButton1.onClick.RemoveAllListeners();
+            skillButton1.onClick.AddListener(() => ShapesManager.Ins.UseSkill(0, ShapesManager.Ins.playerCharacter));
+        }
+
+        if (skillButton2 != null)
+        {
+            skillButton2.onClick.RemoveAllListeners();
+            skillButton2.onClick.AddListener(() => ShapesManager.Ins.UseSkill(0, ShapesManager.Ins.playerCharacter));
+        }
+
+        if (skillButton3 != null)
+        {
+            skillButton3.onClick.RemoveAllListeners();
+            skillButton3.onClick.AddListener(() => ShapesManager.Ins.UseSkill(0, ShapesManager.Ins.playerCharacter));
+        }
     }
 
     public void ShowWinDialog()
