@@ -114,7 +114,7 @@ public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     }
     bool CheckIfSlotInValid(GameObject gameObject)
     {
-        Equipment[] PlayerUsedEquips = GameDataManager.GetPlayerUsedEquips();
+        Equipment[] PlayerUsedEquips = GameDataManager.Ins.GetPlayerUsedEquips();
         switch (gameObject.name)
         {
             case "Slot1":
@@ -173,6 +173,6 @@ public class EquipmentUI : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     private void HandleDoubleClick()
     {
         rectTransform.anchoredPosition = previous_position;
-        GameDataManager.RemoveEquipmentUsed(EquipmentIndex);
+        GameDataManager.Ins.RemoveEquipmentUsed(EquipmentIndex);
     }
 }

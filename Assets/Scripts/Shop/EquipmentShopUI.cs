@@ -60,12 +60,12 @@ public class EquipmentShopUI : MonoBehaviour
     }
     void OnItemPurchased (Equipment equipment)
 	{
-        if(GameDataManager.GetPlayerEquipments().Count < 25)
+        if(GameDataManager.Ins.GetPlayerEquipments().Count < 25)
         {
-            if (GameDataManager.CanSpendCoins( equipment.price))
+            if (GameDataManager.Ins.CanSpendCoins( equipment.price))
             {
-                GameDataManager.SpendCoins( equipment.price);
-                GameDataManager.AddEquipment( equipment);
+                GameDataManager.Ins.SpendCoins( equipment.price);
+                GameDataManager.Ins.AddEquipment( equipment);
                 GoldSharedUI.Instance.UpdateCoinsUIText();
             }
             MergeShow.GetComponent<MergeEquipmentShowUI>().ResetMergeEquipUI();

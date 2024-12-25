@@ -30,7 +30,7 @@ public class CharacterChosingUI : MonoBehaviour
         //Xóa item template
         itemWidth = CharacterPrefab.GetComponent<RectTransform>().sizeDelta.x;
 
-        characterInfoUI.GetComponent<CharacterInfoUI>().ShowCharacterInfoUI(GameDataManager.GetSelectedCharacterIndex());
+        characterInfoUI.GetComponent<CharacterInfoUI>().ShowCharacterInfoUI(GameDataManager.Ins.GetSelectedCharacterIndex());
         //Tạo items
         for (int i=0; i < CharacterDB.CharactersCount; i++)
         {
@@ -63,18 +63,18 @@ public class CharacterChosingUI : MonoBehaviour
     }
     void OnCharacterChosing (int index)
 	{
-        GameDataManager.SetSelectedCharacter(CharacterDB.GetCharacter(index),index);
-        characterInfoUI.GetComponent<CharacterInfoUI>().ShowCharacterInfoUI(GameDataManager.GetSelectedCharacterIndex());
-        characterInfoFull.GetComponent<CharacterInfoUI>().ShowCharacterInfoUI(GameDataManager.GetSelectedCharacterIndex());
-        SkillLoadUI.GetComponent<SkillShowUI>().SetSkillInfo(GameDataManager.GetSelectedCharacterIndex());
+        GameDataManager.Ins.SetSelectedCharacter(CharacterDB.GetCharacter(index),index);
+        characterInfoUI.GetComponent<CharacterInfoUI>().ShowCharacterInfoUI(GameDataManager.Ins.GetSelectedCharacterIndex());
+        characterInfoFull.GetComponent<CharacterInfoUI>().ShowCharacterInfoUI(GameDataManager.Ins.GetSelectedCharacterIndex());
+        SkillLoadUI.GetComponent<SkillShowUI>().SetSkillInfo(GameDataManager.Ins.GetSelectedCharacterIndex());
 	}
     void OnCharacterUnlocked(int index)
     {
         CharacterContainer.GetChild(index).GetComponent<CharacterUI>().SetCharacterUnlockedStatus(true);
-        GameDataManager.AddUnlockedCharacter(index);
+        GameDataManager.Ins.AddUnlockedCharacter(index);
     }
     bool CheckIfCharacterUnlocked(int index)
     {
-        return GameDataManager.GetPlayerListUnlockedChar().Contains(index);
+        return GameDataManager.Ins.GetPlayerListUnlockedChar().Contains(index);
     }
 }

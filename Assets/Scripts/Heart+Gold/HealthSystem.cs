@@ -1,9 +1,7 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
-public class HealthSystem : MonoBehaviour
+public class HealthSystem : Singleton<HealthSystem>
 {
     public float lifeRegenerateTime = 900f; // Thời gian hồi 1 mạng (30 phút)
     private DateTime lastSaveTime; // Thời gian lần cuối cùng đóng ứng dụng
@@ -13,15 +11,18 @@ public class HealthSystem : MonoBehaviour
     [SerializeField] GameObject Heart4;
     [SerializeField] GameObject Heart5;
 
-
-    void Start()
+    public override void Awake()
+    {
+        base.Awake();
+    }
+    public override void Start()
     {
         UpdateUI();
     }
 
     void UpdateUI()
     {
-        switch (GameDataManager.GetCurrentHealthEner())
+        switch (GameDataManager.Ins.GetCurrentHealthEner())
         {
             case 0:
             {
@@ -65,13 +66,13 @@ public class HealthSystem : MonoBehaviour
     }
     public void UseLife()
     {
-        if (GameDataManager.GetCurrentHealthEner() > 0)
+        if (GameDataManager.Ins.GetCurrentHealthEner() > 0)
         {
-            if(GameDataManager.GetCurrentHealthEner() == 5)
+            if(GameDataManager.Ins.GetCurrentHealthEner() == 5)
             {
                 lastSaveTime = DateTime.Now;
             }
-            GameDataManager.SetCurrentHealthEner(GameDataManager.GetCurrentHealthEner()-1);
+            GameDataManager.Ins.SetCurrentHealthEner(GameDataManager.Ins.GetCurrentHealthEner()-1);
             UpdateUI();
         }
         else
@@ -85,14 +86,14 @@ public class HealthSystem : MonoBehaviour
     }
     void RegenerateLives()
     {
-        if (GameDataManager.GetCurrentHealthEner() < GameDataManager.GetMaxHealthEner())
+        if (GameDataManager.Ins.GetCurrentHealthEner() < GameDataManager.Ins.GetMaxHealthEner())
         {
             float timePassed = (float)(DateTime.Now - lastSaveTime).TotalSeconds;
 
             int livesToRegain = Mathf.FloorToInt(timePassed / lifeRegenerateTime);
             if (livesToRegain > 0)
             {
-                GameDataManager.SetCurrentHealthEner(Mathf.Min(GameDataManager.GetCurrentHealthEner() + livesToRegain, GameDataManager.GetMaxHealthEner())) ;
+                GameDataManager.Ins.SetCurrentHealthEner(Mathf.Min(GameDataManager.Ins.GetCurrentHealthEner() + livesToRegain, GameDataManager.Ins.GetMaxHealthEner())) ;
                 lastSaveTime = DateTime.Now.AddSeconds(-(timePassed % lifeRegenerateTime));
                 UpdateUI();
             }
