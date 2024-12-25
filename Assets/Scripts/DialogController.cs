@@ -1,5 +1,6 @@
 ﻿using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class DialogController : MonoBehaviour
@@ -14,7 +15,22 @@ public class DialogController : MonoBehaviour
 
     public bool isOpened = false;
 
+    public Text playerName;
+    public Text enemyName;
 
+    public Text playerHealth;
+    public Text enemyHealth;
+
+    public Text playerDamage;
+    public Text enemyDamage;
+
+    public Text playerLevel;
+    public Text enemyLevel;
+
+    public Text convo1;
+    public Text convo2;
+
+    void 
     void Update()
     {
         // Kiểm tra nếu nhấn chuột trái
