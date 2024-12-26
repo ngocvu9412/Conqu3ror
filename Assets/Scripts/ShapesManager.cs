@@ -144,6 +144,34 @@ public class ShapesManager : Singleton<ShapesManager>
         {
             playerCharacter.Skills = MariusSkills.GetSkills();
         }
+
+        foreach (Equipment equip in gameData.GetPlayerUsedEquips())
+        {
+            if (equip.StatTypeEffect == "Health")
+            {
+                playerCharacter.MaxHealth += (int)equip.EffectStat;
+                playerCharacter.CurrentHealth+= (int)equip.EffectStat; ;
+            }
+            if (equip.StatTypeEffect == "Attack")
+            {
+                playerCharacter.BaseAttack += (int)equip.EffectStat;
+                playerCharacter.CurrentAttack += (int)equip.EffectStat;
+            }
+            if (equip.StatTypeEffect == "StartEnergy")
+            {
+                playerCharacter.CurrentEnergy += (int)equip.EffectStat;
+            }
+            if (equip.StatTypeEffect == "MaxEnergy")
+            {
+                playerCharacter.MaxEnergy += (int)equip.EffectStat;
+            }
+            if (equip.StatTypeEffect == "Time")
+            {
+                playerCharacter.MaxTime += (int)equip.EffectStat;
+                playerCharacter.CurrentTime+= (int)equip.EffectStat;
+            }
+        }
+        
         if (GameplayUIController.Ins)
         {
             GameplayUIController.Ins.UpdateHealth(true, playerCharacter.CurrentHealth, playerCharacter.MaxHealth);

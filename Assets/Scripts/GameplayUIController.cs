@@ -137,8 +137,13 @@ public class GameplayUIController : Singleton<GameplayUIController>
 
     public void ReloadGame()
     {
-        Time.timeScale = 1; // Đặt lại thời gian về bình thường
         HideLoseDialog();
+        if (GameDataManager.Ins.GetCurrentHealthEner() <= 0)
+        {
+            SceneManager.LoadScene("Map");
+            return;
+        }
+        Time.timeScale = 1; // Đặt lại thời gian về bình thường
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reload lại màn chơi
         ShapesManager.Ins.state = GameState.None;
     }
@@ -146,7 +151,7 @@ public class GameplayUIController : Singleton<GameplayUIController>
     public void GoToMainMenu()
     {
         Time.timeScale = 1; // Đặt lại thời gian về bình thường
-        SceneManager.LoadScene("MainMenu"); // Chuyển tới màn hình chính
+        SceneManager.LoadScene("Map"); // Chuyển tới màn hình chính
     }
 
     public void UpdateTime(bool isMyTurn, float curTime, float totalTime)
