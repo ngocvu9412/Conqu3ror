@@ -5,7 +5,7 @@ using UnityEngine;
 public class PointInfo
 {
     public string PointName;
-    public bool status; //red or green
+    public bool status; //red or green (true: win, false: not yet)
 
     //Enemy
     public Sprite Image;
