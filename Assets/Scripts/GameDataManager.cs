@@ -19,6 +19,8 @@ public class GameDataManager : Singleton<GameDataManager>
     private static PlayerData playerData = new PlayerData();
     private static Character selectedCharacter;
 
+    public PointInfo enemyData;
+
     // Được gọi khi GameDataManager được khởi tạo lần đầu
     public override void Awake()
     {
