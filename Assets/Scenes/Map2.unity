@@ -1723,8 +1723,17 @@ MonoBehaviour:
   menuBtn: {fileID: 1760258092}
   character: {fileID: 813553785}
   isOpened: 0
-  playerName: {fileID: 0}
-  enemyName: {fileID: 0}
+  enemyData:
+    PointName: 
+    status: 0
+    Image: {fileID: 0}
+    EnemyName: 
+    EnemyHealth: 0
+    EnemyAttack: 0
+    EnemyLevel: 0
+    skillIndex: 0
+  playerName: {fileID: 1600220370}
+  enemyName: {fileID: 1259312740}
   playerHealth: {fileID: 0}
   enemyHealth: {fileID: 0}
   playerDamage: {fileID: 0}
@@ -1735,6 +1744,7 @@ MonoBehaviour:
   enemyAvt: {fileID: 0}
   convo1: {fileID: 0}
   convo2: {fileID: 0}
+  RedPoints: []
 --- !u!1 &116891684
 GameObject:
   m_ObjectHideFlags: 0
@@ -5830,7 +5840,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -29, y: 9}
+  m_AnchoredPosition: {x: -29.8, y: 9}
   m_SizeDelta: {x: 30, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &464546444
@@ -5853,7 +5863,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bdc1b0142beb25e4bac7e06ca17dd7b3, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6537,6 +6547,15 @@ MonoBehaviour:
   menuBtn: {fileID: 1760258092}
   character: {fileID: 813553785}
   isOpened: 0
+  enemyData:
+    PointName: 
+    status: 0
+    Image: {fileID: 0}
+    EnemyName: 
+    EnemyHealth: 0
+    EnemyAttack: 0
+    EnemyLevel: 0
+    skillIndex: 0
   playerName: {fileID: 0}
   enemyName: {fileID: 0}
   playerHealth: {fileID: 0}
@@ -6549,6 +6568,7 @@ MonoBehaviour:
   enemyAvt: {fileID: 0}
   convo1: {fileID: 0}
   convo2: {fileID: 0}
+  RedPoints: []
 --- !u!1 &496065555
 GameObject:
   m_ObjectHideFlags: 0
@@ -9134,6 +9154,15 @@ MonoBehaviour:
   menuBtn: {fileID: 1760258092}
   character: {fileID: 813553785}
   isOpened: 0
+  enemyData:
+    PointName: 
+    status: 0
+    Image: {fileID: 0}
+    EnemyName: 
+    EnemyHealth: 0
+    EnemyAttack: 0
+    EnemyLevel: 0
+    skillIndex: 0
   playerName: {fileID: 1600220370}
   enemyName: {fileID: 1259312740}
   playerHealth: {fileID: 1557663045}
@@ -9142,10 +9171,21 @@ MonoBehaviour:
   enemyDamage: {fileID: 706914152}
   playerLevel: {fileID: 855807869}
   enemyLevel: {fileID: 1124036377}
-  playerAvt: {fileID: 1304109340}
-  enemyAvt: {fileID: 29132717}
+  playerAvt: {fileID: 464546444}
+  enemyAvt: {fileID: 1440668098}
   convo1: {fileID: 1814611996}
   convo2: {fileID: 930834981}
+  RedPoints:
+  - {fileID: 180308357}
+  - {fileID: 1623213630}
+  - {fileID: 1438009377}
+  - {fileID: 1967460142}
+  - {fileID: 1567044258}
+  - {fileID: 1115618469}
+  - {fileID: 769959418}
+  - {fileID: 1517182108}
+  - {fileID: 117081701}
+  - {fileID: 935518765}
 --- !u!1 &701002064
 GameObject:
   m_ObjectHideFlags: 0
@@ -17153,8 +17193,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 57.6, y: 28.5}
-  m_SizeDelta: {x: 464.17346, y: 200}
+  m_AnchoredPosition: {x: 50.8, y: 28.5}
+  m_SizeDelta: {x: 520.6333, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1259312739
 CanvasRenderer:
@@ -17191,7 +17231,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 100
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -21496,6 +21536,15 @@ MonoBehaviour:
   menuBtn: {fileID: 1760258092}
   character: {fileID: 813553785}
   isOpened: 0
+  enemyData:
+    PointName: 
+    status: 0
+    Image: {fileID: 0}
+    EnemyName: 
+    EnemyHealth: 0
+    EnemyAttack: 0
+    EnemyLevel: 0
+    skillIndex: 0
   playerName: {fileID: 0}
   enemyName: {fileID: 0}
   playerHealth: {fileID: 0}
@@ -21508,6 +21557,7 @@ MonoBehaviour:
   enemyAvt: {fileID: 0}
   convo1: {fileID: 0}
   convo2: {fileID: 0}
+  RedPoints: []
 --- !u!114 &1491675826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23164,8 +23214,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -27.4, y: 30.1}
-  m_SizeDelta: {x: 349.64, y: 181.41754}
+  m_AnchoredPosition: {x: -29, y: 28.5}
+  m_SizeDelta: {x: 530.0357, y: 181.41754}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1600220369
 CanvasRenderer:
@@ -23202,7 +23252,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 300
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0

@@ -15,7 +15,6 @@ public class DialogController : MonoBehaviour
 
     public bool isOpened = false;
 
-    public GameDataManager gameDataManager;
     public PointInfo enemyData;
 
     public Text playerName;
@@ -36,21 +35,18 @@ public class DialogController : MonoBehaviour
     public Text convo1;
     public Text convo2;
 
+    public GameObject[] RedPoints;
+    public PointInfosDatabase pointDB;
+
     public void UpdateDialogData()
     {
         // Cập nhật dữ liệu người chơi
         this.playerName.text = GameDataManager.Ins.GetSelectedCharacter().name;
         this.playerHealth.text = GameDataManager.Ins.GetSelectedCharacter().health.ToString();
         this.playerDamage.text = GameDataManager.Ins.GetSelectedCharacter().attack.ToString();
-        this.playerLevel.text = "Lv. " + GameDataManager.Ins.GetSelectedCharacter().Level.ToString();
+        this.playerLevel.text = "Level " + GameDataManager.Ins.GetSelectedCharacter().Level.ToString();
         this.playerAvt.sprite = GameDataManager.Ins.GetSelectedCharacter().Image;
 
-        // Cập nhật dữ liệu đối thủ
-        //this.enemyName.text = enemyName;
-        //this.enemyHealth.text = enemyHealth.ToString();
-        //this.enemyDamage.text = enemyDamage.ToString();
-        //this.enemyLevel.text = "Lv. " + enemyLevel.ToString();
-        //this.enemyAvt.sprite = enemyAvatar;
 
         // Cập nhật đoạn hội thoại
         //this.convo1.text = conversationText1;
@@ -73,7 +69,14 @@ public class DialogController : MonoBehaviour
                 // Hiển thị dialog
                 if (hit.collider.gameObject.CompareTag("RedPoint"))
                 {
-                    ShowTextBox();
+                    int pointIndex = System.Array.IndexOf(RedPoints, hit.collider.gameObject);
+                    // Cập nhật dữ liệu đối thủ
+                    this.enemyName.text = pointDB.GetPointInfos(pointIndex).EnemyName;
+                    this.enemyHealth.text = pointDB.GetPointInfos(pointIndex).EnemyHealth.ToString();
+                    this.enemyDamage.text = pointDB.GetPointInfos(pointIndex).EnemyAttack.ToString();
+                    this.enemyLevel.text = "Level " + pointDB.GetPointInfos(pointIndex).EnemyLevel.ToString();
+                    this.enemyAvt.sprite = pointDB.GetPointInfos(pointIndex).Image;
+                    ShowDialog();
                 }
             }
         }
@@ -83,6 +86,7 @@ public class DialogController : MonoBehaviour
     public void ShowDialog()
     {
         HideTextbox(textboxImage2);
+        UpdateDialogData();
         dialogImage.gameObject.SetActive(true);
         isOpened = true;
     }
