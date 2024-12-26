@@ -101,9 +101,9 @@ public class GameplayUIController : Singleton<GameplayUIController>
             loseDialog.SetActive(true); // Kích hoạt dialog trước
             loseDialogTransform.localScale = Vector3.zero; // Đặt kích thước ban đầu là 0
             loseDialogTransform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack).SetUpdate(true); // Tăng kích thước lên 1 với hiệu ứng mượt
-
             Time.timeScale = 0; // Dừng thời gian trong game
         }
+        GameDataManager.Ins.SetCurrentHealthEner(GameDataManager.Ins.GetCurrentHealthEner() - 1);
     }
 
     public void HideWinDialog()

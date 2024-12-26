@@ -59,9 +59,17 @@ public class PauseManager : MonoBehaviour
     public void Surrender()
     {
         Debug.Log("Player surrendered!");
-        // Thực hiện logic đầu hàng, ví dụ quay về màn hình chính:
-        Time.timeScale = 1; // Reset lại thời gian trước khi chuyển cảnh
-        pausePanel.SetActive(false);
-        SceneManager.LoadScene("Map"); // Kích hoạt nếu dùng Scene
+        if (pausePanel != null && pauseDialog != null)
+        {
+            // Ẩn dialog với hiệu ứng trượt ra khỏi màn hình
+            pauseDialog.DOAnchorPos(new Vector2(0, 1000), 1f).SetUpdate(true).OnComplete(() =>
+            {
+                pausePanel.SetActive(false); // Tắt panel sau khi animation hoàn tất
+            });
+
+            Time.timeScale = 1; // Tiếp tục thời gian trong game
+            isGamePaused = false;
+        }
+        GameplayUIController.Ins.ShowLoseDialog();
     }
 }

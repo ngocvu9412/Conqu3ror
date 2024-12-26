@@ -558,7 +558,7 @@ public class ShapesManager : Singleton<ShapesManager>
         if (isPlayerDefeated)
         {
             // Hiện dialog thua
-            GameplayUIController.Ins.UpdateLoseDialog(2);
+            GameplayUIController.Ins.UpdateLoseDialog(GameDataManager.Ins.GetCurrentHealthEner() - 1);
             GameplayUIController.Ins.ShowLoseDialog();
         }
         else
