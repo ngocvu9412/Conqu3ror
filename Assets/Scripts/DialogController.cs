@@ -71,6 +71,7 @@ public class DialogController : MonoBehaviour
                 {
                     int pointIndex = System.Array.IndexOf(RedPoints, hit.collider.gameObject);
                     // Cập nhật dữ liệu đối thủ
+                    GameDataManager.Ins.SetPointData(pointDB.GetPointInfos(pointIndex));
                     this.enemyName.text = pointDB.GetPointInfos(pointIndex).EnemyName;
                     this.enemyHealth.text = pointDB.GetPointInfos(pointIndex).EnemyHealth.ToString();
                     this.enemyDamage.text = pointDB.GetPointInfos(pointIndex).EnemyAttack.ToString();

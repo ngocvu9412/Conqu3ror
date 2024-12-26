@@ -18,10 +18,7 @@ public class GameDataManager : Singleton<GameDataManager>
 {
     private static PlayerData playerData = new PlayerData();
     private static Character selectedCharacter;
-
-
-
-   
+    public static PointInfo EnemyInfo;
 
     // Được gọi khi GameDataManager được khởi tạo lần đầu
     public override void Awake()
@@ -30,6 +27,11 @@ public class GameDataManager : Singleton<GameDataManager>
         LoadPlayerData(); // Tải dữ liệu ngay khi khởi tạo
 		selectedCharacter = CharacterDatabaseManager.GetDatabase().GetCharacter(playerData.selectedCharacterIndex);
 	}
+    //PointData
+    public void SetPointData(PointInfo CurrentPointData)
+    {
+        EnemyInfo = CurrentPointData;
+    }
     // Player Data Methods
     public  void AddUnlockedCharacter(int characterIndex)
     {
