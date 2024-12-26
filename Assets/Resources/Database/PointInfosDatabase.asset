@@ -12,3 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b38bfeb965d2664aa7d9bd6c8e41fb6, type: 3}
   m_Name: PointInfosDatabase
   m_EditorClassIdentifier: 
+  PointInfos:
+  - PointName: Red1
+    status: 0
+    Image: {fileID: 5830694933855508796, guid: 760bde48ee6792f41a9b6290dd0f8067, type: 3}
+    EnemyName: Enemy1
+    EnemyHealth: 170
+    EnemyAttack: 4
+    EnemyLevel: 1
+    skillIndex: 1
+  - PointName: Red2
+    status: 0
+    Image: {fileID: 7723652632321733531, guid: 834f1e3ed8e00a642b6bf914c1b7c12d, type: 3}
+    EnemyName: Enemy2
+    EnemyHealth: 130
+    EnemyAttack: 6
+    EnemyLevel: 1
+    skillIndex: 3
