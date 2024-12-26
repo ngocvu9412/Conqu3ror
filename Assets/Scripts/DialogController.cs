@@ -15,6 +15,9 @@ public class DialogController : MonoBehaviour
 
     public bool isOpened = false;
 
+    public GameDataManager gameDataManager;
+    public PointInfo enemyData;
+
     public Text playerName;
     public Text enemyName;
 
@@ -32,6 +35,27 @@ public class DialogController : MonoBehaviour
 
     public Text convo1;
     public Text convo2;
+
+    public void UpdateDialogData()
+    {
+        // Cập nhật dữ liệu người chơi
+        this.playerName.text = GameDataManager.Ins.GetSelectedCharacter().name;
+        this.playerHealth.text = GameDataManager.Ins.GetSelectedCharacter().health.ToString();
+        this.playerDamage.text = GameDataManager.Ins.GetSelectedCharacter().attack.ToString();
+        this.playerLevel.text = "Lv. " + GameDataManager.Ins.GetSelectedCharacter().Level.ToString();
+        this.playerAvt.sprite = GameDataManager.Ins.GetSelectedCharacter().Image;
+
+        // Cập nhật dữ liệu đối thủ
+        //this.enemyName.text = enemyName;
+        //this.enemyHealth.text = enemyHealth.ToString();
+        //this.enemyDamage.text = enemyDamage.ToString();
+        //this.enemyLevel.text = "Lv. " + enemyLevel.ToString();
+        //this.enemyAvt.sprite = enemyAvatar;
+
+        // Cập nhật đoạn hội thoại
+        //this.convo1.text = conversationText1;
+        //this.convo2.text = conversationText2;
+    }
 
     void Update()
     {
@@ -84,7 +108,6 @@ public class DialogController : MonoBehaviour
 
 
     }
-
     public void HideTextbox(UnityEngine.UI.Image textbox)
     {
         textbox.gameObject.SetActive(false);
