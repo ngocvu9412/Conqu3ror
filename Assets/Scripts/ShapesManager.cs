@@ -46,63 +46,16 @@ public class ShapesManager : Singleton<ShapesManager>
     // Use this for initialization
     override public void Start()
     {
+        GameplayUIController.Ins.gameplayuipanel.SetActive(true);
+
         InitializeTypesOnPrefabShapesAndBonuses();
 
         InitializeCandyAndSpawnPositions();
 
         StartCheckForPotentialMatches();
 
-        //InitMyCharacter();
-        playerCharacter = new CharacterInCombat
-        {
-            MaxHealth = 1000,
-            CurrentHealth = 100,
-            BaseAttack = 10,
-            CurrentAttack = 10,
-            MaxEnergy = 300,
-            CurrentEnergy = 300,
-            CurrentTime = 45,
-            MaxTime = 90,
-            Gold = 0,
-            Experience = 0
-        };
-
-        playerCharacter.Skills = MinervaSkills.GetSkills();
-
-        if (GameplayUIController.Ins)
-        {
-            GameplayUIController.Ins.UpdateHealth(isMyTurn, playerCharacter.CurrentHealth, playerCharacter.MaxHealth);
-            GameplayUIController.Ins.UpdateEnergy(isMyTurn, playerCharacter.CurrentEnergy, playerCharacter.MaxEnergy);
-            GameplayUIController.Ins.UpdateTime(isMyTurn, playerCharacter.CurrentTime, playerCharacter.MaxTime);
-            GameplayUIController.Ins.UpdateAttack(true, playerCharacter.CurrentAttack);
-            GameplayUIController.Ins.UpdateCharacter(true, Resources.Load<Sprite>("Character/Minerva/Minerva"));
-            GameplayUIController.Ins.UpdateSkills(true, playerCharacter.Skills[0].Icon, playerCharacter.Skills[1].Icon, playerCharacter.Skills[2].Icon);
-        }
-
-        enemyCharacter = new CharacterInCombat
-        {
-            MaxHealth = 1200,
-            CurrentHealth = 100,
-            BaseAttack = 5,
-            CurrentAttack = 12,
-            MaxEnergy = 300,
-            CurrentEnergy = 0,
-            CurrentTime = 90,
-            MaxTime = 90,
-            Gold = 0,
-            Experience = 0
-        };
-
-        enemyCharacter.Skills = MariusSkills.GetSkills();
-        if (GameplayUIController.Ins)
-        {
-            GameplayUIController.Ins.UpdateHealth(!isMyTurn, enemyCharacter.CurrentHealth, enemyCharacter.MaxHealth);
-            GameplayUIController.Ins.UpdateEnergy(!isMyTurn, enemyCharacter.CurrentEnergy, enemyCharacter.MaxEnergy);
-            GameplayUIController.Ins.UpdateTime(!isMyTurn, enemyCharacter.CurrentTime, enemyCharacter.MaxTime);
-            GameplayUIController.Ins.UpdateAttack(false, enemyCharacter.CurrentAttack);
-            GameplayUIController.Ins.UpdateCharacter(false, Resources.Load<Sprite>("Character/Marius/Marius"));
-            GameplayUIController.Ins.UpdateSkills(false, enemyCharacter.Skills[0].Icon, enemyCharacter.Skills[1].Icon, enemyCharacter.Skills[2].Icon);
-        }
+        InitMyCharacter();
+        InitEnemyCharacter();
 
         if (TurnCounterUI.Ins)
             TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
@@ -114,21 +67,21 @@ public class ShapesManager : Singleton<ShapesManager>
     private void InitMyCharacter()
     {
         GameDataManager gameData = GameDataManager.Ins;
-        if(gameData)
-        playerCharacter = new CharacterInCombat
-        {
-            MaxHealth = gameData.GetSelectedCharacter().health,
-            CurrentHealth = gameData.GetSelectedCharacter().health,
-            BaseAttack = gameData.GetSelectedCharacter().attack,
-            CurrentAttack = gameData.GetSelectedCharacter().attack,
-            MaxEnergy = 300,
-            CurrentEnergy = 300,
-            CurrentTime = 90,
-            MaxTime = 90,
-            Gold = 0,
-            Experience = 0
-        };
-        if(gameData.GetSelectedCharacter().name == "Minerva")
+        if (gameData)
+            playerCharacter = new CharacterInCombat
+            {
+                MaxHealth = gameData.GetSelectedCharacter().health,
+                CurrentHealth = gameData.GetSelectedCharacter().health,
+                BaseAttack = gameData.GetSelectedCharacter().attack,
+                CurrentAttack = gameData.GetSelectedCharacter().attack,
+                MaxEnergy = 300,
+                CurrentEnergy = 300,
+                CurrentTime = 90,
+                MaxTime = 90,
+                Gold = 0,
+                Experience = 0
+            };
+        if (gameData.GetSelectedCharacter().name == "Minerva")
         {
             playerCharacter.Skills = MinervaSkills.GetSkills();
         }
@@ -150,7 +103,7 @@ public class ShapesManager : Singleton<ShapesManager>
             if (equip.StatTypeEffect == "Health")
             {
                 playerCharacter.MaxHealth += (int)equip.EffectStat;
-                playerCharacter.CurrentHealth+= (int)equip.EffectStat; ;
+                playerCharacter.CurrentHealth += (int)equip.EffectStat; ;
             }
             if (equip.StatTypeEffect == "Attack")
             {
@@ -168,10 +121,10 @@ public class ShapesManager : Singleton<ShapesManager>
             if (equip.StatTypeEffect == "Time")
             {
                 playerCharacter.MaxTime += (int)equip.EffectStat;
-                playerCharacter.CurrentTime+= (int)equip.EffectStat;
+                playerCharacter.CurrentTime += (int)equip.EffectStat;
             }
         }
-        
+
         if (GameplayUIController.Ins)
         {
             GameplayUIController.Ins.UpdateHealth(true, playerCharacter.CurrentHealth, playerCharacter.MaxHealth);
@@ -183,7 +136,52 @@ public class ShapesManager : Singleton<ShapesManager>
         }
 
     }
+    public void InitEnemyCharacter()
+    {
+        GameDataManager gameData = GameDataManager.Ins;
+        if (gameData)
+            enemyCharacter = new CharacterInCombat
+            {
+                MaxHealth = gameData.GetPoinData().EnemyHealth,
+                CurrentHealth = gameData.GetPoinData().EnemyHealth,
+                BaseAttack = gameData.GetPoinData().EnemyAttack,
+                CurrentAttack = gameData.GetPoinData().EnemyAttack,
+                MaxEnergy = 300,
+                CurrentEnergy = 0,
+                CurrentTime = 90,
+                MaxTime = 90,
+                Gold = 0,
+                Experience = 0
+            };
+        if (gameData.GetPoinData().skillIndex == 0)
+        {
+            enemyCharacter.Skills = MinervaSkills.GetSkills();
+        }
+        else if (gameData.GetPoinData().skillIndex == 1)
+        {
+            enemyCharacter.Skills = PhoenixSkills.GetSkills();
+        }
+        else if (gameData.GetPoinData().skillIndex == 2)
+        {
+            enemyCharacter.Skills = JasmineSkills.GetSkills();
+        }
+        else if (gameData.GetPoinData().skillIndex == 3)
+        {
+            enemyCharacter.Skills = MariusSkills.GetSkills();
+        }
 
+
+        if (GameplayUIController.Ins)
+        {
+            GameplayUIController.Ins.UpdateHealth(false, enemyCharacter.CurrentHealth, enemyCharacter.MaxHealth);
+            GameplayUIController.Ins.UpdateEnergy(false, enemyCharacter.CurrentEnergy, enemyCharacter.MaxEnergy);
+            GameplayUIController.Ins.UpdateTime(false, enemyCharacter.CurrentTime, enemyCharacter.MaxTime);
+            GameplayUIController.Ins.UpdateAttack(false, enemyCharacter.CurrentAttack);
+            GameplayUIController.Ins.UpdateCharacter(false, gameData.GetPoinData().Image);
+            GameplayUIController.Ins.UpdateSkills(false, enemyCharacter.Skills[0].Icon, enemyCharacter.Skills[1].Icon, enemyCharacter.Skills[2].Icon);
+        }
+
+    }
     /// ////////////////////////////////////////////////////
     public void OnSkillButtonClicked(int skillIndex)
     {
@@ -561,7 +559,7 @@ public class ShapesManager : Singleton<ShapesManager>
 
         turnCount = 1;
         state = GameState.None;
-        
+
         if (TurnCounterUI.Ins)
             TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
         StartCountdown(isMyTurn);
@@ -574,7 +572,7 @@ public class ShapesManager : Singleton<ShapesManager>
             TurnCounterUI.Ins.UpdateTurnCounter(isMyTurn, turnCount);
     }
 
-    
+
 
     private bool isBoardLocked = false; // Biến kiểm tra trạng thái bàn cờ
 
@@ -592,9 +590,9 @@ public class ShapesManager : Singleton<ShapesManager>
         else
         {
             GameDataManager gameData = GameDataManager.Ins;
-            if(gameData)
-            // Hiện dialog thắng
-            GameplayUIController.Ins.UpdateWinDialog(gameData.GetSelectedCharacter().Image, gameData.GetSelectedCharacter().name, gameData.GetSelectedCharacter().Level, gameData.GetSelectedCharacter().attack, gameData.GetSelectedCharacter().health,gameData.GetSelectedCharacter().Exp,gameData.GetSelectedCharacter().MaxExp,playerCharacter.Gold,playerCharacter.Experience);
+            if (gameData)
+                // Hiện dialog thắng
+                GameplayUIController.Ins.UpdateWinDialog(gameData.GetSelectedCharacter().Image, gameData.GetSelectedCharacter().name, gameData.GetSelectedCharacter().Level, gameData.GetSelectedCharacter().attack, gameData.GetSelectedCharacter().health, gameData.GetSelectedCharacter().Exp, gameData.GetSelectedCharacter().MaxExp, playerCharacter.Gold, playerCharacter.Experience);
             GameplayUIController.Ins.ShowWinDialog();
         }
     }
@@ -637,7 +635,8 @@ public class ShapesManager : Singleton<ShapesManager>
             state = GameState.Animating;
             if (!isBoardLocked)
             {
-                AIController.Ins.ExecuteAIMove(AIController.Ins.aiDifficulty.ToString());
+                // AIController.Ins.ExecuteAIMove(AIController.Ins.aiDifficulty.ToString());
+                AIController.Ins.ExecuteAIMove(GameDataManager.Ins.GetPoinData().AIDifficulty);
             }
             return;
         }
@@ -749,7 +748,7 @@ public class ShapesManager : Singleton<ShapesManager>
         }
 
         UnlockBoard();  // Mở lại bàn cờ sau khi reset
-        
+
     }
 
     private void FixSortingLayer(GameObject hitGo, GameObject hitGo2)
@@ -1019,7 +1018,7 @@ public class ShapesManager : Singleton<ShapesManager>
 
             }
 
-            
+
             soundManager.PlayCrincle();
 
             List<int> affectedColumns = new List<int>();
@@ -1115,7 +1114,7 @@ public class ShapesManager : Singleton<ShapesManager>
                 break;
 
             timesRun++;
-            
+
         }
         turnCount--;/////////
         if (TurnCounterUI.Ins)
@@ -1281,7 +1280,7 @@ public class ShapesManager : Singleton<ShapesManager>
                     newCandy = Instantiate(go, SpawnPositions[column], Quaternion.identity) as GameObject;
                 }
 
-                
+
 
                 newCandy.GetComponent<Shape>().Assign(go.GetComponent<Shape>().Type, item.Row, item.Column);
 

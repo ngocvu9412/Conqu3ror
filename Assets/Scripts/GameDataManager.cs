@@ -28,6 +28,10 @@ public class GameDataManager : Singleton<GameDataManager>
 		selectedCharacter = CharacterDatabaseManager.GetDatabase().GetCharacter(playerData.selectedCharacterIndex);
 	}
     //PointData
+    public PointInfo GetPoinData()
+    {
+        return EnemyInfo;
+    }
     public void SetPointData(PointInfo CurrentPointData)
     {
         EnemyInfo = CurrentPointData;

@@ -7367,7 +7367,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1992350242}
         m_TargetAssemblyTypeName: GameplayUIController, Assembly-CSharp
-        m_MethodName: HideLoseDialog
+        m_MethodName: GoToMainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9488,7 +9488,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1992350242}
         m_TargetAssemblyTypeName: GameplayUIController, Assembly-CSharp
-        m_MethodName: HideWinDialog
+        m_MethodName: GoToMainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11432,6 +11432,7 @@ MonoBehaviour:
   skillButton1: {fileID: 236743432}
   skillButton2: {fileID: 1937320136}
   skillButton3: {fileID: 868936501}
+  gameplayuipanel: {fileID: 1992350241}
 --- !u!114 &1992350243
 MonoBehaviour:
   m_ObjectHideFlags: 0

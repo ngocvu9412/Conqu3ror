@@ -50,7 +50,7 @@ public class GameplayUIController : Singleton<GameplayUIController>
     public Button skillButton1;
     public Button skillButton2;
     public Button skillButton3;
-
+    public GameObject gameplayuipanel;
     public override void Awake()
     {
         MakeSingleton(false);
@@ -90,6 +90,7 @@ public class GameplayUIController : Singleton<GameplayUIController>
             winDialogTransform.localScale = Vector3.zero; // Đặt kích thước ban đầu là 0
             winDialogTransform.DOScale(Vector3.one, 1f).SetEase(Ease.OutBack).SetUpdate(true); // Tăng kích thước lên 1 với hiệu ứng mượt
 
+            GameDataManager.Ins.GetPoinData().SetStatus(true);
             Time.timeScale = 0; // Dừng thời gian trong game
         }
     }
@@ -111,6 +112,7 @@ public class GameplayUIController : Singleton<GameplayUIController>
         if (winDialog != null && winDialogTransform != null)
         {
             // Animation thu nhỏ dialog
+
             winDialogTransform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack).SetUpdate(true)
                 .OnComplete(() =>
                 {
@@ -151,6 +153,9 @@ public class GameplayUIController : Singleton<GameplayUIController>
     public void GoToMainMenu()
     {
         Time.timeScale = 1; // Đặt lại thời gian về bình thường
+        HideLoseDialog();
+        HideWinDialog();
+        gameplayuipanel.SetActive(false);
         SceneManager.LoadScene("Map"); // Chuyển tới màn hình chính
     }
 
