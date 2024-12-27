@@ -33,10 +33,10 @@ MonoBehaviour:
     AIDifficulty: Medium
   - PointName: Red3
     status: 0
-    Image: {fileID: 7723652632321733531, guid: 834f1e3ed8e00a642b6bf914c1b7c12d, type: 3}
+    Image: {fileID: 4644523113532460279, guid: bcf5eb5d65998bd49b2adae5117372c6, type: 3}
     EnemyName: Enemy3
-    EnemyHealth: 130
-    EnemyAttack: 6
+    EnemyHealth: 150
+    EnemyAttack: 10
     EnemyLevel: 1
     skillIndex: 3
     AIDifficulty: Hard
