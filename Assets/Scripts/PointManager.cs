@@ -21,7 +21,7 @@ public class PointManager : MonoBehaviour
 
     public void SetPointState()
     {
-        pointInfo.GetPointInfos(pointIndex).status = true; // Cập nhật trạng thái trong PointInfo
+        pointInfo.GetPointInfos(pointIndex).status = false; // Cập nhật trạng thái trong PointInfo
         UpdatePointState(); // Gọi lại hàm để cập nhật hiển thị
     }
 }

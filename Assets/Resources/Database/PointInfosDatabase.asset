@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PointInfos:
   - PointName: Red1
-    status: 0
+    status: 1
     Image: {fileID: 5830694933855508796, guid: 760bde48ee6792f41a9b6290dd0f8067, type: 3}
     EnemyName: Enemy1
     EnemyHealth: 170
@@ -23,7 +23,7 @@ MonoBehaviour:
     skillIndex: 1
     AIDifficulty: Easy
   - PointName: Red2
-    status: 0
+    status: 1
     Image: {fileID: 7723652632321733531, guid: 834f1e3ed8e00a642b6bf914c1b7c12d, type: 3}
     EnemyName: Enemy2
     EnemyHealth: 130
@@ -32,10 +32,19 @@ MonoBehaviour:
     skillIndex: 2
     AIDifficulty: Medium
   - PointName: Red3
-    status: 0
+    status: 1
     Image: {fileID: 4644523113532460279, guid: bcf5eb5d65998bd49b2adae5117372c6, type: 3}
     EnemyName: Enemy3
     EnemyHealth: 150
+    EnemyAttack: 10
+    EnemyLevel: 1
+    skillIndex: 3
+    AIDifficulty: Hard
+  - PointName: Red4
+    status: 0
+    Image: {fileID: -4781279171215843576, guid: 24dd797248e2f9b45b796dd576a38700, type: 3}
+    EnemyName: Enemy4
+    EnemyHealth: 200
     EnemyAttack: 10
     EnemyLevel: 1
     skillIndex: 3
